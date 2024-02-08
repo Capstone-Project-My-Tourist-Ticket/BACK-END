@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"my-tourist-ticket/app/middlewares"
 	"my-tourist-ticket/utils/cloudinary"
 	"my-tourist-ticket/utils/encrypts"
 
@@ -23,4 +24,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// define routes/ endpoint USERS
 	e.POST("/login", userHandlerAPI.Login)
 	e.POST("/users", userHandlerAPI.RegisterUser)
+	e.GET("/users", userHandlerAPI.GetUser, middlewares.JWTMiddleware())
 }

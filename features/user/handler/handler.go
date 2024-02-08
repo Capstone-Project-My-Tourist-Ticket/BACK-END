@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"my-tourist-ticket/app/middlewares"
 	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/utils/cloudinary"
 	"my-tourist-ticket/utils/responses"
@@ -60,10 +61,23 @@ func (handler *UserHandler) Login(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error login. "+err.Error(), nil))
 		}
 	}
-	responseData := map[string]any{
-		"token":     token,
-		"full_nama": result.FullName,
-		"role":      result.Role,
-	}
+	var responseData = CoreToResponseLogin(result, token)
 	return c.JSON(http.StatusOK, responses.WebResponse("success login", responseData))
+}
+
+func (handler *UserHandler) GetUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	result, errSelect := handler.userService.GetById(userIdLogin)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	if result.NoKtp == "" {
+		var userResult = CoreToResponseUser(result)
+		return c.JSON(http.StatusOK, responses.WebResponse("success read data", userResult))
+	} else {
+		var userResult = CoreToResponsePengelola(result)
+		return c.JSON(http.StatusOK, responses.WebResponse("success read data", userResult))
+	}
 }
