@@ -1,0 +1,1327 @@
+openapi: 3.0.0
+info:
+  description: |
+    Ini Adalah Dokumentasi My Tourist Ticket API
+  version: "1.0.0"
+  title: My Tourist Ticket
+  contact:
+    email: bentarraharjax22@gmail.com
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Local Server
+    url: 'http://localhost:8080'
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/BENTARRAHARJAX22/MyTouristTicket/1.0.0
+  - description: Deploy Server
+    url: 'https://benarja.my.id'
+tags:
+  - name: Auth
+    description: API AUTH
+  - name: User
+    description: API USER
+  - name: City
+    description: API CITY
+  - name: Tour
+    description: API TOUR
+  
+
+paths:
+  /login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: lendra@gmail.com
+                password:
+                  type: string
+                  example: lendra123
+      responses:
+        '200':
+          description: successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    example: success login
+                  name:
+                    type: string
+                    example: arja
+                  role:
+                    type: string
+                    example: user
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpM
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  /users:
+    post:
+      tags:
+        - User
+      summary: Create user
+      description: This can only be done by the logged in user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSchema'
+        description: Created user object (role otomatis diisi dari backend)
+        required: true
+      responses:
+        '200':
+          description: successful createUser
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error createUser
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+    get:
+      tags:
+        - User
+      summary: Get user profil
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProfil'
+        '400':
+          description: Invalid userid supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+    put:
+      tags:
+        - User
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EditProfil'
+        description: Updated user object
+        required: true
+      responses:
+        '200':
+          description: succes update user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Invalid userid supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+    delete:
+      tags:
+        - User
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: succes delete user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Invalid userid supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+
+  /city:
+    get:
+      tags:
+        - City
+      summary: Get All City 
+      parameters:
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah city per halaman
+          required: false
+          schema:
+            type: integer
+            default: 8
+      responses:
+        '200':
+          description: successful Get All City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityGetAllResponse'
+        '400':
+          description: Error Get City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+    post:
+      tags:
+        - City
+      summary: Create City
+      description: This can only be done by the logged in admin.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CitySchema'
+      responses:
+        '200':
+          description: successful Create Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Create Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
+  /city/{id}:
+    put:
+      tags:
+        - City
+      summary: Update City By Id
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CitySchema'
+      responses:
+        '200':
+          description: successful Update City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+    
+    delete:
+      tags:
+        - City
+      summary: Delete City By Id
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful Delete City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Delete City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  /city-tour:
+    get:
+      tags:
+        - City
+      summary: Get All City Tour 
+      parameters:
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah tpur per halaman
+          required: false
+          schema:
+            type: integer
+            default: 8
+      responses:
+        '200':
+          description: successful Get All City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityTourResponse'
+        '400':
+          description: Error Get City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  
+                
+  /tour:
+    get:
+      tags:
+        - Tour
+      summary: Get All Tour
+      parameters:
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah t per halaman
+          required: false
+          schema:
+            type: integer
+            default: 8
+      responses:
+        '200':
+          description: successful Get All City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourGetAllResponse'
+        '400':
+          description: Error Get Tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+    post:
+      tags:
+        - Tour
+      summary: Create Tour
+      description: This can only be done by the logged in admin.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TourSchema'
+      responses:
+        '200':
+          description: successful Create Tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Create Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
+  /tour/{id}:
+    put:
+      tags:
+        - Tour
+      summary: Update Tour By Id
+      description: This can only be done by the logged in user.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CitySchema'
+      responses:
+        '200':
+          description: successful Update City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+    
+    delete:
+      tags:
+        - Tour
+      summary: Delete Tour By Id
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful Delete City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Delete City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  
+  /package:
+    post:
+      tags:
+        - Package
+      summary: Create Package
+      description: This can only be done by the logged in pengelola.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageSchema'
+      responses:
+        '200':
+          description: successful Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageSchema'
+        '400':
+          description: Error Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
+  /package/{id}:
+    put:
+      tags:
+        - Package
+      summary: Update Package By Id
+      description: This can only be done by the logged in user.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageSchema'
+      responses:
+        '200':
+          description: successful Update Package By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+    
+    delete:
+      tags:
+        - Package
+      summary: Delete Package By Id
+      description: This can only be done by the logged in pengelola.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful Delete City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Delete City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+  /benefit:
+    post:
+      tags:
+        - Benefit
+      summary: Create Benefit
+      description: This can only be done by the logged in pengelola.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenefitSchema'
+      responses:
+        '200':
+          description: successful Create Benefit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitSchema'
+        '400':
+          description: Error Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
+  /benefit/{id}:
+    put:
+      tags:
+        - Benefit
+      summary: Update Benefit By Id
+      description: This can only be done by the logged in user.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageSchema'
+      responses:
+        '200':
+          description: successful Update Package By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+    
+    delete:
+      tags:
+        - Benefit
+      summary: Delete Benefit By Id
+      description: This can only be done by the logged in pengelola.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful Delete City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Delete City
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+components:
+  schemas:
+
+    Response200:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              message:
+                type: string
+                example: Successful Operation
+            required:
+              - code
+              - message
+    Response400:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              message:
+                type: string
+                example: "Bad Request"
+            required:
+              - code
+              - message
+    Response404:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 404
+              message:
+                type: string
+                example: Not Found
+            required:
+              - code
+              - message
+    Response500:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 500
+              message:
+                type: string
+                example: Internal Server Error
+            required:
+              - code
+              - message
+    Response401:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 401
+              message:
+                type: string
+                example: Unauthorized
+            required:
+              - code
+              - message
+    UsersSchema:
+      type: object
+      properties:
+        name:
+          type: string
+        user_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      example:
+        name: "lendra syaputra"
+        user_name: "lendra"
+        email: "lendra@gmail.com"
+        password: "lendra123"
+        role: "user"
+    GetProfil:
+      type: object
+      properties:
+        name:
+          type: string
+        user_name:
+          type: string
+        email:
+          type: string
+        photo_profil:
+          type: string
+          format: uri
+          description: URL of the product photo
+      example:
+        name: "lendra syaputra"
+        user_name: "lendra"
+        email: "lendra@gmail.com"
+        photo_profil: 'https://sariroti.com/arjauser.jpg'
+    EditProfil:
+      type: object
+      properties:
+        name:
+          type: string
+        user_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        photo_profil:
+          type: string
+          format: uri
+          description: URL of the product photo
+      example:
+        name: "lendra syaputra"
+        user_name: "lendra"
+        email: "lendra@gmail.com"
+        password: "lendra432"
+        photo_profil: https://sariroti.com/arjauser.jpg'
+    
+    
+    CitySchema:
+      type: object
+      properties:
+        city:
+          type: string
+        description:
+          type: string
+        photo_city:
+          type: string
+          format: uri
+          description: URL of the product photo
+        thumbnail:
+          type: string
+          format: uri
+          description: URL of the product photo
+      example:
+        name: "Vivo"
+        description: "VIVO Y12"
+        photo_product: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
+    
+    TourSchema:
+      type: object
+      properties:
+        city_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        latitude:
+          type: integer
+        longitude:
+          type: integer
+        photo_tour:
+          type: string
+          format: uri
+          description: URL of the product photo
+        thumbnail_tour:
+          type: string
+          format: uri
+          description: URL of the product photo
+      example:
+        name: "Vivo"
+        description: "VIVO Y12"
+        latitude: -6.288746316940347
+        longitude: 106.82353173451676
+        photo_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+    
+    CityResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        city:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          format: uri
+          description: URL of the product photo
+        thumbnail:
+          type: string
+          format: uri
+          description: URL of the product photo
+        # users: 
+          # type: array
+          # items:
+          #   $ref: '#/components/schemas/UsersSchema'
+      example:
+        id: 1
+        city: "Lampung"
+        description: "Selamat datang di Kota Lampung, pintu gerbang ke keindahan alam Pulau Sumatra. Nikmati pantai-pantai berpasir putih, jelajahi Taman Nasional Way Kambas, atau mendaki Gunung Krakatau yang ikonik. Jelajahi kekayaan budaya dengan Festival Krakatau yang meriah dan cicipi kuliner khas seperti sate ikan dan gulai taboh. Dengan sambutan hangat dari penduduknya dan keindahan alamnya yang memukau, Lampung menawarkan pengalaman wisata yang tak terlupakan."
+        image: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
+       
+        # users: 
+        #   id: 1
+        #   name: "TOKO ARJA"
+        #   user_name: "@tokoarja"
+        #   photo_profil: 'https://sariroti.com/arjauser.jpg'
+    
+    CityTourResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        city:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          format: uri
+          description: URL of the product photo
+        thumbnail:
+          type: string
+          format: uri
+          description: URL of the product photo
+        tours: 
+          type: array
+          items:
+            $ref: '#/components/schemas/TourSchema'
+            
+      example:
+        id: 1
+        city: "Lampung"
+        description: "Selamat datang di Kota Lampung, pintu gerbang ke keindahan alam Pulau Sumatra. Nikmati pantai-pantai berpasir putih, jelajahi Taman Nasional Way Kambas, atau mendaki Gunung Krakatau yang ikonik. Jelajahi kekayaan budaya dengan Festival Krakatau yang meriah dan cicipi kuliner khas seperti sate ikan dan gulai taboh. Dengan sambutan hangat dari penduduknya dan keindahan alamnya yang memukau, Lampung menawarkan pengalaman wisata yang tak terlupakan."
+        image: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
+       
+        tours: 
+          id: 1
+          name: "Pantai Lampung"
+          address: "jl.sumatera"
+          thumbnail_tour: 'https://sariroti.com/arjauser.jpg'
+
+          
+    CityGetAllResponse:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        total_page:
+          type: integer
+          example: 3
+        data:
+            type: object
+            properties:
+                id:
+                  type: integer
+                city:
+                  type: string
+                description:
+                  type: string
+                image_city:
+                  type: string
+                  format: uri
+                  description: URL of the city photo
+                thumbnail_city:
+                  type: string
+                  format: uri
+                  description: URL of the thumbnail city
+            example:
+            - id: 1
+              city: "Lampung"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 2
+              city: "Jakarta"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 3
+              city: "Bogor"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+    
+    TourGetAllResponse:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        total_page:
+          type: integer
+          example: 3
+        data:
+            type: object
+            properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                city:
+                  type: string
+                address:
+                  type: string
+                image_tour:
+                  type: string
+                  format: uri
+                  description: URL of the tour photo
+                thumbnail_tour:
+                  type: string
+                  format: uri
+                  description: URL of the thumbnail tour
+            example:
+            - id: 1
+              name: "Pantai Lampung"
+              city: "Lampung"
+              description: "Lorem ipsum"
+              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 2
+              name: "Gunung Kraktau"
+              city: "Lampung"
+              description: "Lorem ipsum"
+              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 3
+              name: "Wai Kambas"
+              city: "Lampung"
+              description: "Lorem ipsum"
+              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+              
+    CityTourGetAllResponse:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        total_page:
+          type: integer
+          example: 3
+        data:
+            type: object
+            properties:
+                id:
+                  type: integer
+                city:
+                  type: string
+                description:
+                  type: string
+                image_city:
+                  type: string
+                  format: uri
+                  description: URL of the city photo
+                thumbnail_city:
+                  type: string
+                  format: uri
+                  description: URL of the thumbnail city
+            example:
+            - id: 1
+              city: "Lampung"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 2
+              city: "Jakarta"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 3
+              city: "Bogor"
+              description: "Lorem ipsum"
+              image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+              thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
+  
+    PackageSchema:
+      type: object
+      properties:
+        tour_id:
+          type: string
+        name:
+          type: string
+        jumlah_tiket:
+          type: integer
+        price:
+          type: integer
+      example:
+        tour_id: 1
+        name: "Paket ber3"
+        jumlah_tiket:: 10
+        price: 300000
+    
+    BenefitSchema:
+      type: object
+      properties:
+        package_id: 
+          type: integer
+        benefit:
+          type: string
+      example:
+        package_id: 1
+        benefit: "Paket reguler 3"
+        
+  
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
