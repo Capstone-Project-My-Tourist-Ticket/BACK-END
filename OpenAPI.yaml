@@ -38,10 +38,10 @@ paths:
               properties:
                 email:
                   type: string
-                  example: lendra@gmail.com
+                  example: angel@gmail.com
                 password:
                   type: string
-                  example: lendra123
+                  example: qwerty
       responses:
         '200':
           description: successful login
@@ -53,9 +53,9 @@ paths:
                   message: 
                     type: string
                     example: success login
-                  name:
+                  full_name:
                     type: string
-                    example: arja
+                    example: angel
                   role:
                     type: string
                     example: user
@@ -928,7 +928,7 @@ components:
                 example: 200
               message:
                 type: string
-                example: Successful Operation
+                example: success insert data
             required:
               - code
               - message
@@ -983,7 +983,7 @@ components:
     UsersSchema:
       type: object
       properties:
-        name:
+        full_name:
           type: string
         user_name:
           type: string
@@ -994,11 +994,11 @@ components:
         role:
           type: string
       example:
-        name: "lendra syaputra"
-        user_name: "lendra"
-        email: "lendra@gmail.com"
-        password: "lendra123"
-        role: "user"
+        full_name: "angel"
+        phone_number: "+6283123721"
+        email: "angel@gmail.com"
+        password: "qwerty"
+        role: "costumer"
     GetProfil:
       type: object
       properties:

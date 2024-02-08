@@ -13,7 +13,7 @@ type HashInterface interface {
 
 type hash struct{}
 
-func NewHashService() HashInterface {
+func New() HashInterface {
 	return &hash{}
 }
 
