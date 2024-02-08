@@ -23,7 +23,7 @@ type UserDataInterface interface {
 	Insert(input Core) error
 	SelectById(userIdLogin int) (*Core, error)
 	Update(userIdLogin int, input Core) error
-	// Delete(userIdLogin int) error
+	Delete(userIdLogin int) error
 }
 
 // interface untuk Service Layer
@@ -32,5 +32,5 @@ type UserServiceInterface interface {
 	Create(input Core) error
 	GetById(userIdLogin int) (*Core, error)
 	Update(userIdLogin int, input Core) error
-	// Delete(userIdLogin int) error
+	Delete(userIdLogin int) error
 }

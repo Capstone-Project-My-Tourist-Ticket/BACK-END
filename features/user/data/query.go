@@ -67,3 +67,16 @@ func (repo *userQuery) Update(userIdLogin int, input user.Core) error {
 	}
 	return nil
 }
+
+// Delete implements user.UserDataInterface.
+func (repo *userQuery) Delete(userIdLogin int) error {
+	tx := repo.db.Delete(&User{}, userIdLogin)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found")
+	}
+	return nil
+}
