@@ -10,10 +10,8 @@ import (
 
 var (
 	JWT_SECRET string
-	// CLOUDINARY_KEY        string
-	// CLOUDINARY_SECRET     string
-	// CLOUDINARY_CLOUD_NAME string
-	// MIDTRANS_SERVER_KEY   string
+	CLD_URL    string
+	MID_KEY    string
 )
 
 type AppConfig struct {
@@ -22,7 +20,6 @@ type AppConfig struct {
 	DB_HOSTNAME string
 	DB_PORT     int
 	DB_NAME     string
-	JWT_SECRET  string
 }
 
 func InitConfig() *AppConfig {
@@ -55,7 +52,15 @@ func ReadEnv() *AppConfig {
 		isRead = false
 	}
 	if val, found := os.LookupEnv("JWTSECRET"); found {
-		app.DB_NAME = val
+		JWT_SECRET = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("CLDURL"); found {
+		CLD_URL = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("MIDKEY"); found {
+		MID_KEY = val
 		isRead = false
 	}
 
@@ -70,18 +75,14 @@ func ReadEnv() *AppConfig {
 			return nil
 		}
 
-		// app.JWT_SECRET = viper.Get("JWT_KEY").(string)
+		CLD_URL = viper.GetString("CLDURL")
+		JWT_SECRET = viper.GetString("JWTSECRET")
+		MID_KEY = viper.GetString("MIDKEY")
 		app.DB_USERNAME = viper.Get("DBUSER").(string)
 		app.DB_PASSWORD = viper.Get("DBPASS").(string)
 		app.DB_HOSTNAME = viper.Get("DBHOST").(string)
 		app.DB_PORT, _ = strconv.Atoi(viper.Get("DBPORT").(string))
 		app.DB_NAME = viper.Get("DBNAME").(string)
-		JWT_SECRET = viper.Get("JWTSECRET").(string)
-		// CLOUDINARY_KEY = viper.Get("CLOUDINARY_KEY").(string)
-		// CLOUDINARY_SECRET = viper.Get("CLOUDINARY_SECRET").(string)
-		// CLOUDINARY_CLOUD_NAME = viper.Get("CLOUDINARY_CLOUD_NAME").(string)
-		// MIDTRANS_SERVER_KEY = viper.Get("MIDTRANS_SERVER_KEY").(string)
-
 	}
 
 	return &app

@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"my-tourist-ticket/app/configs"
+	ud "my-tourist-ticket/features/user/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -22,6 +23,6 @@ func InitDBMysql(cfg *configs.AppConfig) *gorm.DB {
 }
 
 func InitMigrate(db *gorm.DB) {
-	// db.AutoMigrate(&data.User{})
+	db.AutoMigrate(&ud.User{})
 
 }
