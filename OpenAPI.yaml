@@ -1013,10 +1013,10 @@ components:
           format: uri
           description: URL of the product photo
       example:
-        name: "lendra syaputra"
-        user_name: "lendra"
-        email: "lendra@gmail.com"
-        photo_profil: 'https://sariroti.com/arjauser.jpg'
+        full_name: "arja"
+        phone_number: "+628909800"
+        email: "arja@gmail.com"
+        photo_profil: 'https://cloud.com/arjauser.jpg'
     EditProfil:
       type: object
       properties:

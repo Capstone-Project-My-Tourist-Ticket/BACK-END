@@ -77,3 +77,9 @@ func (service *userService) Login(email string, password string) (data *user.Cor
 
 	return data, token, err
 }
+
+// GetById implements user.UserServiceInterface.
+func (service *userService) GetById(userIdLogin int) (*user.Core, error) {
+	result, err := service.userData.SelectById(userIdLogin)
+	return result, err
+}

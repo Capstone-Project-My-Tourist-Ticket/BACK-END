@@ -21,7 +21,7 @@ type Core struct {
 type UserDataInterface interface {
 	Login(email, password string) (data *Core, err error)
 	Insert(input Core) error
-	// SelectById(userIdLogin int) (*Core, error)
+	SelectById(userIdLogin int) (*Core, error)
 	// Update(userIdLogin int, input Core) error
 	// Delete(userIdLogin int) error
 }
@@ -30,7 +30,7 @@ type UserDataInterface interface {
 type UserServiceInterface interface {
 	Login(email, password string) (data *Core, token string, err error)
 	Create(input Core) error
-	// GetById(userIdLogin int) (*Core, error)
+	GetById(userIdLogin int) (*Core, error)
 	// Update(userIdLogin int, input Core) error
 	// Delete(userIdLogin int) error
 }
