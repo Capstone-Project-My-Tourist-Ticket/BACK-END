@@ -928,7 +928,7 @@ components:
                 example: 200
               message:
                 type: string
-                example: success update data
+                example: success delete data
             required:
               - code
               - message

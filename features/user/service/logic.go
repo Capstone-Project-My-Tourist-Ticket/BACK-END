@@ -101,3 +101,12 @@ func (service *userService) Update(userIdLogin int, input user.Core) error {
 	err := service.userData.Update(userIdLogin, input)
 	return err
 }
+
+// Delete implements user.UserServiceInterface.
+func (service *userService) Delete(userIdLogin int) error {
+	if userIdLogin <= 0 {
+		return errors.New("invalid id")
+	}
+	err := service.userData.Delete(userIdLogin)
+	return err
+}
