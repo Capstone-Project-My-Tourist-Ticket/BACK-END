@@ -83,3 +83,21 @@ func (service *userService) GetById(userIdLogin int) (*user.Core, error) {
 	result, err := service.userData.SelectById(userIdLogin)
 	return result, err
 }
+
+// Update implements user.UserServiceInterface.
+func (service *userService) Update(userIdLogin int, input user.Core) error {
+	if userIdLogin <= 0 {
+		return errors.New("invalid id.")
+	}
+
+	if input.Password != "" {
+		hashedPass, errHash := service.hashService.HashPassword(input.Password)
+		if errHash != nil {
+			return errors.New("Error hash password.")
+		}
+		input.Password = hashedPass
+	}
+
+	err := service.userData.Update(userIdLogin, input)
+	return err
+}

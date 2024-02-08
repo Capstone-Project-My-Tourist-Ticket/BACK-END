@@ -81,3 +81,38 @@ func (handler *UserHandler) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusOK, responses.WebResponse("success read data", userResult))
 	}
 }
+
+func (handler *UserHandler) UpdateUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	var userData = UserRequestUpdate{}
+	errBind := c.Bind(&userData)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	fileData, err := c.FormFile("image")
+	if err != nil && err != http.ErrMissingFile {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the file", nil))
+	}
+
+	var imageURL string
+	if fileData != nil {
+		imageURL, err = handler.cld.UploadImage(fileData)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
+		}
+	}
+
+	userCore := UpdateRequestToCore(userData, imageURL)
+	errUpdate := handler.userService.Update(userIdLogin, userCore)
+	if errUpdate != nil {
+		if strings.Contains(errUpdate.Error(), "Error 1062 (23000): Duplicate entry") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		}
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
+}

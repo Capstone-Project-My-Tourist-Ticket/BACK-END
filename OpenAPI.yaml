@@ -928,7 +928,7 @@ components:
                 example: 200
               message:
                 type: string
-                example: success insert data
+                example: success update data
             required:
               - code
               - message
@@ -1002,13 +1002,13 @@ components:
     GetProfil:
       type: object
       properties:
-        name:
+        full_name:
           type: string
-        user_name:
+        phone_number:
           type: string
         email:
           type: string
-        photo_profil:
+        image:
           type: string
           format: uri
           description: URL of the product photo
@@ -1016,28 +1016,28 @@ components:
         full_name: "arja"
         phone_number: "+628909800"
         email: "arja@gmail.com"
-        photo_profil: 'https://cloud.com/arjauser.jpg'
+        image: 'https://cloud.com/arjauser.jpg'
     EditProfil:
       type: object
       properties:
-        name:
+        full_name:
           type: string
-        user_name:
+        phone_number:
           type: string
         email:
           type: string
         password:
           type: string
-        photo_profil:
+        image:
           type: string
           format: uri
-          description: URL of the product photo
+          description: URL of the photo
       example:
-        name: "lendra syaputra"
-        user_name: "lendra"
-        email: "lendra@gmail.com"
-        password: "lendra432"
-        photo_profil: https://sariroti.com/arjauser.jpg'
+        name: "mahiva"
+        phone_number: "+625123218"
+        email: "mahiva@gmail.com"
+        password: "ytrewq"
+        image: https://joker.com/arjauser.jpg'
     
     
     CitySchema:
