@@ -20,7 +20,8 @@ type CityDataInterface interface {
 	GetUserRoleById(userId int) (string, error)
 	Insert(input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Update(cityId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
-	Delete(userIdLogin int, id int) error
+	Delete(cityId int) error
+	SelectCityById(cityId int) (Core, error)
 }
 
 // interface untuk Service Layer
@@ -28,5 +29,6 @@ type CityServiceInterface interface {
 	GetUserRoleById(userId int) (string, error)
 	Create(input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Update(cityId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
-	Delete(userIdLogin int, id int) error
+	Delete(cityId int) error
+	SelectCityById(cityId int) (Core, error)
 }

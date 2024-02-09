@@ -22,3 +22,15 @@ func CoreToModel(c city.Core) City {
 		Thumbnail:   c.Thumbnail,
 	}
 }
+
+func ModelToCore(c City) city.Core {
+	return city.Core{
+		ID:          c.ID,
+		CityName:    c.City,
+		Description: c.Description,
+		Image:       c.Image,
+		Thumbnail:   c.Thumbnail,
+		CreatedAt:   c.CreatedAt,
+		UpdatedAt:   c.UpdatedAt,
+	}
+}

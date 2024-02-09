@@ -129,6 +129,16 @@ func (repo *cityQuery) Update(cityId int, input city.Core, image *multipart.File
 }
 
 // Delete implements city.CityDataInterface.
-func (*cityQuery) Delete(userIdLogin int, id int) error {
+func (*cityQuery) Delete(cityId int) error {
 	panic("unimplemented")
+}
+
+// SelectCityById implements city.CityDataInterface.
+func (repo *cityQuery) SelectCityById(cityId int) (city.Core, error) {
+	var cityModel City
+	if err := repo.db.First(&cityModel, cityId).Error; err != nil {
+		return city.Core{}, err
+	}
+
+	return ModelToCore(cityModel), nil
 }
