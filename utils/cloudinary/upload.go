@@ -16,6 +16,7 @@ import (
 
 type CloudinaryUploaderInterface interface {
 	UploadImage(fileHeader *multipart.FileHeader) (string, error)
+	Destroy(publicID string) error
 }
 
 type CloudinaryUploader struct {
@@ -80,4 +81,30 @@ func SaveImageToLocal(file multipart.File, destinationPath string) error {
 	}
 
 	return nil
+}
+
+func (cu *CloudinaryUploader) Destroy(publicId string) error {
+	ctx := context.Background()
+
+	cldUrl := configs.CLD_URL
+	cldService, _ := cloudinary.NewFromURL(cldUrl)
+	_, errDest := cldService.Upload.Destroy(ctx, uploader.DestroyParams{
+		PublicID:     publicId,
+		Type:         "",
+		ResourceType: "",
+		Invalidate:   new(bool),
+	})
+	if errDest != nil {
+		return errDest
+	}
+
+	return nil
+}
+
+func GetPublicID(url string) string {
+	splitURL := strings.Split(url, "/")
+	fileNameWithExt := splitURL[len(splitURL)-1]
+	fileNameWithoutExt := strings.TrimSuffix(fileNameWithExt, filepath.Ext(fileNameWithExt))
+	publicID := splitURL[len(splitURL)-2] + "/" + fileNameWithoutExt
+	return publicID
 }
