@@ -1128,17 +1128,17 @@ components:
     CitySchema:
       type: object
       properties:
-        city:
+        city_name:
           type: string
         description:
           type: string
-        photo_city:
+        image:
           type: string
-          format: uri
+          format: file
           description: URL of the product photo
         thumbnail:
           type: string
-          format: uri
+          format: file
           description: URL of the product photo
       example:
         name: "Vivo"
