@@ -6,6 +6,7 @@ import (
 	"my-tourist-ticket/utils/cloudinary"
 	"my-tourist-ticket/utils/responses"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -130,4 +131,18 @@ func (handler *UserHandler) DeleteUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
+}
+
+func (handler *UserHandler) GetAdminUserData(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	result, errSelect, totalPage := handler.userService.GetAdminUsers(userIdLogin, page, limit)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	var userResult = CoreToResponseList(result)
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success read data", userResult, totalPage))
 }
