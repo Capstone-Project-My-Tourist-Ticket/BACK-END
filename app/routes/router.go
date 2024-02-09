@@ -43,12 +43,13 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/users", userHandlerAPI.GetUser, middlewares.JWTMiddleware())
 	e.PUT("/users", userHandlerAPI.UpdateUser, middlewares.JWTMiddleware())
 	e.DELETE("/users", userHandlerAPI.DeleteUser, middlewares.JWTMiddleware())
+	e.GET("/users/admin", userHandlerAPI.GetAdminUserData, middlewares.JWTMiddleware())
+	e.PUT("/users/admin/:id", userHandlerAPI.UpdateUserPengelolaById, middlewares.JWTMiddleware())
 
 	//define routes/ endpoint CITY
 	e.POST("/citys", cityHandlerAPI.CreateCity, middlewares.JWTMiddleware())
 	e.PUT("/citys/:city_id", cityHandlerAPI.UpdateCity, middlewares.JWTMiddleware())
 	e.GET("/citys/:city_id", cityHandlerAPI.GetCityById)
-
 	//define routes/ endpoint TOUR
 	e.POST("/tours", tourHandlerAPI.CreateTour, middlewares.JWTMiddleware())
 }
