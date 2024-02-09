@@ -97,3 +97,19 @@ func (handler *CityHandler) UpdateCity(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("City updated successfully", nil))
 }
+
+func (handler *CityHandler) GetCityById(c echo.Context) error {
+	cityID, err := strconv.Atoi(c.Param("city_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid city ID", nil))
+	}
+
+	cityData, err := handler.cityService.SelectCityById(cityID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error retrieving city data", nil))
+	}
+
+	cityResponse := ModelToResponse(cityData)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("City data retrieved successfully", cityResponse))
+}

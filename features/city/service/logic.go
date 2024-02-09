@@ -42,6 +42,16 @@ func (service *cityService) Update(cityId int, input city.Core, image *multipart
 }
 
 // Delete implements city.CityDataInterface.
-func (*cityService) Delete(userIdLogin int, id int) error {
+func (*cityService) Delete(cityId int) error {
 	panic("unimplemented")
+}
+
+// SelectCityById implements city.CityServiceInterface.
+func (service *cityService) SelectCityById(cityId int) (city.Core, error) {
+	data, err := service.cityData.SelectCityById(cityId)
+	if err != nil {
+		return city.Core{}, err
+	}
+
+	return data, nil
 }
