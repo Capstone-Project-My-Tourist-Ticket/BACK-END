@@ -53,4 +53,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	//define routes/ endpoint TOUR
 	e.POST("/tours", tourHandlerAPI.CreateTour, middlewares.JWTMiddleware())
+	e.PUT("/tours/:tour_id", tourHandlerAPI.UpdateTour, middlewares.JWTMiddleware())
 }
