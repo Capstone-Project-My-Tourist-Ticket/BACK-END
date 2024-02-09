@@ -58,7 +58,7 @@ paths:
                     example: angel
                   role:
                     type: string
-                    example: user
+                    example: costumer
                   token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpM
@@ -280,6 +280,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+  /users/admin/{id}:
+    put:
+      tags:
+        - User
+      summary: Updated User Pengelola
+      description: hanya bisa dilakukan oleh admin
+      parameters:
+        - name: status
+          in: query
+          description: isi dengan approved/reject
+          required: true
+          schema:
+            type: string
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: succes update user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Invalid userid supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
 
   /city:
     get:

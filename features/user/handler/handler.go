@@ -146,3 +146,27 @@ func (handler *UserHandler) GetAdminUserData(c echo.Context) error {
 	var userResult = CoreToResponseList(result)
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success read data", userResult, totalPage))
 }
+
+func (handler *UserHandler) UpdateUserPengelolaById(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	pengelolaId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error parsing pengelola id", nil))
+	}
+
+	pengelolaStatus := c.QueryParam("status")
+
+	// var userData = AdminPengelolaRequestUpdate{}
+	// errBind := c.Bind(&userData)
+	// if errBind != nil {
+	// 	return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	// }
+
+	// userCore := RequestToCoreAdminPengelola(userData)
+	errUpdate := handler.userService.UpdatePengelola(userIdLogin, pengelolaStatus, pengelolaId)
+	if errUpdate != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
+}

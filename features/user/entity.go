@@ -25,6 +25,7 @@ type UserDataInterface interface {
 	Update(userIdLogin int, input Core) error
 	Delete(userIdLogin int) error
 	SelectAdminUsers(page, limit int) ([]Core, error, int)
+	UpdatePengelola(pengelolaStatus string, pengelolaId int) error
 }
 
 // interface untuk Service Layer
@@ -35,4 +36,5 @@ type UserServiceInterface interface {
 	Update(userIdLogin int, input Core) error
 	Delete(userIdLogin int) error
 	GetAdminUsers(userIdLogin, page, limit int) ([]Core, error, int)
+	UpdatePengelola(userIdLogin int, pengelolaStatus string, pengelolaId int) error
 }
