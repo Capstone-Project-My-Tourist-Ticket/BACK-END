@@ -33,6 +33,12 @@ func CoreToModel(input user.Core) User {
 	}
 }
 
+func CoreToModelPengelola(pengelolaStatus string) User {
+	return User{
+		Status: pengelolaStatus,
+	}
+}
+
 func (u User) ModelToCore() user.Core {
 	return user.Core{
 		ID:          u.ID,

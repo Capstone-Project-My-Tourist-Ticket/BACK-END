@@ -132,3 +132,17 @@ func (service *userService) GetAdminUsers(userIdLogin, page, limit int) ([]user.
 	result, err, totalPage := service.userData.SelectAdminUsers(page, limit)
 	return result, err, totalPage
 }
+
+// UpdatePengelola implements user.UserServiceInterface.
+func (service *userService) UpdatePengelola(userIdLogin int, pengelolaStatus string, pengelolaId int) error {
+	valUser, errVal := service.userData.SelectById(userIdLogin)
+	if errVal != nil {
+		return errVal
+	}
+	if valUser.Role == "costumer" || valUser.Role == "pengelola" {
+		return errors.New("Sorry, your role does not have this access.")
+	}
+
+	err := service.userData.UpdatePengelola(pengelolaStatus, pengelolaId)
+	return err
+}

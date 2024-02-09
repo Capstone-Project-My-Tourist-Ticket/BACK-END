@@ -105,3 +105,17 @@ func (repo *userQuery) SelectAdminUsers(page, limit int) ([]user.Core, error, in
 
 	return usersDataCore, nil, int(totalPage)
 }
+
+// UpdatePengelola implements user.UserDataInterface.
+func (repo *userQuery) UpdatePengelola(pengelolaStatus string, pengelolaId int) error {
+	dataGorm := CoreToModelPengelola(pengelolaStatus)
+	tx := repo.db.Model(&User{}).Where("id = ?", pengelolaId).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
+}

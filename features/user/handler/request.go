@@ -29,6 +29,10 @@ type LoginRequest struct {
 	Password string `json:"password" form:"password"`
 }
 
+// type AdminPengelolaRequestUpdate struct {
+// 	Status string `json:"status" form:"status"`
+// }
+
 func RequestToCore(input UserRequest) user.Core {
 	return user.Core{
 		FullName:    input.FullName,
@@ -54,3 +58,9 @@ func UpdateRequestToCore(input UserRequestUpdate, imageURL string) user.Core {
 		Image:       imageURL,
 	}
 }
+
+// func RequestToCoreAdminPengelola(input AdminPengelolaRequestUpdate) user.Core {
+// 	return user.Core{
+// 		Status: input.Status,
+// 	}
+// }
