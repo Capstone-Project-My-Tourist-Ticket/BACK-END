@@ -5,6 +5,7 @@ import (
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/utils/responses"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -56,4 +57,47 @@ func (handler *TourHandler) CreateTour(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, responses.WebResponse("tour created successfully", nil))
+}
+
+func (handler *TourHandler) UpdateTour(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an pengelola", nil))
+	}
+
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid city ID", nil))
+	}
+
+	var tourReq TourRequest
+	if err := c.Bind(&tourReq); err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Error binding data. Data not valid", nil))
+	}
+
+	// Ubah request menjadi core model
+	tourCore := RequestToCore(tourReq)
+
+	// Dapatkan file gambar dan thumbnail dari form
+	_, imageHeader, err := c.Request().FormFile("image")
+	if err != nil && err != http.ErrMissingFile {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Error retrieving the image file", nil))
+	}
+
+	_, thumbnailHeader, err := c.Request().FormFile("thumbnail")
+	if err != nil && err != http.ErrMissingFile {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Error retrieving the thumbnail file", nil))
+	}
+
+	err = handler.tourService.Update(tourID, tourCore, imageHeader, thumbnailHeader)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error updating city", nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("Tour updated successfully", nil))
 }

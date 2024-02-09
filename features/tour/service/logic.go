@@ -30,3 +30,13 @@ func (service *tourService) Insert(userId uint, input tour.Core, image *multipar
 
 	return nil
 }
+
+// Update implements tour.TourServiceInterface.
+func (service *tourService) Update(tourId int, input tour.Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error {
+	err := service.tourData.Update(tourId, input, image, thumbnail)
+	if err != nil {
+		return fmt.Errorf("error update tour: %w", err)
+	}
+
+	return nil
+}
