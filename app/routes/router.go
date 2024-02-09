@@ -13,6 +13,10 @@ import (
 	ch "my-tourist-ticket/features/city/handler"
 	cs "my-tourist-ticket/features/city/service"
 
+	td "my-tourist-ticket/features/tour/data"
+	th "my-tourist-ticket/features/tour/handler"
+	ts "my-tourist-ticket/features/tour/service"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -29,6 +33,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	cityService := cs.NewCity(cityData)
 	cityHandlerAPI := ch.NewCity(cityService)
 
+	tourData := td.NewTour(db, cloudinaryUploader)
+	tourService := ts.NewTour(tourData)
+	tourHandlerAPI := th.NewTour(tourService)
+
 	// define routes/ endpoint USERS
 	e.POST("/login", userHandlerAPI.Login)
 	e.POST("/users", userHandlerAPI.RegisterUser)
@@ -42,4 +50,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/citys", cityHandlerAPI.CreateCity, middlewares.JWTMiddleware())
 	e.PUT("/citys/:city_id", cityHandlerAPI.UpdateCity, middlewares.JWTMiddleware())
 	e.GET("/citys/:city_id", cityHandlerAPI.GetCityById)
+
+	//define routes/ endpoint TOUR
+	e.POST("/tours", tourHandlerAPI.CreateTour, middlewares.JWTMiddleware())
 }

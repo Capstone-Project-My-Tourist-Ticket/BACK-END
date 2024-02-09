@@ -605,7 +605,7 @@ paths:
       tags:
         - Tour
       summary: Create Tour
-      description: This can only be done by the logged in admin.
+      description: This can only be done by the logged in pengelola.
       security:
         - jwtAuth: []
       requestBody:
@@ -1195,31 +1195,36 @@ components:
     TourSchema:
       type: object
       properties:
-        city_id:
-          type: integer
-        name:
+        tour_name:
           type: string
         description:
+          type: string
+        image:
+          type: string
+          format: file
+          description: URL of the product photo
+        thumbnail:
+          type: string
+          format: file
+          description: URL of the product photo
+        address:
           type: string
         latitude:
           type: integer
         longitude:
           type: integer
-        photo_tour:
-          type: string
-          format: uri
-          description: URL of the product photo
-        thumbnail_tour:
-          type: string
-          format: uri
-          description: URL of the product photo
+        city_id:
+          type: integer
       example:
-        name: "Vivo"
-        description: "VIVO Y12"
+        tour_name: "Pantai Pandawa"
+        description: "Pantai pandawa adalah"
+        image: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
+        address: "jl.sumatera"
         latitude: -6.288746316940347
         longitude: 106.82353173451676
-        photo_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
-        thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+        city_id: 1
+        
     
     CityResponse:
       type: object
