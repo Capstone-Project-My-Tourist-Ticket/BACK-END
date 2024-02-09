@@ -110,3 +110,25 @@ func (service *userService) Delete(userIdLogin int) error {
 	err := service.userData.Delete(userIdLogin)
 	return err
 }
+
+// GetAdminUsers implements user.UserServiceInterface.
+func (service *userService) GetAdminUsers(userIdLogin, page, limit int) ([]user.Core, error, int) {
+	valUser, errVal := service.userData.SelectById(userIdLogin)
+	if errVal != nil {
+		return nil, errVal, 0
+	}
+	if valUser.Role == "costumer" || valUser.Role == "pengelola" {
+		return nil, errors.New("Sorry, your role does not have this access."), 0
+	}
+
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 10
+	}
+
+	result, err, totalPage := service.userData.SelectAdminUsers(page, limit)
+	return result, err, totalPage
+}

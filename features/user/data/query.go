@@ -80,3 +80,28 @@ func (repo *userQuery) Delete(userIdLogin int) error {
 	}
 	return nil
 }
+
+// SelectAdminUsers implements user.UserDataInterface.
+func (repo *userQuery) SelectAdminUsers(page, limit int) ([]user.Core, error, int) {
+	var usersDataGorm []User
+
+	tx := repo.db.Unscoped().Where("role = 'pengelola' AND status = 'pending'").Limit(limit).Offset((page - 1) * limit).Find(&usersDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error, 0
+	}
+
+	var totalData int64
+	tc := repo.db.Unscoped().Model(&usersDataGorm).Where("role = 'pengelola' AND status = 'pending'").Count(&totalData)
+	if tc.Error != nil {
+		return nil, tc.Error, 0
+	}
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	var usersDataCore []user.Core
+	for _, value := range usersDataGorm {
+		var usersCore = value.ModelToCoreAdmin()
+		usersDataCore = append(usersDataCore, usersCore)
+	}
+
+	return usersDataCore, nil, int(totalPage)
+}

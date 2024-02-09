@@ -232,6 +232,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response500'
+  /users/admin:
+    get:
+      tags:
+        - User
+      summary: Get User Pengelola
+      description: hanya bisa dilakukan oleh admin
+      parameters:
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah akun per halaman
+          required: false
+          schema:
+            type: integer
+            default: 10
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: get all pengelola
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdminResponse'
+        '400':
+          description: Error Get User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
 
   /city:
     get:
@@ -1038,7 +1086,44 @@ components:
         email: "mahiva@gmail.com"
         password: "ytrewq"
         image: https://joker.com/arjauser.jpg'
-    
+    UserAdminResponse:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        total_page:
+          type: integer
+          example: 3
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              full_name:
+                type: string
+                example: "rayhan"
+              no_ktp:
+                type: string
+                example: "80213721"
+              address:
+                type: string
+                example: "jl. cibubur"
+              phone_number:
+                type: string
+                example: "+6208323"
+              email:
+                type: string
+                format: email
+                example: "rayhan@gmail.com"
+              status:
+                type: string
+                example: "pending"
+              role:
+                type: string
+                example: "pengelola"
     
     CitySchema:
       type: object

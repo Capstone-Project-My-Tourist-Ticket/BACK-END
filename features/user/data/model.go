@@ -9,8 +9,8 @@ import (
 type User struct {
 	gorm.Model
 	FullName    string
-	NoKtp       string `gorm:"unique"`
-	Address     string
+	NoKtp       string `gorm:"unique;default:null"`
+	Address     string `gorm:"default:null"`
 	PhoneNumber string `gorm:"unique"`
 	Email       string `gorm:"unique"`
 	Password    string
@@ -34,6 +34,23 @@ func CoreToModel(input user.Core) User {
 }
 
 func (u User) ModelToCore() user.Core {
+	return user.Core{
+		ID:          u.ID,
+		FullName:    u.FullName,
+		NoKtp:       u.NoKtp,
+		Address:     u.Address,
+		PhoneNumber: u.PhoneNumber,
+		Email:       u.Email,
+		Password:    u.Password,
+		Image:       u.Image,
+		Role:        u.Role,
+		Status:      u.Status,
+		CreatedAt:   u.CreatedAt,
+		UpdatedAt:   u.UpdatedAt,
+	}
+}
+
+func (u User) ModelToCoreAdmin() user.Core {
 	return user.Core{
 		ID:          u.ID,
 		FullName:    u.FullName,
