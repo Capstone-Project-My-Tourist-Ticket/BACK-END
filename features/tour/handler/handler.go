@@ -72,7 +72,7 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 
 	tourID, err := strconv.Atoi(c.Param("tour_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid city ID", nil))
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid tour ID", nil))
 	}
 
 	var tourReq TourRequest
@@ -173,6 +173,26 @@ func (handler *TourHandler) GetTourByPengelola(c echo.Context) error {
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
 	tours, totalPage, err := handler.tourService.SelectTourByPengelola(userId, page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}
+
+func (handler *TourHandler) GetTourByCityID(c echo.Context) error {
+
+	cityID, err := strconv.Atoi(c.Param("city_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.GetTourByCityID(uint(cityID), page, limit)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
 	}

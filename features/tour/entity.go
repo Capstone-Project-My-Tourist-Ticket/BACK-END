@@ -28,6 +28,7 @@ type TourDataInterface interface {
 	Delete(tourId int) error
 	SelectAllTour(page, limit int) ([]Core, int, error)
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
+	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
 }
 
 type TourServiceInterface interface {
@@ -38,4 +39,5 @@ type TourServiceInterface interface {
 	Delete(tourId int) error
 	SelectAllTour(page, limit int) ([]Core, int, error)
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
+	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
 }

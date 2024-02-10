@@ -209,3 +209,27 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 	return results, totalPage, nil
 }
+
+// GetTourByCityID implements tour.TourDataInterface.
+func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Core, int, error) {
+	var tours []Tour
+	query := repo.db.Where("city_id = ?", cityID).Order("created_at desc")
+
+	var totalData int64
+	if err := query.Model(&Tour{}).Count(&totalData).Error; err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	if err := query.Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var tourCores []tour.Core
+	for _, t := range tours {
+		tourCores = append(tourCores, ModelToCore(t))
+	}
+
+	return tourCores, totalPage, nil
+}

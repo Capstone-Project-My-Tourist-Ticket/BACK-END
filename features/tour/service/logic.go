@@ -96,3 +96,21 @@ func (service *tourService) SelectTourByPengelola(userId int, page, limit int) (
 
 	return tours, totalPage, nil
 }
+
+// GetTourByCityID implements tour.TourServiceInterface.
+func (service *tourService) GetTourByCityID(cityID uint, page, limit int) ([]tour.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 6
+	}
+
+	tours, totalPage, err := service.tourData.GetTourByCityID(cityID, page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return tours, totalPage, nil
+}
