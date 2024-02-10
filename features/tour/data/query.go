@@ -128,3 +128,13 @@ func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.File
 	}
 	return nil
 }
+
+// SelectTourById implements tour.TourDataInterface.
+func (repo *tourQuery) SelectTourById(tourId int) (tour.Core, error) {
+	var tourModel Tour
+	if err := repo.db.First(&tourModel, tourId).Error; err != nil {
+		return tour.Core{}, err
+	}
+
+	return ModelToCore(tourModel), nil
+}

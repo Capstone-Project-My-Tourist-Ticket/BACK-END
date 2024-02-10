@@ -101,3 +101,19 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Tour updated successfully", nil))
 }
+
+func (handler *TourHandler) GetTourById(c echo.Context) error {
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	tourData, err := handler.tourService.SelectTourById(tourID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error retrieving tour data", nil))
+	}
+
+	tourResponse := ModelToResponse(tourData)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("Tour data retrieved successfully", tourResponse))
+}
