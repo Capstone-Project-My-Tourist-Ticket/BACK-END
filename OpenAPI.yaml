@@ -59,6 +59,9 @@ paths:
                   role:
                     type: string
                     example: costumer
+                  status:
+                    type: string
+                    example: approved
                   token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpM
@@ -284,9 +287,16 @@ paths:
     put:
       tags:
         - User
-      summary: Updated User Pengelola
-      description: hanya bisa dilakukan oleh admin
+      summary: Update User Pengelola By Id
+      description: hanya bisa dilakukan oleh admin. Wajib memasukan parameter id pengelola dan Query Param status
       parameters:
+        - in: path
+          name: id
+          description: user id pengelola
+          schema:
+            type: number
+            example: 1
+          required: true
         - name: status
           in: query
           description: isi dengan approved/reject
@@ -780,7 +790,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
-  
+
   /tours/pengelola:
     get:
       tags:
@@ -882,13 +892,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response404'
 
-
-  /package:
+  /package/{id}:
     post:
       tags:
         - Package
       summary: Create Package
       description: This can only be done by the logged in pengelola.
+      parameters:
+        - in: path
+          name: tour_id
+          schema:
+            type: number
+            example: 1
+          required: true
       security:
         - jwtAuth: []
       requestBody:
@@ -922,7 +938,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response401'
 
-  /package/{id}:
     put:
       tags:
         - Package
@@ -1019,45 +1034,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
-
-  /benefit:
-    post:
-      tags:
-        - Benefit
-      summary: Create Benefit
-      description: This can only be done by the logged in pengelola.
-      security:
-        - jwtAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BenefitSchema'
-      responses:
-        '200':
-          description: successful Create Benefit
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BenefitSchema'
-        '400':
-          description: Error Create Package
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response400'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response500'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response401'
 
   /benefit/{id}:
     put:
@@ -1686,7 +1662,7 @@ components:
     PackageSchema:
       type: object
       properties:
-        tour_id:
+        benefits:
           type: string
         name:
           type: string
@@ -1695,10 +1671,10 @@ components:
         price:
           type: integer
       example:
-        tour_id: 1
         name: "Paket ber3"
-        jumlah_tiket:: 10
+        jumlah_tiket: 10
         price: 300000
+        benefits: ["mile","bus tour"]
     
     BenefitSchema:
       type: object

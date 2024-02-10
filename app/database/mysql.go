@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"my-tourist-ticket/app/configs"
 	cd "my-tourist-ticket/features/city/data"
+	pd "my-tourist-ticket/features/package/data"
 	td "my-tourist-ticket/features/tour/data"
 	ud "my-tourist-ticket/features/user/data"
 
@@ -25,5 +26,5 @@ func InitDBMysql(cfg *configs.AppConfig) *gorm.DB {
 }
 
 func InitMigrate(db *gorm.DB) {
-	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{})
+	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{}, &pd.Package{}, &pd.Benefit{})
 }

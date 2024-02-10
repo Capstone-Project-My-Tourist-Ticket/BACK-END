@@ -25,6 +25,7 @@ type UserResponsePengelola struct {
 type UserResponseLogin struct {
 	FullName string `json:"full_name" form:"full_name"`
 	Role     string `json:"role" form:"role"`
+	Status   string `json:"status" form:"status"`
 	Token    string `json:"token" form:"token"`
 }
 
@@ -69,6 +70,7 @@ func CoreToResponseLogin(data *user.Core, token string) UserResponseLogin {
 	var result = UserResponseLogin{
 		FullName: data.FullName,
 		Role:     data.Role,
+		Status:   data.Status,
 		Token:    token,
 	}
 	return result
