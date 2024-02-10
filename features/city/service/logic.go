@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"mime/multipart"
 	"my-tourist-ticket/features/city"
@@ -42,8 +43,12 @@ func (service *cityService) Update(cityId int, input city.Core, image *multipart
 }
 
 // Delete implements city.CityDataInterface.
-func (*cityService) Delete(cityId int) error {
-	panic("unimplemented")
+func (service *cityService) Delete(cityId int) error {
+	if cityId <= 0 {
+		return errors.New("invalid id")
+	}
+	err := service.cityData.Delete(cityId)
+	return err
 }
 
 // SelectCityById implements city.CityServiceInterface.

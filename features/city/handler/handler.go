@@ -113,3 +113,27 @@ func (handler *CityHandler) GetCityById(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("City data retrieved successfully", cityResponse))
 }
+
+func (handler *CityHandler) DeleteCity(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.cityService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "admin" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an admin", nil))
+	}
+
+	id := c.Param("city_id")
+	idParam, errConv := strconv.Atoi(id)
+	if errConv != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error. id should be number", nil))
+	}
+
+	err = handler.cityService.Delete(idParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete city. delete failed "+err.Error(), nil))
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete city", nil))
+}
