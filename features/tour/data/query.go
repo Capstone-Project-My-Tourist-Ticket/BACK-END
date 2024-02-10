@@ -182,3 +182,30 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 
 	return tourCores, totalPage, nil
 }
+
+// SelectTourByPengelola implements tour.TourDataInterface.
+func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tour.Core, int, error) {
+	var tourDataGorms []Tour
+	query := repo.db.Where("user_id = ?", userId)
+
+	var totalData int64
+	err := query.Model(&tourDataGorms).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tourDataGorms).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var results []tour.Core
+	for _, tourDataGorm := range tourDataGorms {
+		result := ModelToCore(tourDataGorm)
+		results = append(results, result)
+	}
+
+	return results, totalPage, nil
+}

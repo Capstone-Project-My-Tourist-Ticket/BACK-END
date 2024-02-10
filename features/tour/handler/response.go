@@ -40,7 +40,7 @@ func CoreToGetAllResponseTour(data tour.Core) TourResponse {
 	return TourResponse{
 		ID:          data.ID,
 		CityId:      data.CityId,
-		UserId:      data.CityId,
+		UserId:      data.UserId,
 		TourName:    data.TourName,
 		Description: data.Description,
 		Image:       data.Image,
