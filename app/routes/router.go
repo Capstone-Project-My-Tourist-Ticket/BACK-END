@@ -17,6 +17,10 @@ import (
 	th "my-tourist-ticket/features/tour/handler"
 	ts "my-tourist-ticket/features/tour/service"
 
+	pd "my-tourist-ticket/features/package/data"
+	ph "my-tourist-ticket/features/package/handler"
+	ps "my-tourist-ticket/features/package/service"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -37,6 +41,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	tourService := ts.NewTour(tourData)
 	tourHandlerAPI := th.NewTour(tourService)
 
+	packageData := pd.New(db)
+	packageService := ps.New(packageData)
+	packageHandlerAPI := ph.New(packageService)
+
 	// define routes/ endpoint USERS
 	e.POST("/login", userHandlerAPI.Login)
 	e.POST("/users", userHandlerAPI.RegisterUser)
@@ -54,4 +62,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	//define routes/ endpoint TOUR
 	e.POST("/tours", tourHandlerAPI.CreateTour, middlewares.JWTMiddleware())
 	e.PUT("/tours/:tour_id", tourHandlerAPI.UpdateTour, middlewares.JWTMiddleware())
+
+	//define routes/ endpoint PACKAGE
+	e.POST("/packages/:tour_id", packageHandlerAPI.CreatePackage, middlewares.JWTMiddleware())
 }
