@@ -25,6 +25,7 @@ type TourDataInterface interface {
 	Insert(userId uint, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Update(tourId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	SelectTourById(tourId int) (Core, error)
+	Delete(tourId int) error
 }
 
 type TourServiceInterface interface {
@@ -32,4 +33,5 @@ type TourServiceInterface interface {
 	Insert(userId uint, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Update(tourId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	SelectTourById(tourId int) (Core, error)
+	Delete(tourId int) error
 }

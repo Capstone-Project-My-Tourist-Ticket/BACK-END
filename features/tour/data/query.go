@@ -121,7 +121,7 @@ func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.File
 	// Lakukan update data kota di dalam database
 	tx := repo.db.Model(&Tour{}).Where("id = ?", tourId).Updates(tourGorm)
 	if tx.Error != nil {
-		return fmt.Errorf("error updating city: %w", tx.Error)
+		return fmt.Errorf("error updating tour: %w", tx.Error)
 	}
 	if tx.RowsAffected == 0 {
 		return errors.New("error: tour not found")
@@ -137,4 +137,22 @@ func (repo *tourQuery) SelectTourById(tourId int) (tour.Core, error) {
 	}
 
 	return ModelToCore(tourModel), nil
+}
+
+// Delete implements tour.TourDataInterface.
+func (repo *tourQuery) Delete(tourId int) error {
+	dataTour, _ := repo.SelectTourById(tourId)
+
+	if dataTour.ID != uint(tourId) {
+		return errors.New("tour not found")
+	}
+
+	tx := repo.db.Where("id = ?", tourId).Delete(&Tour{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("error not found")
+	}
+	return nil
 }
