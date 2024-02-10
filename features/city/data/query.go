@@ -155,3 +155,29 @@ func (repo *cityQuery) SelectCityById(cityId int) (city.Core, error) {
 
 	return ModelToCore(cityModel), nil
 }
+
+// SelectAllCity implements city.CityDataInterface.
+func (repo *cityQuery) SelectAllCity(page int, limit int) ([]city.Core, int, error) {
+	var citys []City
+	query := repo.db.Order("created_at desc")
+
+	var totalData int64
+	err := query.Model(&citys).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	err = query.Limit(limit).Offset((page - 1) * limit).Find(&citys).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var cityCores []city.Core
+	for _, c := range citys {
+		cityCores = append(cityCores, ModelToCore(c))
+	}
+
+	return cityCores, totalPage, nil
+}

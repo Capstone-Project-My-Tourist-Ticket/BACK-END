@@ -51,6 +51,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.PUT("/citys/:city_id", cityHandlerAPI.UpdateCity, middlewares.JWTMiddleware())
 	e.GET("/citys/:city_id", cityHandlerAPI.GetCityById)
 	e.DELETE("/citys/:city_id", cityHandlerAPI.DeleteCity, middlewares.JWTMiddleware())
+	e.GET("/citys", cityHandlerAPI.GetAllCity)
 
 	//define routes/ endpoint TOUR
 	e.POST("/tours", tourHandlerAPI.CreateTour, middlewares.JWTMiddleware())
