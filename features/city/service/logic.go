@@ -60,3 +60,21 @@ func (service *cityService) SelectCityById(cityId int) (city.Core, error) {
 
 	return data, nil
 }
+
+// SelectAllCity implements city.CityServiceInterface.
+func (service *cityService) SelectAllCity(page int, limit int) ([]city.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 5
+	}
+
+	citys, totalPage, err := service.cityData.SelectAllCity(page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return citys, totalPage, nil
+}

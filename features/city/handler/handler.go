@@ -137,3 +137,17 @@ func (handler *CityHandler) DeleteCity(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete city", nil))
 }
+
+func (handler *CityHandler) GetAllCity(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	citys, totalPage, err := handler.cityService.SelectAllCity(page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	cityResponses := CoreToResponseListGetAllCity(citys)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", cityResponses, totalPage))
+}
