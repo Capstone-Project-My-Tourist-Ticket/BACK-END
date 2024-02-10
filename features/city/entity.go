@@ -22,6 +22,7 @@ type CityDataInterface interface {
 	Update(cityId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Delete(cityId int) error
 	SelectCityById(cityId int) (Core, error)
+	SelectAllCity(page, limit int) ([]Core, int, error)
 }
 
 // interface untuk Service Layer
@@ -31,4 +32,5 @@ type CityServiceInterface interface {
 	Update(cityId int, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
 	Delete(cityId int) error
 	SelectCityById(cityId int) (Core, error)
+	SelectAllCity(page, limit int) ([]Core, int, error)
 }

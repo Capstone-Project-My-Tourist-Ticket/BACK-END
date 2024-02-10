@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"mime/multipart"
 	"my-tourist-ticket/features/tour"
@@ -39,4 +40,77 @@ func (service *tourService) Update(tourId int, input tour.Core, image *multipart
 	}
 
 	return nil
+}
+
+// SelectTourById implements tour.TourServiceInterface.
+func (service *tourService) SelectTourById(tourId int) (tour.Core, error) {
+	data, err := service.tourData.SelectTourById(tourId)
+	if err != nil {
+		return tour.Core{}, err
+	}
+
+	return data, nil
+}
+
+// Delete implements tour.TourServiceInterface.
+func (service *tourService) Delete(tourId int) error {
+	if tourId <= 0 {
+		return errors.New("invalid id")
+	}
+	err := service.tourData.Delete(tourId)
+	return err
+}
+
+// SelectAllTour implements tour.TourServiceInterface.
+func (service *tourService) SelectAllTour(page int, limit int) ([]tour.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 12
+	}
+
+	tours, totalPage, err := service.tourData.SelectAllTour(page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return tours, totalPage, nil
+}
+
+// SelectTourByPengelola implements tour.TourServiceInterface.
+func (service *tourService) SelectTourByPengelola(userId int, page, limit int) ([]tour.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 12
+	}
+
+	tours, totalPage, err := service.tourData.SelectTourByPengelola(userId, page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return tours, totalPage, nil
+}
+
+// GetTourByCityID implements tour.TourServiceInterface.
+func (service *tourService) GetTourByCityID(cityID uint, page, limit int) ([]tour.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 6
+	}
+
+	tours, totalPage, err := service.tourData.GetTourByCityID(cityID, page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return tours, totalPage, nil
 }

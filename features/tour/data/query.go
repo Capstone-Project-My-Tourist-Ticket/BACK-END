@@ -121,10 +121,115 @@ func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.File
 	// Lakukan update data kota di dalam database
 	tx := repo.db.Model(&Tour{}).Where("id = ?", tourId).Updates(tourGorm)
 	if tx.Error != nil {
-		return fmt.Errorf("error updating city: %w", tx.Error)
+		return fmt.Errorf("error updating tour: %w", tx.Error)
 	}
 	if tx.RowsAffected == 0 {
 		return errors.New("error: tour not found")
 	}
 	return nil
+}
+
+// SelectTourById implements tour.TourDataInterface.
+func (repo *tourQuery) SelectTourById(tourId int) (tour.Core, error) {
+	var tourModel Tour
+	if err := repo.db.First(&tourModel, tourId).Error; err != nil {
+		return tour.Core{}, err
+	}
+
+	return ModelToCore(tourModel), nil
+}
+
+// Delete implements tour.TourDataInterface.
+func (repo *tourQuery) Delete(tourId int) error {
+	dataTour, _ := repo.SelectTourById(tourId)
+
+	if dataTour.ID != uint(tourId) {
+		return errors.New("tour not found")
+	}
+
+	tx := repo.db.Where("id = ?", tourId).Delete(&Tour{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("error not found")
+	}
+	return nil
+}
+
+// SelectAllTour implements tour.TourDataInterface.
+func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, error) {
+	var tours []Tour
+	query := repo.db.Order("created_at desc")
+
+	var totalData int64
+	err := query.Model(&tours).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tours).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var tourCores []tour.Core
+	for _, t := range tours {
+		tourCores = append(tourCores, ModelToCore(t))
+	}
+
+	return tourCores, totalPage, nil
+}
+
+// SelectTourByPengelola implements tour.TourDataInterface.
+func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tour.Core, int, error) {
+	var tourDataGorms []Tour
+	query := repo.db.Where("user_id = ?", userId)
+
+	var totalData int64
+	err := query.Model(&tourDataGorms).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tourDataGorms).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var results []tour.Core
+	for _, tourDataGorm := range tourDataGorms {
+		result := ModelToCore(tourDataGorm)
+		results = append(results, result)
+	}
+
+	return results, totalPage, nil
+}
+
+// GetTourByCityID implements tour.TourDataInterface.
+func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Core, int, error) {
+	var tours []Tour
+	query := repo.db.Where("city_id = ?", cityID).Order("created_at desc")
+
+	var totalData int64
+	if err := query.Model(&Tour{}).Count(&totalData).Error; err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	if err := query.Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var tourCores []tour.Core
+	for _, t := range tours {
+		tourCores = append(tourCores, ModelToCore(t))
+	}
+
+	return tourCores, totalPage, nil
 }

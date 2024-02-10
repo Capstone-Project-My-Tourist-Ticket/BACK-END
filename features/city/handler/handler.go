@@ -38,6 +38,10 @@ func (handler *CityHandler) CreateCity(c echo.Context) error {
 
 	cityCore := RequestToCore(cityReq)
 
+	if cityCore.CityName == "" || cityCore.Description == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("City name and description are required", nil))
+	}
+
 	_, imageHeader, err := c.Request().FormFile("image")
 	if err != nil && err != http.ErrMissingFile {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the image file", nil))
@@ -50,10 +54,10 @@ func (handler *CityHandler) CreateCity(c echo.Context) error {
 
 	err = handler.cityService.Create(cityCore, imageHeader, thumbnailHeader)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating city/city already exist", nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating city", nil))
 	}
 
-	return c.JSON(http.StatusCreated, responses.WebResponse("city created successfully", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("city created successfully", nil))
 }
 
 func (handler *CityHandler) UpdateCity(c echo.Context) error {
@@ -112,4 +116,42 @@ func (handler *CityHandler) GetCityById(c echo.Context) error {
 	cityResponse := ModelToResponse(cityData)
 
 	return c.JSON(http.StatusOK, responses.WebResponse("City data retrieved successfully", cityResponse))
+}
+
+func (handler *CityHandler) DeleteCity(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.cityService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "admin" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an admin", nil))
+	}
+
+	id := c.Param("city_id")
+	idParam, errConv := strconv.Atoi(id)
+	if errConv != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error. id should be number", nil))
+	}
+
+	err = handler.cityService.Delete(idParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete city. delete failed "+err.Error(), nil))
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete city", nil))
+}
+
+func (handler *CityHandler) GetAllCity(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	citys, totalPage, err := handler.cityService.SelectAllCity(page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	cityResponses := CoreToResponseListGetAllCity(citys)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", cityResponses, totalPage))
 }

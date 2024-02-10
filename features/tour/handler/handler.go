@@ -72,7 +72,7 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 
 	tourID, err := strconv.Atoi(c.Param("tour_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid city ID", nil))
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid tour ID", nil))
 	}
 
 	var tourReq TourRequest
@@ -100,4 +100,104 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Tour updated successfully", nil))
+}
+
+func (handler *TourHandler) GetTourById(c echo.Context) error {
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	tourData, err := handler.tourService.SelectTourById(tourID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error retrieving tour data", nil))
+	}
+
+	tourResponse := ModelToResponse(tourData)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("Tour data retrieved successfully", tourResponse))
+}
+
+func (handler *TourHandler) DeleteTour(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an pengelola", nil))
+	}
+
+	id := c.Param("tour_id")
+	idParam, errConv := strconv.Atoi(id)
+	if errConv != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error. id should be number", nil))
+	}
+
+	err = handler.tourService.Delete(idParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete tour. delete failed "+err.Error(), nil))
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete tour", nil))
+}
+
+func (handler *TourHandler) GetAllTour(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.SelectAllTour(page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}
+
+// GetTourByPengelola handles the request to get tours by pengelola.
+func (handler *TourHandler) GetTourByPengelola(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not a pengelola", nil))
+	}
+
+	// Parse pagination parameters from the request
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.SelectTourByPengelola(userId, page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}
+
+func (handler *TourHandler) GetTourByCityID(c echo.Context) error {
+
+	cityID, err := strconv.Atoi(c.Param("city_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.GetTourByCityID(uint(cityID), page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
 }
