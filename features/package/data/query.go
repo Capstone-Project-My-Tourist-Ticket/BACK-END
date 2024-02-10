@@ -43,3 +43,19 @@ func (repo *packageQuery) Insert(benefits []string, input packages.Core) error {
 	}
 	return nil
 }
+
+// SelectByTourId implements packages.PackageDataInterface.
+func (repo *packageQuery) SelectByTourId(tourId uint) ([]packages.Core, error) {
+	var packageDataGorms []Package
+	tx := repo.db.Preload("Benefits").Where("tour_id = ?", tourId).Find(&packageDataGorms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var results []packages.Core
+	for _, packageDataGorm := range packageDataGorms {
+		result := packageDataGorm.ModelToCore()
+		results = append(results, result)
+	}
+	return results, nil
+}

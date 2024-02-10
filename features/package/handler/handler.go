@@ -45,3 +45,18 @@ func (handler *PackageHandler) CreatePackage(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert data", nil))
 }
+
+func (handler *PackageHandler) GetPackageByTourId(c echo.Context) error {
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error parsing tour id", nil))
+	}
+
+	packages, err := handler.packageService.GetByTourId(uint(tourID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data", nil))
+	}
+
+	packageResponses := CoresToResponses(packages)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data", packageResponses))
+}
