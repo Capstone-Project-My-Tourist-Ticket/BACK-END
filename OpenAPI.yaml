@@ -573,10 +573,10 @@ paths:
           required: false
           schema:
             type: integer
-            default: 8
+            default: 12
       responses:
         '200':
-          description: successful Get All City
+          description: successful get all tour
           content:
             application/json:
               schema:
@@ -639,6 +639,51 @@ paths:
                 $ref: '#/components/schemas/Response401'
 
   /tour/{id}:
+    get:
+      tags:
+        - Tour
+      summary: get Tour By Id
+      description: Get detail tour
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+  
+      responses:
+        '200':
+          description: successful get tour by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourResponseSchema'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
     put:
       tags:
         - Tour
@@ -657,7 +702,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CitySchema'
+              $ref: '#/components/schemas/TourSchema'
       responses:
         '200':
           description: successful Update City By Id
@@ -689,7 +734,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
-    
+
     delete:
       tags:
         - Tour
@@ -1192,6 +1237,8 @@ components:
         image: 'https://sariroti.com/smartphone/photovivo.jpg'
         thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
     
+
+
     CityResponseSchema:
       type: object
       properties:
@@ -1257,6 +1304,52 @@ components:
         longitude: 106.82353173451676
         city_id: 1
         
+    TourResponseSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        city_id:
+          type: integer
+        user_id:
+          type: integer
+        tour_name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          format: file
+          description: URL of the product photo
+        thumbnail:
+          type: string
+          format: file
+          description: URL of the product photo
+        address:
+          type: string
+        latitude:
+          type: integer
+        longitude:
+          type: integer
+        created_at: 
+          type: string
+        update_at:
+          type: string
+        
+      example:
+        id: 1
+        user_id: 1
+        city_id: 1 
+        tour_name: "Pantai Pandawa"
+        description: "Pantai pandawa adalah"
+        image: 'https://sariroti.com/smartphone/photovivo.jpg'
+        thumbnail: 'https://sariroti.com/smartphone/photovivo.jpg'
+        address: "jl.sumatera"
+        latitude: -6.288746316940347
+        longitude: 106.82353173451676
+        created_at: "2024-02-09 22:13:51"
+        update_at: "2024-02-09 22:13:51"
+           
     
     CityResponse:
       type: object
@@ -1383,40 +1476,69 @@ components:
             properties:
                 id:
                   type: integer
-                name:
+                city_id:
+                  type: integer
+                user_id:
+                  type: integer
+                tour_name:
                   type: string
-                city:
+                description:
                   type: string
-                address:
-                  type: string
-                image_tour:
+                image:
                   type: string
                   format: uri
                   description: URL of the tour photo
-                thumbnail_tour:
+                thumbnail:
                   type: string
                   format: uri
                   description: URL of the thumbnail tour
+                address:
+                  type: string
+                latitude:
+                  type: integer
+                longitude:
+                  type: integer
+                created_at:
+                  type: string
+                update_at:
+                  type: string
             example:
-            - id: 1
-              name: "Pantai Lampung"
-              city: "Lampung"
-              description: "Lorem ipsum"
-              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
-              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+            - id: 1,
+              city_id: 1,
+              user_id: 1,
+              tour_name: "Pantai pandawa"
+              description: "Pantai pandawa adalah"
+              image: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496441/BE20_MyTouristTicket/f2bbk2dmgg1xjzsi6pye.png"
+              thumbnail: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496443/BE20_MyTouristTicket/ilumfwbtiho8q7t06u2y.jpg"
+              address: "jl. Kenangan"
+              latitude: 3.4354634,
+              longitude: -313.43546,
+              created_at: "2024-02-09 22:13:51"
+              updated_at: "2024-02-09 23:34:03"
             - id: 2
-              name: "Gunung Kraktau"
-              city: "Lampung"
-              description: "Lorem ipsum"
-              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
-              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
+              city_id: 1
+              user_id: 1
+              tour_name: "Ancol"
+              description: "Ancol adalah"
+              image: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496441/BE20_MyTouristTicket/f2bbk2dmgg1xjzsi6pye.png"
+              thumbnail: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496443/BE20_MyTouristTicket/ilumfwbtiho8q7t06u2y.jpg"
+              address: "jl. update"
+              latitude: 3.4354634,
+              longitude: -313.43546,
+              created_at: "2024-02-09 22:13:51"
+              updated_at: "2024-02-09 23:34:03"
             - id: 3
-              name: "Wai Kambas"
-              city: "Lampung"
-              description: "Lorem ipsum"
-              image_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
-              thumbnail_tour: 'https://sariroti.com/smartphone/photovivo.jpg'
-              
+              city_id: 1
+              user_id: 1
+              tour_name: "Dufan"
+              description: "Dufan adalah"
+              image: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496441/BE20_MyTouristTicket/f2bbk2dmgg1xjzsi6pye.png"
+              thumbnail: "https://res.cloudinary.com/dtk4kcs67/image/upload/v1707496443/BE20_MyTouristTicket/ilumfwbtiho8q7t06u2y.jpg"
+              address: "jl. update"
+              latitude: 3.4354634,
+              longitude: -313.43546,
+              created_at: "2024-02-09 22:13:51"
+              updated_at: "2024-02-09 23:34:03"
     CityTourGetAllResponse:
       properties:
         message:
