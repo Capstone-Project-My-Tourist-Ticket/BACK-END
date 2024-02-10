@@ -24,6 +24,7 @@ func (service *cityService) GetUserRoleById(userId int) (string, error) {
 
 // Insert implements city.CityDataInterface.
 func (service *cityService) Create(input city.Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error {
+
 	err := service.cityData.Insert(input, image, thumbnail)
 	if err != nil {
 		return fmt.Errorf("error creating city: %w", err)
