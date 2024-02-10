@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"mime/multipart"
 	"my-tourist-ticket/features/tour"
@@ -49,4 +50,13 @@ func (service *tourService) SelectTourById(tourId int) (tour.Core, error) {
 	}
 
 	return data, nil
+}
+
+// Delete implements tour.TourServiceInterface.
+func (service *tourService) Delete(tourId int) error {
+	if tourId <= 0 {
+		return errors.New("invalid id")
+	}
+	err := service.tourData.Delete(tourId)
+	return err
 }
