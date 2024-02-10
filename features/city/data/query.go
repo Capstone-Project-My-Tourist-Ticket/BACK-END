@@ -129,8 +129,21 @@ func (repo *cityQuery) Update(cityId int, input city.Core, image *multipart.File
 }
 
 // Delete implements city.CityDataInterface.
-func (*cityQuery) Delete(cityId int) error {
-	panic("unimplemented")
+func (repo *cityQuery) Delete(cityId int) error {
+	dataCity, _ := repo.SelectCityById(cityId)
+
+	if dataCity.ID != uint(cityId) {
+		return errors.New("city not found")
+	}
+
+	tx := repo.db.Where("id = ?", cityId).Delete(&City{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("error not found")
+	}
+	return nil
 }
 
 // SelectCityById implements city.CityDataInterface.
