@@ -155,3 +155,29 @@ func (handler *TourHandler) GetAllTour(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
 }
+
+// GetTourByPengelola handles the request to get tours by pengelola.
+func (handler *TourHandler) GetTourByPengelola(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not a pengelola", nil))
+	}
+
+	// Parse pagination parameters from the request
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.SelectTourByPengelola(userId, page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}
