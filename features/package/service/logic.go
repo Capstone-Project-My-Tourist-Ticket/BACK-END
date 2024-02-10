@@ -27,3 +27,12 @@ func (service *packageService) Create(benefits []string, input packages.Core) er
 
 	return nil
 }
+
+// GetByTourId implements packages.PackageServiceInterface.
+func (service *packageService) GetByTourId(tourId uint) ([]packages.Core, error) {
+	packages, err := service.packageData.SelectByTourId(tourId)
+	if err != nil {
+		return nil, err
+	}
+	return packages, nil
+}

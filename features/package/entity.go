@@ -24,9 +24,11 @@ type BenefitCore struct {
 // interface untuk Data Layer
 type PackageDataInterface interface {
 	Insert(benefits []string, input Core) error
+	SelectByTourId(tourId uint) ([]Core, error)
 }
 
 // interface untuk Service Layer
 type PackageServiceInterface interface {
 	Create(benefits []string, input Core) error
+	GetByTourId(tourId uint) ([]Core, error)
 }

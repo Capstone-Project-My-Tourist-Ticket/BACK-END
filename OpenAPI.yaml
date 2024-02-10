@@ -938,6 +938,82 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response401'
 
+    get:
+      tags:
+        - Package
+      summary: Get packages by tour ID
+      parameters:
+        - in: path
+          name: tour_id
+          schema:
+            type: number
+            example: 1
+          required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success read data
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        tour_id:
+                          type: integer
+                          example: 1
+                        package_name:
+                          type: string
+                          example: Ticket bundling 3 orang
+                        price:
+                          type: integer
+                          example: 20000
+                        jumlah_tiket:
+                          type: integer
+                          example: 3
+                        benefits:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              package_id:
+                                type: integer
+                                example: 1
+                              benefit:
+                                type: string
+                                example: meal
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+
   /package/{id}:
     put:
       tags:
