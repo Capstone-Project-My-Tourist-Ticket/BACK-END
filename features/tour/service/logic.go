@@ -40,3 +40,13 @@ func (service *tourService) Update(tourId int, input tour.Core, image *multipart
 
 	return nil
 }
+
+// SelectTourById implements tour.TourServiceInterface.
+func (service *tourService) SelectTourById(tourId int) (tour.Core, error) {
+	data, err := service.tourData.SelectTourById(tourId)
+	if err != nil {
+		return tour.Core{}, err
+	}
+
+	return data, nil
+}
