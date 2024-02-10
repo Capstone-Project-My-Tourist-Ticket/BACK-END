@@ -38,6 +38,10 @@ func (handler *CityHandler) CreateCity(c echo.Context) error {
 
 	cityCore := RequestToCore(cityReq)
 
+	if cityCore.CityName == "" || cityCore.Description == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("City name and description are required", nil))
+	}
+
 	_, imageHeader, err := c.Request().FormFile("image")
 	if err != nil && err != http.ErrMissingFile {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the image file", nil))
@@ -50,10 +54,10 @@ func (handler *CityHandler) CreateCity(c echo.Context) error {
 
 	err = handler.cityService.Create(cityCore, imageHeader, thumbnailHeader)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating city/city already exist", nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating city", nil))
 	}
 
-	return c.JSON(http.StatusCreated, responses.WebResponse("city created successfully", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("city created successfully", nil))
 }
 
 func (handler *CityHandler) UpdateCity(c echo.Context) error {
