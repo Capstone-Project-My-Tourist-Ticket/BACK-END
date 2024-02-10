@@ -117,3 +117,27 @@ func (handler *TourHandler) GetTourById(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Tour data retrieved successfully", tourResponse))
 }
+
+func (handler *TourHandler) DeleteTour(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an pengelola", nil))
+	}
+
+	id := c.Param("tour_id")
+	idParam, errConv := strconv.Atoi(id)
+	if errConv != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error. id should be number", nil))
+	}
+
+	err = handler.tourService.Delete(idParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete tour. delete failed "+err.Error(), nil))
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete tour", nil))
+}
