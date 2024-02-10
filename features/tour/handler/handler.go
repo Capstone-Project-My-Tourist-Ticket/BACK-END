@@ -141,3 +141,17 @@ func (handler *TourHandler) DeleteTour(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete tour", nil))
 }
+
+func (handler *TourHandler) GetAllTour(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	tours, totalPage, err := handler.tourService.SelectAllTour(page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	tourResponses := CoreToResponseListGetAllTour(tours)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}

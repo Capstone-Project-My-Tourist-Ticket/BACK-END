@@ -1,6 +1,8 @@
 package handler
 
-import "my-tourist-ticket/features/tour"
+import (
+	"my-tourist-ticket/features/tour"
+)
 
 type TourResponse struct {
 	ID          uint    `json:"id"`
@@ -32,4 +34,29 @@ func ModelToResponse(tourModel tour.Core) TourResponse {
 		CreatedAt:   tourModel.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   tourModel.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
+}
+
+func CoreToGetAllResponseTour(data tour.Core) TourResponse {
+	return TourResponse{
+		ID:          data.ID,
+		CityId:      data.CityId,
+		UserId:      data.CityId,
+		TourName:    data.TourName,
+		Description: data.Description,
+		Image:       data.Image,
+		Thumbnail:   data.Thumbnail,
+		Address:     data.Address,
+		Latitude:    data.Latitude,
+		Longitude:   data.Longitude,
+		CreatedAt:   data.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   data.UpdatedAt.Format("2006-01-02 15:04:05"),
+	}
+}
+
+func CoreToResponseListGetAllTour(data []tour.Core) []TourResponse {
+	var results []TourResponse
+	for _, v := range data {
+		results = append(results, CoreToGetAllResponseTour(v))
+	}
+	return results
 }
