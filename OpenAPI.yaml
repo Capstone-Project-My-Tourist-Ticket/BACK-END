@@ -829,6 +829,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response404'
 
+  /tours/bycity/{city_id}:
+    get:
+      tags:
+        - Tour
+      summary: Get All Tour by city
+      parameters:
+        - name: city_id
+          in: path
+          description: Nomor city id
+          required: true
+          schema:
+            type: integer
+            default: 1
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah t per halaman
+          required: false
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: successful get all tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourGetAllResponse'
+        '400':
+          description: Error Get Tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+
   /package:
     post:
       tags:

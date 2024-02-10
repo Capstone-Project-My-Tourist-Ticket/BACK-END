@@ -60,4 +60,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.DELETE("/tours/:tour_id", tourHandlerAPI.DeleteTour, middlewares.JWTMiddleware())
 	e.GET("/tours", tourHandlerAPI.GetAllTour)
 	e.GET("/tours/pengelola", tourHandlerAPI.GetTourByPengelola, middlewares.JWTMiddleware())
+	e.GET("/tours/bycity/:city_id", tourHandlerAPI.GetTourByCityID)
 }
