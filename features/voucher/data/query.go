@@ -46,4 +46,19 @@ func (repo *voucherQuery) SelectAllVoucher() ([]voucher.Core, error) {
 	}
 
 	return voucherCores, nil
+
+// Update implements voucher.VoucherDataInterface.
+func (repo *voucherQuery) Update(voucherId int, input voucher.Core) error {
+	dataGorm := CoreToModel(input)
+
+	tx := repo.db.Model(&dataGorm).Where("id = ?", voucherId).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("update failed, no rows affected")
+	}
+
+	return nil
 }
