@@ -16,8 +16,6 @@ type tourQuery struct {
 	uploadService cloudinary.CloudinaryUploaderInterface
 }
 
-// Insert implements tour.TourDataInterface.
-
 func NewTour(db *gorm.DB, cloud cloudinary.CloudinaryUploaderInterface) tour.TourDataInterface {
 	return &tourQuery{
 		db:            db,
@@ -246,4 +244,20 @@ func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.Repor
 		return errors.New("insert failed, row affected = 0")
 	}
 	return nil
+}
+
+// SelectReportTour implements tour.TourDataInterface.
+func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
+	var reports []Report
+
+	query := repo.db.Where("tour_id = ?", tourId).Order("created_at desc").Find(&reports)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+	var reportCores []tour.ReportCore
+	for _, r := range reports {
+		reportCores = append(reportCores, ModelToReportCore(r))
+	}
+
+	return reportCores, nil
 }

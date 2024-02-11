@@ -244,3 +244,28 @@ func (handler *TourHandler) CreateReportTour(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert data", nil))
 }
+
+func (handler *TourHandler) GetReportTour(c echo.Context) error {
+	userId := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.tourService.GetUserRoleById(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "admin" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not a admin", nil))
+	}
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	reports, err := handler.tourService.SelectReportTour(tourID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
+	}
+
+	reportResponses := CoreReportToResponseListGetReportTour(reports)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success get data", reportResponses))
+}

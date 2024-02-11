@@ -70,3 +70,14 @@ func CoreReportToModelReport(tr tour.ReportCore) Report {
 		TextReport: tr.TextReport,
 	}
 }
+
+func ModelToReportCore(r Report) tour.ReportCore {
+	return tour.ReportCore{
+		ID:         r.ID,
+		UserId:     r.UserId,
+		TourId:     r.TourId,
+		TextReport: r.TextReport,
+		CreatedAt:  r.CreatedAt,
+		UpdatedAt:  r.UpdatedAt,
+	}
+}

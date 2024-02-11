@@ -39,6 +39,7 @@ type TourDataInterface interface {
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
 	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
 	InsertReportTour(userId int, tourId int, input ReportCore) error
+	SelectReportTour(tourId int) ([]ReportCore, error)
 }
 
 type TourServiceInterface interface {
@@ -51,4 +52,5 @@ type TourServiceInterface interface {
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
 	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
 	InsertReportTour(userId int, tourId int, input ReportCore) error
+	SelectReportTour(tourId int) ([]ReportCore, error)
 }
