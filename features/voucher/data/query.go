@@ -46,6 +46,7 @@ func (repo *voucherQuery) SelectAllVoucher() ([]voucher.Core, error) {
 	}
 
 	return voucherCores, nil
+}
 
 // Update implements voucher.VoucherDataInterface.
 func (repo *voucherQuery) Update(voucherId int, input voucher.Core) error {
