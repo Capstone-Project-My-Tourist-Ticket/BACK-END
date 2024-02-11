@@ -26,3 +26,16 @@ func CoreToModel(input voucher.Core) Voucher {
 		ExpiredVoucher: expiredTimeVoucher,
 	}
 }
+
+func (v Voucher) ModelToCore() voucher.Core {
+	return voucher.Core{
+		ID:             v.ID,
+		Name:           v.Name,
+		Code:           v.Code,
+		Description:    v.Description,
+		DiscountValue:  v.DiscountValue,
+		ExpiredVoucher: v.ExpiredVoucher.Format("2006-01-02"),
+		CreatedAt:      v.CreatedAt,
+		UpdatedAt:      v.UpdatedAt,
+	}
+}

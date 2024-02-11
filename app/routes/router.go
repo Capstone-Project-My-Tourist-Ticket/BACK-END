@@ -88,4 +88,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	//define routes/ endpoint VOUCHER
 	e.POST("/vouchers", voucherHandlerAPI.CreateVoucher, middlewares.JWTMiddleware())
+	e.GET("/vouchers", voucherHandlerAPI.GetAllVoucher, middlewares.JWTMiddleware())
 }

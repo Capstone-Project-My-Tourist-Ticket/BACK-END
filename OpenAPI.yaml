@@ -1246,6 +1246,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+    
+    get:
+      tags:
+        - Voucher
+      summary: "Get list of vouchers"
+      description: "Returns a list of available vouchers"
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "success get data"
+                  data:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        id:
+                          type: "integer"
+                          example: 1
+                        name:
+                          type: "string"
+                          example: "Voucher Lebaran"
+                        code:
+                          type: "string"
+                          example: "ketupat"
+                        description:
+                          type: "string"
+                          example: "Diskon senilai Rp.50.000"
+                        discount_value:
+                          type: "integer"
+                          example: 50000
+                        expired_voucher:
+                          type: "string"
+                          example: "2024-02-20"
+        '400':
+          description: Error Get Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: Hasil pencarian tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+      
 
 components:
   schemas:
