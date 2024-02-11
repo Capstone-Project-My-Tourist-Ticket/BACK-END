@@ -1,6 +1,9 @@
 package packages
 
-import "time"
+import (
+	"my-tourist-ticket/features/tour"
+	"time"
+)
 
 type Core struct {
 	ID          uint
@@ -11,6 +14,7 @@ type Core struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Benefits    []BenefitCore
+	Tour        tour.Core
 }
 
 type BenefitCore struct {
@@ -25,10 +29,14 @@ type BenefitCore struct {
 type PackageDataInterface interface {
 	Insert(benefits []string, input Core) error
 	SelectByTourId(tourId uint) ([]Core, error)
+	SelectAllBenefitsByPackageId(packageId int) ([]BenefitCore, error)
+	Delete(packageId int) error
+	DeleteBenefits(packageId int) error
 }
 
 // interface untuk Service Layer
 type PackageServiceInterface interface {
 	Create(benefits []string, input Core) error
 	GetByTourId(tourId uint) ([]Core, error)
+	Delete(packageId int) error
 }
