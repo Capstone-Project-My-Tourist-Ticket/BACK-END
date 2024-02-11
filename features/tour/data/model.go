@@ -23,6 +23,15 @@ type Tour struct {
 	City        _cityData.City
 }
 
+type Report struct {
+	gorm.Model
+	UserId     uint
+	TourId     uint
+	TextReport string
+	User       _userData.User
+	Tour       Tour
+}
+
 func CoreToModel(t tour.Core) Tour {
 	return Tour{
 		CityId:      t.CityId,
@@ -51,5 +60,13 @@ func ModelToCore(t Tour) tour.Core {
 		Longitude:   t.Longitude,
 		CreatedAt:   t.CreatedAt,
 		UpdatedAt:   t.UpdatedAt,
+	}
+}
+
+func CoreReportToModelReport(tr tour.ReportCore) Report {
+	return Report{
+		TourId:     tr.TourId,
+		UserId:     tr.UserId,
+		TextReport: tr.TextReport,
 	}
 }

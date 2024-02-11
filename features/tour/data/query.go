@@ -233,3 +233,17 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 
 	return tourCores, totalPage, nil
 }
+
+// InsertReportTour implements tour.TourDataInterface.
+func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.ReportCore) error {
+	dataGorm := CoreReportToModelReport(input)
+
+	tx := repo.db.Create(&dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("insert failed, row affected = 0")
+	}
+	return nil
+}
