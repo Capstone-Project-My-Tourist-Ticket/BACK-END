@@ -35,13 +35,13 @@ func (handler *UserHandler) RegisterUser(c echo.Context) error {
 	errInsert := handler.userService.Create(userCore)
 	if errInsert != nil {
 		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
-			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error register data. "+errInsert.Error(), nil))
 		} else {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error register data. "+errInsert.Error(), nil))
 		}
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success insert data", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("success register data", nil))
 }
 
 func (handler *UserHandler) Login(c echo.Context) error {
