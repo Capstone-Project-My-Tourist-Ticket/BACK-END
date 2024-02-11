@@ -1014,6 +1014,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response500'
 
+  /tours/{tour_id}/report:
+    post:
+      tags:
+        - Tour
+      summary: Report Tour By Id
+      description: This can only be done by the logged in user.
+      parameters:
+        - in: path
+          name: tour_id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportSchema'
+      responses:
+        '200':
+          description: successful Update City By Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+
   /package/{id}:
     put:
       tags:
@@ -1273,6 +1326,16 @@ components:
             required:
               - code
               - message
+    
+    ReportSchema:
+      type: object
+      properties:
+        text_report:
+          type: string
+      example:
+        text_report: "Tour ini jelek!"
+    
+    
     UsersSchema:
       type: object
       properties:

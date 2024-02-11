@@ -6,6 +6,7 @@ import (
 	"my-tourist-ticket/utils/responses"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -48,12 +49,16 @@ func (handler *TourHandler) CreateTour(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the thumbnail file", nil))
 	}
 
+	if tourReq.TourName == "" || tourReq.Description == "" || tourReq.Address == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Tour name, description, address are required", nil))
+	}
+
 	tourCore := RequestToCore(tourReq)
 	tourCore.UserId = uint(userId)
 	// Memanggil tourService.Insert dengan argumen yang sesuai, termasuk ID pengguna
 	err = handler.tourService.Insert(uint(userId), tourCore, imageHeader, thumbnailHeader)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating tour/ city does not exist", nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating tour", nil))
 	}
 
 	return c.JSON(http.StatusCreated, responses.WebResponse("tour created successfully", nil))
@@ -80,6 +85,9 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("Error binding data. Data not valid", nil))
 	}
 
+	if tourReq.TourName == "" || tourReq.Description == "" || tourReq.Address == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Tour name, description, address are required", nil))
+	}
 	// Ubah request menjadi core model
 	tourCore := RequestToCore(tourReq)
 
@@ -200,4 +208,39 @@ func (handler *TourHandler) GetTourByCityID(c echo.Context) error {
 	tourResponses := CoreToResponseListGetAllTour(tours)
 
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
+}
+
+func (handler *TourHandler) CreateReportTour(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+	tourId, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+	}
+
+	newReport := ReportRequest{}
+	newReport.UserId = uint(userIdLogin)
+	newReport.TourId = uint(tourId)
+	errBind := c.Bind(&newReport)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	if newReport.TextReport == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Text report are required", nil))
+	}
+
+	reportCore := ReportRequestToCore(newReport)
+	errInsert := handler.tourService.InsertReportTour(userIdLogin, tourId, reportCore)
+	if errInsert != nil {
+		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		}
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success insert data", nil))
 }

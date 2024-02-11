@@ -26,5 +26,5 @@ func InitDBMysql(cfg *configs.AppConfig) *gorm.DB {
 }
 
 func InitMigrate(db *gorm.DB) {
-	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{}, &pd.Package{}, &pd.Benefit{})
+	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{}, &td.Report{}, &pd.Package{}, &pd.Benefit{})
 }

@@ -20,6 +20,15 @@ type Core struct {
 	UpdatedAt   time.Time
 }
 
+type ReportCore struct {
+	ID         uint
+	UserId     uint
+	TourId     uint
+	TextReport string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
 type TourDataInterface interface {
 	GetUserRoleById(userId int) (string, error)
 	Insert(userId uint, input Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error
@@ -29,6 +38,7 @@ type TourDataInterface interface {
 	SelectAllTour(page, limit int) ([]Core, int, error)
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
 	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
+	InsertReportTour(userId int, tourId int, input ReportCore) error
 }
 
 type TourServiceInterface interface {
@@ -40,4 +50,5 @@ type TourServiceInterface interface {
 	SelectAllTour(page, limit int) ([]Core, int, error)
 	SelectTourByPengelola(userId int, page, limit int) ([]Core, int, error)
 	GetTourByCityID(cityID uint, page, limit int) ([]Core, int, error)
+	InsertReportTour(userId int, tourId int, input ReportCore) error
 }
