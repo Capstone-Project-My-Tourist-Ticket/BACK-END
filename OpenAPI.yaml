@@ -1134,18 +1134,13 @@ paths:
           required: true
       security:
         - jwtAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ResponseReportSchema'
       responses:
         '200':
           description: successful get report
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response200'
+                $ref: '#/components/schemas/ResponseReportSchema'
         '400':
           description: Error Update Product
           content:
@@ -1214,6 +1209,52 @@ paths:
         - Voucher
       summary: Create Voucher
       description: This can only be done by the logged in admin.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherSchema'
+      responses:
+        '200':
+          description: successful Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+  
+  /vouchers/{voucher_id}:
+    put:
+      tags:
+        - Voucher
+      summary: Update Voucher
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: voucher_id
+          schema:
+            type: number
+            example: 1
+          required: true
       security:
         - jwtAuth: []
       requestBody:
