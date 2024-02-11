@@ -114,3 +114,13 @@ func (service *tourService) GetTourByCityID(cityID uint, page, limit int) ([]tou
 
 	return tours, totalPage, nil
 }
+
+// InsertReportTour implements tour.TourServiceInterface.
+func (service *tourService) InsertReportTour(userId int, tourId int, input tour.ReportCore) error {
+	err := service.tourData.InsertReportTour(userId, tourId, input)
+	if err != nil {
+		return fmt.Errorf("error creating report: %w", err)
+	}
+
+	return nil
+}

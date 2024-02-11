@@ -1,6 +1,8 @@
 package handler
 
-import "my-tourist-ticket/features/tour"
+import (
+	"my-tourist-ticket/features/tour"
+)
 
 type TourRequest struct {
 	TourName    string  `json:"tour_name" form:"tour_name"`
@@ -14,6 +16,12 @@ type TourRequest struct {
 	UserId      uint    `json:"user_id" form:"user_id"`
 }
 
+type ReportRequest struct {
+	UserId     uint   `json:"user_id" form:"user_id"`
+	TourId     uint   `json:"tour_id" form:"tour_id"`
+	TextReport string `json:"text_report" form:"text_report"`
+}
+
 func RequestToCore(input TourRequest) tour.Core {
 	return tour.Core{
 		TourName:    input.TourName,
@@ -25,5 +33,13 @@ func RequestToCore(input TourRequest) tour.Core {
 		Longitude:   input.Longitude,
 		CityId:      input.CityId,
 		UserId:      input.UserId,
+	}
+}
+
+func ReportRequestToCore(input ReportRequest) tour.ReportCore {
+	return tour.ReportCore{
+		UserId:     input.UserId,
+		TourId:     input.TourId,
+		TextReport: input.TextReport,
 	}
 }
