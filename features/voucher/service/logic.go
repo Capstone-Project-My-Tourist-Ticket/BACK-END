@@ -30,6 +30,7 @@ func (service *voucherService) SelectAllVoucher() ([]voucher.Core, error) {
 	}
 
 	return vouchers, nil
+}
 
 // Update implements voucher.VoucherServiceInterface.
 func (service *voucherService) Update(voucherId int, input voucher.Core) error {

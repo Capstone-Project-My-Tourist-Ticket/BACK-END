@@ -49,6 +49,7 @@ func (handler *VoucherHandler) GetAllVoucher(c echo.Context) error {
 	vouchersResponses := CoreToResponseListGetAllVoucher(vouchers)
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get data", vouchersResponses))
+}
 
 func (handler *VoucherHandler) UpdateVoucher(c echo.Context) error {
 	newVoucher := VoucherRequest{}

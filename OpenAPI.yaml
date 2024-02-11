@@ -1241,7 +1241,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
-get:
+    get:
       tags:
         - Voucher
       summary: "Get list of vouchers"
