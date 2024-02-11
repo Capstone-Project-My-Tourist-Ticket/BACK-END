@@ -25,6 +25,8 @@ tags:
     description: API TOUR
   - name: Package
     description: API PACKAGE
+  - name: Voucher
+    description: API VOUCHER
   
 
 paths:
@@ -921,7 +923,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PackageSchema'
+                $ref: '#/components/schemas/Response200'
         '400':
           description: Error Create Package
           content:
@@ -1206,6 +1208,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response404'
 
+  /vouchers:
+    post:
+      tags:
+        - Voucher
+      summary: Create Voucher
+      description: This can only be done by the logged in admin.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherSchema'
+      responses:
+        '200':
+          description: successful Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Create Package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
 components:
   schemas:
 
@@ -1217,7 +1258,7 @@ components:
                 example: 200
               message:
                 type: string
-                example: success delete data
+                example: success insert data
             required:
               - code
               - message
@@ -1799,6 +1840,26 @@ components:
         jumlah_tiket: 10
         price: 300000
         benefits: ["mile","bus tour"]
+
+    VoucherSchema:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        description:
+          type: string
+        discount_value:
+          type: integer
+        expired_voucher:
+          type: string
+      example:
+        name: "diskon lebaran"
+        code: "ketupat"
+        description: "Voucher senilai Rp.50.000"
+        discount_value: 50000
+        expired_voucher: "2024-02-20"
   
   securitySchemes:
     jwtAuth:
