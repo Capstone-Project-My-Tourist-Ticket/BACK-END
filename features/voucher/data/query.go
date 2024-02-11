@@ -3,6 +3,7 @@ package data
 import (
 	"errors"
 	"my-tourist-ticket/features/voucher"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -35,7 +36,8 @@ func (repo *voucherQuery) Insert(input voucher.Core) error {
 // SelectAllVoucher implements voucher.VoucherDataInterface.
 func (repo *voucherQuery) SelectAllVoucher() ([]voucher.Core, error) {
 	var voucherDataGorm []Voucher
-	tx := repo.db.Find(&voucherDataGorm)
+	currentDate := time.Now()
+	tx := repo.db.Where("expired_voucher >= ?", currentDate).Find(&voucherDataGorm)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -61,5 +63,18 @@ func (repo *voucherQuery) Update(voucherId int, input voucher.Core) error {
 		return errors.New("update failed, no rows affected")
 	}
 
+	return nil
+}
+
+// Delete implements voucher.VoucherDataInterface.
+func (repo *voucherQuery) Delete(voucherId int) error {
+	tx := repo.db.Where("id = ?", voucherId).Delete(&Voucher{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found")
+	}
 	return nil
 }

@@ -1,6 +1,9 @@
 package service
 
-import "my-tourist-ticket/features/voucher"
+import (
+	"errors"
+	"my-tourist-ticket/features/voucher"
+)
 
 type voucherService struct {
 	voucherData voucher.VoucherDataInterface
@@ -40,4 +43,14 @@ func (service *voucherService) Update(voucherId int, input voucher.Core) error {
 	}
 
 	return nil
+}
+
+// Delete implements voucher.VoucherServiceInterface.
+func (service *voucherService) Delete(voucherId int) error {
+	if voucherId <= 0 {
+		return errors.New("invalid id")
+	}
+
+	err := service.voucherData.Delete(voucherId)
+	return err
 }

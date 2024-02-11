@@ -90,4 +90,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/vouchers", voucherHandlerAPI.CreateVoucher, middlewares.JWTMiddleware())
 	e.GET("/vouchers", voucherHandlerAPI.GetAllVoucher, middlewares.JWTMiddleware())
 	e.PUT("/vouchers/:voucher_id", voucherHandlerAPI.UpdateVoucher, middlewares.JWTMiddleware())
+	e.DELETE("/vouchers/:id", voucherHandlerAPI.DeleteVoucher, middlewares.JWTMiddleware())
 }
