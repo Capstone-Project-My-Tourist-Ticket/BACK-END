@@ -75,5 +75,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	//define routes/ endpoint PACKAGE
 	e.POST("/packages/:tour_id", packageHandlerAPI.CreatePackage, middlewares.JWTMiddleware())
 	e.GET("/packages/:tour_id", packageHandlerAPI.GetPackageByTourId, middlewares.JWTMiddleware())
+	e.DELETE("/packages/:id", packageHandlerAPI.DeletePackage, middlewares.JWTMiddleware())
 
 }
