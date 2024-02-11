@@ -1120,6 +1120,94 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response404'
 
+    get:
+      tags:
+        - Tour
+      summary: Report Tour By Id
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: tour_id
+          schema:
+            type: number
+            example: 1
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseReportSchema'
+      responses:
+        '200':
+          description: successful get report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Update Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  /tours/search:
+    get:
+      tags:
+        - Tour
+      summary: Search Tour
+      parameters:
+        - name: nama_tour
+          in: query
+          description: Query string untuk pencarian
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hasil pencarian ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourGetAllResponse'
+        '400':
+          description: Error Get Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: Hasil pencarian tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
   /vouchers:
     post:
       tags:
@@ -1230,6 +1318,47 @@ components:
           type: string
       example:
         text_report: "Tour ini jelek!"
+    
+    ResponseReportSchema:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        data:
+            type: object
+            properties:
+                id:
+                  type: integer
+                tour_id:
+                  type: integer
+                user_id:
+                  type: integer
+                text_report:
+                  type: string
+                created_at:
+                  type: string
+                updated_at: 
+                  type: string               
+            example:
+            - id: 1
+              tour_id: 1
+              user_id: 1
+              text_report: "tour ini jelek!"
+              created_at: "2024-02-11 13:01:31"
+              updated_at: "2024-02-11 13:01:31"
+            - id: 2
+              tour_id: 1
+              user_id: 1
+              text_report: "tour ini jelek!"
+              created_at: "2024-02-11 13:01:31"
+              updated_at: "2024-02-11 13:01:31"
+            - id: 3
+              tour_id: 1
+              user_id: 1
+              text_report: "tour ini jelek!"
+              created_at: "2024-02-11 13:01:31"
+              updated_at: "2024-02-11 13:01:31"
+    
     
     
     UsersSchema:

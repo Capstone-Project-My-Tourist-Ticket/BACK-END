@@ -3,6 +3,7 @@ package data
 import (
 	"errors"
 	"fmt"
+	"log"
 	"mime/multipart"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
@@ -15,8 +16,6 @@ type tourQuery struct {
 	db            *gorm.DB
 	uploadService cloudinary.CloudinaryUploaderInterface
 }
-
-// Insert implements tour.TourDataInterface.
 
 func NewTour(db *gorm.DB, cloud cloudinary.CloudinaryUploaderInterface) tour.TourDataInterface {
 	return &tourQuery{
@@ -246,4 +245,37 @@ func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.Repor
 		return errors.New("insert failed, row affected = 0")
 	}
 	return nil
+}
+
+// SelectReportTour implements tour.TourDataInterface.
+func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
+	var reports []Report
+
+	query := repo.db.Where("tour_id = ?", tourId).Order("created_at desc").Find(&reports)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+	var reportCores []tour.ReportCore
+	for _, r := range reports {
+		reportCores = append(reportCores, ModelToReportCore(r))
+	}
+
+	return reportCores, nil
+}
+
+// SearchTour implements tour.TourDataInterface.
+func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
+	var tourDataGorms []Tour
+	log.Println("query", query)
+	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var results []tour.Core
+	for _, tourDataGorm := range tourDataGorms {
+		result := ModelToCore(tourDataGorm)
+		results = append(results, result)
+	}
+	return results, nil
 }

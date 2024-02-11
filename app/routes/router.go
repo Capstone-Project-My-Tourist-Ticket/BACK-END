@@ -78,6 +78,8 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/tours/pengelola", tourHandlerAPI.GetTourByPengelola, middlewares.JWTMiddleware())
 	e.GET("/tours/bycity/:city_id", tourHandlerAPI.GetTourByCityID)
 	e.POST("/tours/:tour_id/report", tourHandlerAPI.CreateReportTour, middlewares.JWTMiddleware())
+	e.GET("/tours/:tour_id/report", tourHandlerAPI.GetReportTour, middlewares.JWTMiddleware())
+	e.GET("/tours/search", tourHandlerAPI.SearchTour)
 
 	//define routes/ endpoint PACKAGE
 	e.POST("/packages/:tour_id", packageHandlerAPI.CreatePackage, middlewares.JWTMiddleware())
