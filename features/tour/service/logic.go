@@ -124,3 +124,13 @@ func (service *tourService) InsertReportTour(userId int, tourId int, input tour.
 
 	return nil
 }
+
+// SelectReportTour implements tour.TourServiceInterface.
+func (service *tourService) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
+	reports, err := service.tourData.SelectReportTour(tourId)
+	if err != nil {
+		return nil, fmt.Errorf("error get report: %w", err)
+	}
+
+	return reports, nil
+}

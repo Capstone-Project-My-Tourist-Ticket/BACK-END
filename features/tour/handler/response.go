@@ -19,6 +19,15 @@ type TourResponse struct {
 	UpdatedAt   string  `json:"updated_at"`
 }
 
+type ReportResponse struct {
+	ID         uint   `json:"id"`
+	TourId     uint   `json:"tour_id"`
+	UserId     uint   `json:"user_id"`
+	TextReport string `json:"text_report"`
+	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
+}
+
 func ModelToResponse(tourModel tour.Core) TourResponse {
 	return TourResponse{
 		ID:          tourModel.ID,
@@ -57,6 +66,25 @@ func CoreToResponseListGetAllTour(data []tour.Core) []TourResponse {
 	var results []TourResponse
 	for _, v := range data {
 		results = append(results, CoreToGetAllResponseTour(v))
+	}
+	return results
+}
+
+func ModelReportToReportResponse(reportModel tour.ReportCore) ReportResponse {
+	return ReportResponse{
+		ID:         reportModel.ID,
+		TourId:     reportModel.TourId,
+		UserId:     reportModel.UserId,
+		TextReport: reportModel.TextReport,
+		CreatedAt:  reportModel.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:  reportModel.UpdatedAt.Format("2006-01-02 15:04:05"),
+	}
+}
+
+func CoreReportToResponseListGetReportTour(data []tour.ReportCore) []ReportResponse {
+	var results []ReportResponse
+	for _, v := range data {
+		results = append(results, ModelReportToReportResponse(v))
 	}
 	return results
 }
