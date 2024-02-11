@@ -22,6 +22,15 @@ func (service *voucherService) Create(input voucher.Core) error {
 	return nil
 }
 
+// SelectAllVoucher implements voucher.VoucherServiceInterface.
+func (service *voucherService) SelectAllVoucher() ([]voucher.Core, error) {
+	vouchers, err := service.voucherData.SelectAllVoucher()
+	if err != nil {
+		return nil, err
+	}
+
+	return vouchers, nil
+
 // Update implements voucher.VoucherServiceInterface.
 func (service *voucherService) Update(voucherId int, input voucher.Core) error {
 	err := service.voucherData.Update(voucherId, input)

@@ -32,6 +32,21 @@ func (repo *voucherQuery) Insert(input voucher.Core) error {
 	return nil
 }
 
+// SelectAllVoucher implements voucher.VoucherDataInterface.
+func (repo *voucherQuery) SelectAllVoucher() ([]voucher.Core, error) {
+	var voucherDataGorm []Voucher
+	tx := repo.db.Find(&voucherDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var voucherCores []voucher.Core
+	for _, v := range voucherDataGorm {
+		voucherCores = append(voucherCores, v.ModelToCore())
+	}
+
+	return voucherCores, nil
+
 // Update implements voucher.VoucherDataInterface.
 func (repo *voucherQuery) Update(voucherId int, input voucher.Core) error {
 	dataGorm := CoreToModel(input)
