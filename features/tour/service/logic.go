@@ -134,3 +134,12 @@ func (service *tourService) SelectReportTour(tourId int) ([]tour.ReportCore, err
 
 	return reports, nil
 }
+
+// SearchTour implements tour.TourServiceInterface.
+func (service *tourService) SearchTour(query string) ([]tour.Core, error) {
+	tours, err := service.tourData.SearchTour(query)
+	if err != nil {
+		return tours, err
+	}
+	return tours, nil
+}
