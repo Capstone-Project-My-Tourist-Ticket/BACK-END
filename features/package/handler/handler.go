@@ -60,3 +60,17 @@ func (handler *PackageHandler) GetPackageByTourId(c echo.Context) error {
 	packageResponses := CoresToResponses(packages)
 	return c.JSON(http.StatusOK, responses.WebResponse("success read data", packageResponses))
 }
+
+func (handler *PackageHandler) DeletePackage(c echo.Context) error {
+	packageId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error. id should be number", nil))
+	}
+
+	errDelete := handler.packageService.Delete(packageId)
+	if errDelete != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete data "+errDelete.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
+}
