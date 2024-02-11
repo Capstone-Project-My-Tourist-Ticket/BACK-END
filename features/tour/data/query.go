@@ -3,6 +3,7 @@ package data
 import (
 	"errors"
 	"fmt"
+	"log"
 	"mime/multipart"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
@@ -260,4 +261,21 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 	}
 
 	return reportCores, nil
+}
+
+// SearchTour implements tour.TourDataInterface.
+func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
+	var tourDataGorms []Tour
+	log.Println("query", query)
+	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var results []tour.Core
+	for _, tourDataGorm := range tourDataGorms {
+		result := ModelToCore(tourDataGorm)
+		results = append(results, result)
+	}
+	return results, nil
 }

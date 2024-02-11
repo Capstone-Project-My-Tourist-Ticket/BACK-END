@@ -269,3 +269,22 @@ func (handler *TourHandler) GetReportTour(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get data", reportResponses))
 }
+
+func (handler *TourHandler) SearchTour(c echo.Context) error {
+	query := c.QueryParam("nama_tour")
+	if query == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("query parameter is required", nil))
+	}
+
+	tours, err := handler.tourService.SearchTour(query)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data", nil))
+	}
+
+	if len(tours) == 0 {
+		return c.JSON(http.StatusNotFound, responses.WebResponse("The provided search query is not valid. Please provide a valid search term.", nil))
+	}
+
+	productResponses := CoreToResponseListGetAllTour(tours)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data", productResponses))
+}

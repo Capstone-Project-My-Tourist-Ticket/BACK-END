@@ -1168,6 +1168,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
+  /tours/search:
+    get:
+      tags:
+        - Tour
+      summary: Search Tour
+      parameters:
+        - name: nama_tour
+          in: query
+          description: Query string untuk pencarian
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hasil pencarian ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourGetAllResponse'
+        '400':
+          description: Error Get Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: Hasil pencarian tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
 
 components:
   schemas:
