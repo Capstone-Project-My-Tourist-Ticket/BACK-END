@@ -75,12 +75,20 @@ func (handler *VoucherHandler) UpdateVoucher(c echo.Context) error {
 	}
 
 	voucherCore := RequestToCore(newVoucher)
-	errInsert := handler.voucherService.Update(vocId, voucherCore)
-	if errInsert != nil {
-		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
-			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+	errUpdate := handler.voucherService.Update(vocId, voucherCore)
+	if errUpdate != nil {
+		if strings.Contains(errUpdate.Error(), "Error 1062 (23000): Duplicate entry") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else if strings.Contains(errUpdate.Error(), "nama voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else if strings.Contains(errUpdate.Error(), "code voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else if strings.Contains(errUpdate.Error(), "nominal voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else if strings.Contains(errUpdate.Error(), "tanggal expired voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 		} else {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 		}
 	}
 
