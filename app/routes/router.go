@@ -4,6 +4,7 @@ import (
 	"my-tourist-ticket/app/middlewares"
 	"my-tourist-ticket/utils/cloudinary"
 	"my-tourist-ticket/utils/encrypts"
+	"my-tourist-ticket/utils/externalapi"
 
 	ud "my-tourist-ticket/features/user/data"
 	uh "my-tourist-ticket/features/user/handler"
@@ -25,6 +26,10 @@ import (
 	vh "my-tourist-ticket/features/voucher/handler"
 	vs "my-tourist-ticket/features/voucher/service"
 
+	bd "my-tourist-ticket/features/booking/data"
+	bh "my-tourist-ticket/features/booking/handler"
+	bs "my-tourist-ticket/features/booking/service"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -32,6 +37,7 @@ import (
 func InitRouter(db *gorm.DB, e *echo.Echo) {
 	hash := encrypts.New()
 	cloudinaryUploader := cloudinary.New()
+	midtrans := externalapi.New()
 
 	userData := ud.New(db)
 	userService := us.New(userData, hash)
@@ -52,6 +58,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	voucherData := vd.New(db)
 	voucherService := vs.New(voucherData)
 	voucherHandlerAPI := vh.New(voucherService)
+
+	bookingData := bd.New(db, midtrans)
+	bookingService := bs.New(bookingData)
+	bookingHandlerAPI := bh.New(bookingService)
 
 	// define routes/ endpoint USERS
 	e.POST("/login", userHandlerAPI.Login)
@@ -91,4 +101,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/vouchers", voucherHandlerAPI.GetAllVoucher, middlewares.JWTMiddleware())
 	e.PUT("/vouchers/:voucher_id", voucherHandlerAPI.UpdateVoucher, middlewares.JWTMiddleware())
 	e.DELETE("/vouchers/:id", voucherHandlerAPI.DeleteVoucher, middlewares.JWTMiddleware())
+
+	//define routes/ endpoint Booking
+	e.POST("/bookings", bookingHandlerAPI.CreateBooking, middlewares.JWTMiddleware())
 }

@@ -16,7 +16,8 @@ type Core struct {
 // interface untuk Data Layer
 type VoucherDataInterface interface {
 	Insert(input Core) error
-	SelectAllVoucher() ([]Core, error)
+	GetUserRoleById(userId int) (string, error)
+	SelectAllVoucher(userRole string) ([]Core, error)
 	Update(voucherId int, input Core) error
 	Delete(voucherId int) error
 }
@@ -24,7 +25,7 @@ type VoucherDataInterface interface {
 // interface untuk Service Layer
 type VoucherServiceInterface interface {
 	Create(input Core) error
-	SelectAllVoucher() ([]Core, error)
+	SelectAllVoucher(userIdLogin int) ([]Core, error)
 	Update(voucherId int, input Core) error
 	Delete(voucherId int) error
 }

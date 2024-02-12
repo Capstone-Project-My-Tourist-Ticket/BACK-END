@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"my-tourist-ticket/app/configs"
+	bd "my-tourist-ticket/features/booking/data"
 	cd "my-tourist-ticket/features/city/data"
 	pd "my-tourist-ticket/features/package/data"
 	td "my-tourist-ticket/features/tour/data"
@@ -27,5 +28,5 @@ func InitDBMysql(cfg *configs.AppConfig) *gorm.DB {
 }
 
 func InitMigrate(db *gorm.DB) {
-	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{}, &td.Report{}, &pd.Package{}, &pd.Benefit{}, &vd.Voucher{})
+	db.AutoMigrate(&ud.User{}, &cd.City{}, &td.Tour{}, &td.Report{}, &pd.Package{}, &pd.Benefit{}, &vd.Voucher{}, &bd.Booking{})
 }

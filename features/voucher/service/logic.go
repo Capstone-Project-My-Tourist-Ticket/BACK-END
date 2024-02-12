@@ -17,6 +17,19 @@ func New(repo voucher.VoucherDataInterface) voucher.VoucherServiceInterface {
 
 // Create implements voucher.VoucherServiceInterface.
 func (service *voucherService) Create(input voucher.Core) error {
+	if input.Name == "" {
+		return errors.New("nama voucher tidak boleh kosong")
+	}
+	if input.Code == "" {
+		return errors.New("code voucher tidak boleh kosong")
+	}
+	if input.DiscountValue == 0 {
+		return errors.New("nominal voucher tidak boleh kosong")
+	}
+	if input.ExpiredVoucher == "" {
+		return errors.New("tanggal expired voucher tidak boleh kosong")
+	}
+
 	err := service.voucherData.Insert(input)
 	if err != nil {
 		return err
@@ -26,8 +39,13 @@ func (service *voucherService) Create(input voucher.Core) error {
 }
 
 // SelectAllVoucher implements voucher.VoucherServiceInterface.
-func (service *voucherService) SelectAllVoucher() ([]voucher.Core, error) {
-	vouchers, err := service.voucherData.SelectAllVoucher()
+func (service *voucherService) SelectAllVoucher(userIdLogin int) ([]voucher.Core, error) {
+	userRole, errSelect := service.voucherData.GetUserRoleById(userIdLogin)
+	if errSelect != nil {
+		return nil, errSelect
+	}
+
+	vouchers, err := service.voucherData.SelectAllVoucher(userRole)
 	if err != nil {
 		return nil, err
 	}
