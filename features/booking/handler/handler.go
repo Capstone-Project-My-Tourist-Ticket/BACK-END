@@ -44,3 +44,19 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert booking", result))
 }
+
+func (handler *BookingHandler) WebhoocksNotification(c echo.Context) error {
+	var reqNotif = WebhoocksRequest{}
+	errBind := c.Bind(&reqNotif)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	bookingCore := WebhoocksRequestToCore(reqNotif)
+	err := handler.bookingService.WebhoocksService(bookingCore)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error Notif "+err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("transaction success", nil))
+}
