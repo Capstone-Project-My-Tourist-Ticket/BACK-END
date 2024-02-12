@@ -1394,7 +1394,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
-  
+    
   /bookings:
     post:
       tags:
@@ -1433,6 +1433,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+
+  /bookings/{booking_id}/review:
+    post:
+      tags:
+        - Booking
+      summary: Post Review by booking
+      description: This can only be done by the logged in user.
+      parameters:
+        - in: path
+          name: booking_id
+          schema:
+            type: string
+            example: dawfdufuagfuagw
+          required: true
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSchema'
+      responses:
+        '200':
+          description: successful Create Review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error Create Review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+
 
 components:
   schemas:
@@ -2070,6 +2117,18 @@ components:
         full_name: "arja"
         email: "arja@gmail.com"
         quantity: 1
+  
+    ReviewSchema:
+        type: object
+        properties:
+          text_review:
+            type: string
+          star_rate:
+            type: integer
+        example:
+          text_review: "mantap tour"
+          star_rate: 4.7
+          
   
   securitySchemes:
     jwtAuth:

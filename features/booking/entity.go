@@ -33,14 +33,26 @@ type Core struct {
 	Voucher     voucher.Core
 }
 
+type ReviewCore struct {
+	ID         uint
+	BookingID  string
+	UserID     uint
+	TextReview string
+	StartRate  float64
+	Booking    Core
+	User       user.Core
+}
+
 // interface untuk Data Layer
 type BookingDataInterface interface {
 	InsertBooking(userIdLogin int, inputBooking Core) (*Core, error)
+	InsertBookingReview(inputReview ReviewCore) error
 	WebhoocksData(reqNotif Core) error
 }
 
 // interface untuk Service Layer
 type BookingServiceInterface interface {
 	CreateBooking(userIdLogin int, inputBooking Core) (*Core, error)
+	CreateBookingReview(inputReview ReviewCore) error
 	WebhoocksService(reqNotif Core) error
 }

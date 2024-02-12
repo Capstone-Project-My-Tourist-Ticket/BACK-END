@@ -35,6 +35,16 @@ type Booking struct {
 	Voucher     vd.Voucher
 }
 
+type Review struct {
+	gorm.Model
+	BookingID  string `gorm:"not null;unique"`
+	UserID     uint   `gorm:"not null"`
+	TextReview string
+	StartRate  float64
+	Booking    Booking
+	User       ud.User
+}
+
 func CoreToModelBooking(input booking.Core) Booking {
 	return Booking{
 		ID:          input.ID,
@@ -76,6 +86,15 @@ func ModelToCoreBooking(model Booking) booking.Core {
 		ExpiredAt:   model.ExpiredAt,
 		CreatedAt:   model.CreatedAt,
 		UpdatedAt:   model.UpdatedAt,
+	}
+}
+
+func CoreReviewToModelReview(input booking.ReviewCore) Review {
+	return Review{
+		BookingID:  input.BookingID,
+		UserID:     input.UserID,
+		TextReview: input.TextReview,
+		StartRate:  input.StartRate,
 	}
 }
 
