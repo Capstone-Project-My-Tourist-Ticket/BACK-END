@@ -1433,6 +1433,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+  /bookings/{id}:
+    put:
+      tags:
+        - Booking
+      summary: cancel booking payment by Id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: "dkjg-dhjd-djbf-djsb"
+          required: true
+      security:
+        - jwtAuth: []
+      responses:
+        "200":
+          description: Success cancel order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response200"
+        '400':
+          description: Error cancel order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
 
 components:
   schemas:
