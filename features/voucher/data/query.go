@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/features/voucher"
 	"time"
 
@@ -33,13 +34,30 @@ func (repo *voucherQuery) Insert(input voucher.Core) error {
 	return nil
 }
 
+// GetUserRoleById
+func (repo *voucherQuery) GetUserRoleById(userIdLogin int) (string, error) {
+	var user user.Core
+	if err := repo.db.Table("users").Where("id = ?", userIdLogin).First(&user).Error; err != nil {
+		return "", err
+	}
+
+	return user.Role, nil
+}
+
 // SelectAllVoucher implements voucher.VoucherDataInterface.
-func (repo *voucherQuery) SelectAllVoucher() ([]voucher.Core, error) {
+func (repo *voucherQuery) SelectAllVoucher(userRole string) ([]voucher.Core, error) {
 	var voucherDataGorm []Voucher
-	currentDate := time.Now()
-	tx := repo.db.Where("expired_voucher >= ?", currentDate).Find(&voucherDataGorm)
-	if tx.Error != nil {
-		return nil, tx.Error
+	if userRole == "costumer" {
+		currentDate := time.Now()
+		tx := repo.db.Where("expired_voucher >= ?", currentDate).Find(&voucherDataGorm)
+		if tx.Error != nil {
+			return nil, tx.Error
+		}
+	} else {
+		tx := repo.db.Find(&voucherDataGorm)
+		if tx.Error != nil {
+			return nil, tx.Error
+		}
 	}
 
 	var voucherCores []voucher.Core

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"my-tourist-ticket/app/middlewares"
 	"my-tourist-ticket/features/voucher"
 	"my-tourist-ticket/utils/responses"
 	"net/http"
@@ -32,6 +33,14 @@ func (handler *VoucherHandler) CreateVoucher(c echo.Context) error {
 	if errInsert != nil {
 		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "nama voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "code voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "nominal voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "tanggal expired voucher tidak boleh kosong") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		} else {
 			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		}
@@ -41,7 +50,9 @@ func (handler *VoucherHandler) CreateVoucher(c echo.Context) error {
 }
 
 func (handler *VoucherHandler) GetAllVoucher(c echo.Context) error {
-	vouchers, err := handler.voucherService.SelectAllVoucher()
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	vouchers, err := handler.voucherService.SelectAllVoucher(userIdLogin)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
 	}
