@@ -1,6 +1,7 @@
 package data
 
 import (
+	"errors"
 	"my-tourist-ticket/features/booking"
 	pd "my-tourist-ticket/features/package/data"
 	vd "my-tourist-ticket/features/voucher/data"
@@ -63,4 +64,18 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 	bookingCore := ModelToCoreBooking(bookingPaymentModel)
 
 	return &bookingCore, nil
+}
+
+// InsertBookingReview implements booking.BookingDataInterface.
+func (repo *bookingQuery) InsertBookingReview(inputReview booking.ReviewCore) error {
+	dataGorm := CoreReviewToModelReview(inputReview)
+
+	tx := repo.db.Create(&dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("insert failed, row affected = 0")
+	}
+	return nil
 }
