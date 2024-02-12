@@ -27,6 +27,8 @@ tags:
     description: API PACKAGE
   - name: Voucher
     description: API VOUCHER
+  - name: Booking
+    description: API BOOKING
   
 
 paths:
@@ -1392,36 +1394,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
-  
-  /bookings/{booking_id}/review:
+    
+  /bookings:
     post:
       tags:
         - Booking
-      summary: Post Review by booking
-      description: This can only be done by the logged in user.
-      parameters:
-        - in: path
-          name: booking_id
-          schema:
-            type: string
-            example: dawfdufuagfuagw
-          required: true
+      summary: Create Booking
+      description: This can only be done by the logged in costumer.
       security:
         - jwtAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReviewSchema'
+              $ref: '#/components/schemas/BookingSchema'
       responses:
         '200':
-          description: successful Create Review
+          description: successful create booking
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response200'
         '400':
-          description: Error Create Review
+          description: Error create booking
           content:
             application/json:
               schema:
@@ -1438,6 +1433,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+
+  
 
 components:
   schemas:
@@ -2064,6 +2061,17 @@ components:
         description: "Voucher senilai Rp.50.000"
         discount_value: 50000
         expired_voucher: "2024-02-20"
+    BookingSchema:
+      example:
+        tour_id: 1
+        package_id: 2
+        voucher_id: null
+        bank: "bca"
+        phone_number: "+628321414"
+        greeting: "Mr."
+        full_name: "arja"
+        email: "arja@gmail.com"
+        quantity: 1
   
     ReviewSchema:
         type: object

@@ -55,6 +55,19 @@ func (service *voucherService) SelectAllVoucher(userIdLogin int) ([]voucher.Core
 
 // Update implements voucher.VoucherServiceInterface.
 func (service *voucherService) Update(voucherId int, input voucher.Core) error {
+	if input.Name == "" {
+		return errors.New("nama voucher tidak boleh kosong")
+	}
+	if input.Code == "" {
+		return errors.New("code voucher tidak boleh kosong")
+	}
+	if input.DiscountValue == 0 {
+		return errors.New("nominal voucher tidak boleh kosong")
+	}
+	if input.ExpiredVoucher == "" {
+		return errors.New("tanggal expired voucher tidak boleh kosong")
+	}
+
 	err := service.voucherData.Update(voucherId, input)
 	if err != nil {
 		return err

@@ -43,7 +43,7 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 
 	result := CoreToResponseBooking(payment)
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success checkout data", result))
+	return c.JSON(http.StatusOK, responses.WebResponse("success insert booking", result))
 }
 
 func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {
