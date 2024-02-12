@@ -1,6 +1,7 @@
 package data
 
 import (
+	"errors"
 	"my-tourist-ticket/features/booking"
 	pd "my-tourist-ticket/features/package/data"
 	vd "my-tourist-ticket/features/voucher/data"
@@ -63,4 +64,18 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 	bookingCore := ModelToCoreBooking(bookingPaymentModel)
 
 	return &bookingCore, nil
+}
+
+// Update implements booking.BookingDataInterface.
+func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
+	dataGorm := CoreToModel(reqNotif)
+	tx := repo.db.Model(&Booking{}).Where("id = ?", reqNotif.ID).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
 }

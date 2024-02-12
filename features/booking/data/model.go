@@ -78,3 +78,9 @@ func ModelToCoreBooking(model Booking) booking.Core {
 		UpdatedAt:   model.UpdatedAt,
 	}
 }
+
+func CoreToModel(reqNotif booking.Core) Booking {
+	return Booking{
+		Status: reqNotif.Status,
+	}
+}

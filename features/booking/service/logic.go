@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"my-tourist-ticket/features/booking"
 )
 
@@ -22,4 +23,18 @@ func (service *bookingService) CreateBooking(userIdLogin int, inputBooking booki
 	}
 
 	return payment, nil
+}
+
+// WebhoocksService implements booking.BookingServiceInterface.
+func (service *bookingService) WebhoocksService(reqNotif booking.Core) error {
+	if reqNotif.ID == "" {
+		return errors.New("invalid order id")
+	}
+
+	err := service.bookingData.WebhoocksData(reqNotif)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

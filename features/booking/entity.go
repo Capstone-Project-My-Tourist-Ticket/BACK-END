@@ -36,9 +36,11 @@ type Core struct {
 // interface untuk Data Layer
 type BookingDataInterface interface {
 	InsertBooking(userIdLogin int, inputBooking Core) (*Core, error)
+	WebhoocksData(reqNotif Core) error
 }
 
 // interface untuk Service Layer
 type BookingServiceInterface interface {
 	CreateBooking(userIdLogin int, inputBooking Core) (*Core, error)
+	WebhoocksService(reqNotif Core) error
 }
