@@ -97,3 +97,9 @@ func CoreReviewToModelReview(input booking.ReviewCore) Review {
 		StartRate:  input.StartRate,
 	}
 }
+
+func CoreToModel(reqNotif booking.Core) Booking {
+	return Booking{
+		Status: reqNotif.Status,
+	}
+}

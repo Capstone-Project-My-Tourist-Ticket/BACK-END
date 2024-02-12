@@ -76,6 +76,21 @@ func (repo *bookingQuery) InsertBookingReview(inputReview booking.ReviewCore) er
 	}
 	if tx.RowsAffected == 0 {
 		return errors.New("insert failed, row affected = 0")
+
+	}
+	return nil
+}
+
+// Update implements booking.BookingDataInterface.
+func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
+	dataGorm := CoreToModel(reqNotif)
+	tx := repo.db.Model(&Booking{}).Where("id = ?", reqNotif.ID).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
 	}
 	return nil
 }

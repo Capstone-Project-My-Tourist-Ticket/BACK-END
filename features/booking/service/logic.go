@@ -39,6 +39,19 @@ func (service *bookingService) CreateBookingReview(inputReview booking.ReviewCor
 	if err != nil {
 		return fmt.Errorf("error creating review: %w", err)
 	}
+	return nil
+}
+
+// WebhoocksService implements booking.BookingServiceInterface.
+func (service *bookingService) WebhoocksService(reqNotif booking.Core) error {
+	if reqNotif.ID == "" {
+		return errors.New("invalid order id")
+	}
+
+	err := service.bookingData.WebhoocksData(reqNotif)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
