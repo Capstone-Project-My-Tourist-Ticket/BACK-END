@@ -59,7 +59,7 @@ func (handler *UserHandler) Login(c echo.Context) error {
 		} else if strings.Contains(err.Error(), "password tidak sesuai.") {
 			return c.JSON(http.StatusUnauthorized, responses.WebResponse("error login. "+err.Error(), nil))
 		} else {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error login. "+err.Error(), nil))
+			return c.JSON(http.StatusUnauthorized, responses.WebResponse("error login. "+err.Error(), nil))
 		}
 	}
 	var responseData = CoreToResponseLogin(result, token)
@@ -165,7 +165,7 @@ func (handler *UserHandler) UpdateUserPengelolaById(c echo.Context) error {
 	// userCore := RequestToCoreAdminPengelola(userData)
 	errUpdate := handler.userService.UpdatePengelola(userIdLogin, pengelolaStatus, pengelolaId)
 	if errUpdate != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
