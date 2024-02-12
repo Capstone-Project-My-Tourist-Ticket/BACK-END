@@ -33,14 +33,21 @@ func (service *tourService) Insert(userId uint, input tour.Core, image *multipar
 	if input.Address == "" {
 		return errors.New("address is required")
 	}
-	if input.Image == "" {
+	if image == nil {
 		return errors.New("image is required")
 	}
-	if input.Thumbnail == "" {
+	if thumbnail == nil {
 		return errors.New("thumbnail is required")
 	}
-	if input.Latitude == 0 || input.Longitude == 0 {
-		return errors.New("latitude and longitude are required")
+
+	if input.Latitude == 0 {
+		return errors.New("latitude is required")
+	}
+	if input.Longitude == 0 {
+		return errors.New("longitude is required")
+	}
+	if input.CityId == 0 {
+		return errors.New("city id is required")
 	}
 
 	err := service.tourData.Insert(userId, input, image, thumbnail)
