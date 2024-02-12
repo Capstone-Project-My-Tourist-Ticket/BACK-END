@@ -1171,7 +1171,7 @@ paths:
         - Tour
       summary: Search Tour
       parameters:
-        - name: nama_tour
+        - name: tour_name
           in: query
           description: Query string untuk pencarian
           required: true

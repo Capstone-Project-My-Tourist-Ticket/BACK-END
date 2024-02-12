@@ -110,7 +110,7 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 func (handler *TourHandler) GetTourById(c echo.Context) error {
 	tourID, err := strconv.Atoi(c.Param("tour_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("Not found", nil))
 	}
 
 	tourData, err := handler.tourService.SelectTourById(tourID)
@@ -271,7 +271,7 @@ func (handler *TourHandler) GetReportTour(c echo.Context) error {
 }
 
 func (handler *TourHandler) SearchTour(c echo.Context) error {
-	query := c.QueryParam("nama_tour")
+	query := c.QueryParam("tour_name")
 	if query == "" {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("query parameter is required", nil))
 	}
