@@ -27,6 +27,8 @@ tags:
     description: API PACKAGE
   - name: Voucher
     description: API VOUCHER
+  - name: Booking
+    description: API BOOKING
   
 
 paths:
@@ -1392,6 +1394,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
+  
+  /bookings:
+    post:
+      tags:
+        - Booking
+      summary: Create Booking
+      description: This can only be done by the logged in costumer.
+      security:
+        - jwtAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingSchema'
+      responses:
+        '200':
+          description: successful create booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200'
+        '400':
+          description: Error create booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
 
 components:
   schemas:
@@ -2018,6 +2059,17 @@ components:
         description: "Voucher senilai Rp.50.000"
         discount_value: 50000
         expired_voucher: "2024-02-20"
+    BookingSchema:
+      example:
+        tour_id: 1
+        package_id: 2
+        voucher_id: null
+        bank: "bca"
+        phone_number: "+628321414"
+        greeting: "Mr."
+        full_name: "arja"
+        email: "arja@gmail.com"
+        quantity: 1
   
   securitySchemes:
     jwtAuth:
