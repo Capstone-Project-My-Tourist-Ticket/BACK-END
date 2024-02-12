@@ -20,6 +20,13 @@ type BookingRequest struct {
 	Quantity    int    `json:"quantity" form:"quantity"`
 }
 
+type ReviewRequest struct {
+	UserID     uint    `json:"user_id" form:"user_id"`
+	BookingID  string  `json:"booking_id" form:"booking_id"`
+	TextReview string  `json:"text_review" form:"text_review"`
+	StarRate   float64 `json:"star_rate" form:"star_rate"`
+}
+
 type WebhoocksRequest struct {
 	BookingID         string `json:"order_id"`
 	TransactionStatus string `json:"transaction_status"`
@@ -40,6 +47,15 @@ func RequestToCoreBooking(input BookingRequest, userIdLogin uint) booking.Core {
 		FullName:    input.FullName,
 		Email:       input.Email,
 		Quantity:    input.Quantity,
+	}
+}
+
+func RequestToCoreBookingReview(input ReviewRequest) booking.ReviewCore {
+	return booking.ReviewCore{
+		BookingID:  input.BookingID,
+		UserID:     input.UserID,
+		TextReview: input.TextReview,
+		StartRate:  input.StarRate,
 	}
 }
 

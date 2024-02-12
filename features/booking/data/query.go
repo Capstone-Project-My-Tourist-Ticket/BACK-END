@@ -83,6 +83,21 @@ func (repo *bookingQuery) CancleBooking(userIdLogin int, bookingId string, booki
 	return nil
 }
 
+// InsertBookingReview implements booking.BookingDataInterface.
+func (repo *bookingQuery) InsertBookingReview(inputReview booking.ReviewCore) error {
+	dataGorm := CoreReviewToModelReview(inputReview)
+
+	tx := repo.db.Create(&dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("insert failed, row affected = 0")
+
+	}
+	return nil
+}
+
 // Update implements booking.BookingDataInterface.
 func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
 	dataGorm := CoreToModel(reqNotif)

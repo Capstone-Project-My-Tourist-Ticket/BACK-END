@@ -105,5 +105,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	//define routes/ endpoint Booking
 	e.POST("/bookings", bookingHandlerAPI.CreateBooking, middlewares.JWTMiddleware())
 	e.PUT("/bookings/:id", bookingHandlerAPI.CancleBookingById, middlewares.JWTMiddleware())
+	e.POST("/bookings/:booking_id/review", bookingHandlerAPI.CreateBookingReview, middlewares.JWTMiddleware())
 	e.POST("/bookings/notification", bookingHandlerAPI.WebhoocksNotification)
 }

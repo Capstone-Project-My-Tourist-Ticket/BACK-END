@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"my-tourist-ticket/features/booking"
 )
 
@@ -32,6 +33,22 @@ func (service *bookingService) CancleBooking(userIdLogin int, bookingId string, 
 
 	err := service.bookingData.CancleBooking(userIdLogin, bookingId, bookingCore)
 	return err
+}
+
+// CreateBookingReview implements booking.BookingServiceInterface.
+func (service *bookingService) CreateBookingReview(inputReview booking.ReviewCore) error {
+	if inputReview.TextReview == "" {
+		return errors.New("text review is required")
+	}
+	if inputReview.StartRate == 0 {
+		return errors.New("rate is required")
+	}
+
+	err := service.bookingData.InsertBookingReview(inputReview)
+	if err != nil {
+		return fmt.Errorf("error creating review: %w", err)
+	}
+	return nil
 }
 
 // WebhoocksService implements booking.BookingServiceInterface.

@@ -5,6 +5,7 @@ import (
 	"my-tourist-ticket/features/booking"
 	"my-tourist-ticket/utils/responses"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -66,6 +67,37 @@ func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success cancle order", nil))
+}
+
+func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	bookingID := c.Param("booking_id")
+	if bookingID == "" {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid booking ID", nil))
+	}
+
+	var reviewReq ReviewRequest
+	if err := c.Bind(&reviewReq); err != nil {
+		return err
+	}
+	reviewCore := RequestToCoreBookingReview(reviewReq)
+	reviewCore.UserID = uint(userIdLogin)
+	reviewCore.BookingID = bookingID
+	// reviewCore.TextReview = reviewReq.TextReview
+
+	err := handler.bookingService.CreateBookingReview(reviewCore)
+	if err != nil {
+		if strings.Contains(err.Error(), "is required") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse(err.Error(), nil))
+		}
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating review", nil))
+	}
+
+	return c.JSON(http.StatusCreated, responses.WebResponse("review created successfully", nil))
 }
 
 func (handler *BookingHandler) WebhoocksNotification(c echo.Context) error {
