@@ -24,9 +24,28 @@ func (service *tourService) GetUserRoleById(userId int) (string, error) {
 
 // Insert implements tour.TourServiceInterface.
 func (service *tourService) Insert(userId uint, input tour.Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error {
+	if input.TourName == "" {
+		return errors.New("tour name is required")
+	}
+	if input.Description == "" {
+		return errors.New("description is required")
+	}
+	if input.Address == "" {
+		return errors.New("address is required")
+	}
+	if input.Image == "" {
+		return errors.New("image is required")
+	}
+	if input.Thumbnail == "" {
+		return errors.New("thumbnail is required")
+	}
+	if input.Latitude == 0 || input.Longitude == 0 {
+		return errors.New("latitude and longitude are required")
+	}
+
 	err := service.tourData.Insert(userId, input, image, thumbnail)
 	if err != nil {
-		return fmt.Errorf("error creating city: %w", err)
+		return fmt.Errorf("error creating tour: %w", err)
 	}
 
 	return nil
@@ -34,12 +53,8 @@ func (service *tourService) Insert(userId uint, input tour.Core, image *multipar
 
 // Update implements tour.TourServiceInterface.
 func (service *tourService) Update(tourId int, input tour.Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error {
-	err := service.tourData.Update(tourId, input, image, thumbnail)
-	if err != nil {
-		return fmt.Errorf("error update tour: %w", err)
-	}
+	return service.tourData.Update(tourId, input, image, thumbnail)
 
-	return nil
 }
 
 // SelectTourById implements tour.TourServiceInterface.

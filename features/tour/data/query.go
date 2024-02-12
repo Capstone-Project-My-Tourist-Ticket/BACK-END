@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
+	cd "my-tourist-ticket/features/city/data"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/utils/cloudinary"
@@ -211,6 +212,15 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 // GetTourByCityID implements tour.TourDataInterface.
 func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Core, int, error) {
+	var city []cd.City
+	if err := repo.db.First(&city, cityID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Handle case when city is not found
+			return nil, 0, fmt.Errorf("city not found")
+		}
+		return nil, 0, err
+	}
+
 	var tours []Tour
 	query := repo.db.Where("city_id = ?", cityID).Order("created_at desc")
 
