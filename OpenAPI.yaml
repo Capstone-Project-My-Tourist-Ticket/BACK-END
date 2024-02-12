@@ -1038,13 +1038,13 @@ paths:
         - jwtAuth: []
       responses:
         '200':
-          description: successful Delete City By Id
+          description: successful delete
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response200'
+                $ref: '#/components/schemas/ResponseDelete200'
         '400':
-          description: Error Delete City
+          description: Error Delete
           content:
             application/json:
               schema:
@@ -1241,8 +1241,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
-  
-  /vouchers/{voucher_id}:
+    get:
+      tags:
+        - Voucher
+      summary: "Get list of vouchers"
+      description: "Returns a list of available vouchers"
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "success get data"
+                  data:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        id:
+                          type: "integer"
+                          example: 1
+                        name:
+                          type: "string"
+                          example: "Voucher Lebaran"
+                        code:
+                          type: "string"
+                          example: "ketupat"
+                        description:
+                          type: "string"
+                          example: "Diskon senilai Rp.50.000"
+                        discount_value:
+                          type: "integer"
+                          example: 50000
+                        expired_voucher:
+                          type: "string"
+                          example: "2024-02-20"
+        '400':
+          description: Error Get Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: Hasil pencarian tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
+  /vouchers/{id}:
     put:
       tags:
         - Voucher
@@ -1250,7 +1309,7 @@ paths:
       description: This can only be done by the logged in admin.
       parameters:
         - in: path
-          name: voucher_id
+          name: id
           schema:
             type: number
             example: 1
@@ -1287,6 +1346,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response401'
+    delete:
+      tags:
+        - Voucher
+      summary: Delete Voucher By Id
+      description: This can only be done by the logged in admin.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          required: true
+          description: isi dengan id voucher
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful delete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDelete200'
+        '400':
+          description: Error Delete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response401'
+        '404':
+          description: Product Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
 
 components:
   schemas:
@@ -1300,6 +1405,18 @@ components:
               message:
                 type: string
                 example: success insert data
+            required:
+              - code
+              - message
+    ResponseDelete200:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              message:
+                type: string
+                example: success delete data
             required:
               - code
               - message

@@ -1,6 +1,9 @@
 package service
 
-import "my-tourist-ticket/features/voucher"
+import (
+	"errors"
+	"my-tourist-ticket/features/voucher"
+)
 
 type voucherService struct {
 	voucherData voucher.VoucherDataInterface
@@ -22,6 +25,16 @@ func (service *voucherService) Create(input voucher.Core) error {
 	return nil
 }
 
+// SelectAllVoucher implements voucher.VoucherServiceInterface.
+func (service *voucherService) SelectAllVoucher() ([]voucher.Core, error) {
+	vouchers, err := service.voucherData.SelectAllVoucher()
+	if err != nil {
+		return nil, err
+	}
+
+	return vouchers, nil
+}
+
 // Update implements voucher.VoucherServiceInterface.
 func (service *voucherService) Update(voucherId int, input voucher.Core) error {
 	err := service.voucherData.Update(voucherId, input)
@@ -30,4 +43,14 @@ func (service *voucherService) Update(voucherId int, input voucher.Core) error {
 	}
 
 	return nil
+}
+
+// Delete implements voucher.VoucherServiceInterface.
+func (service *voucherService) Delete(voucherId int) error {
+	if voucherId <= 0 {
+		return errors.New("invalid id")
+	}
+
+	err := service.voucherData.Delete(voucherId)
+	return err
 }
