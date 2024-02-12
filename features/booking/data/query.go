@@ -66,6 +66,23 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 	return &bookingCore, nil
 }
 
+func (repo *bookingQuery) CancleBooking(userIdLogin int, bookingId string, bookingCore booking.Core) error {
+	if bookingCore.Status == "cancelled" {
+		repo.paymentMidtrans.CancelBookingPayment(bookingId)
+	}
+
+	dataGorm := CoreToModelBookingCancle(bookingCore)
+	tx := repo.db.Model(&Booking{}).Where("id = ? AND user_id = ?", bookingId, userIdLogin).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
+}
+
 // InsertBookingReview implements booking.BookingDataInterface.
 func (repo *bookingQuery) InsertBookingReview(inputReview booking.ReviewCore) error {
 	dataGorm := CoreReviewToModelReview(inputReview)

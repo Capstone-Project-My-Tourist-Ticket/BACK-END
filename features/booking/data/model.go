@@ -103,3 +103,9 @@ func CoreToModel(reqNotif booking.Core) Booking {
 		Status: reqNotif.Status,
 	}
 }
+
+func CoreToModelBookingCancle(input booking.Core) Booking {
+	return Booking{
+		Status: input.Status,
+	}
+}

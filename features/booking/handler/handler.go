@@ -46,6 +46,29 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert booking", result))
 }
 
+func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	bookingId := c.Param("id")
+
+	updateBookingStatus := CancleBookingRequest{}
+	errBind := c.Bind(&updateBookingStatus)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	bookingCore := CancleRequestToCoreBooking(updateBookingStatus)
+	errCancle := handler.bookingService.CancleBooking(userIdLogin, bookingId, bookingCore)
+	if errCancle != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error cancle order", nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success cancle order", nil))
+}
+
 func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
 	if userIdLogin == 0 {
