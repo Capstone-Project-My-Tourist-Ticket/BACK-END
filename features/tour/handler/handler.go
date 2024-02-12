@@ -49,15 +49,15 @@ func (handler *TourHandler) CreateTour(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the thumbnail file", nil))
 	}
 
-	if tourReq.TourName == "" || tourReq.Description == "" || tourReq.Address == "" {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Tour name, description, address are required", nil))
-	}
-
 	tourCore := RequestToCore(tourReq)
 	tourCore.UserId = uint(userId)
+
 	// Memanggil tourService.Insert dengan argumen yang sesuai, termasuk ID pengguna
 	err = handler.tourService.Insert(uint(userId), tourCore, imageHeader, thumbnailHeader)
 	if err != nil {
+		if strings.Contains(err.Error(), "is required") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse(err.Error(), nil))
+		}
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating tour", nil))
 	}
 
@@ -85,9 +85,6 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("Error binding data. Data not valid", nil))
 	}
 
-	if tourReq.TourName == "" || tourReq.Description == "" || tourReq.Address == "" {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Tour name, description, address are required", nil))
-	}
 	// Ubah request menjadi core model
 	tourCore := RequestToCore(tourReq)
 
@@ -104,7 +101,7 @@ func (handler *TourHandler) UpdateTour(c echo.Context) error {
 
 	err = handler.tourService.Update(tourID, tourCore, imageHeader, thumbnailHeader)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error updating city", nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("Error updating tour, "+err.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Tour updated successfully", nil))
@@ -118,7 +115,7 @@ func (handler *TourHandler) GetTourById(c echo.Context) error {
 
 	tourData, err := handler.tourService.SelectTourById(tourID)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error retrieving tour data", nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("Error retrieving tour data", nil))
 	}
 
 	tourResponse := ModelToResponse(tourData)
@@ -145,7 +142,7 @@ func (handler *TourHandler) DeleteTour(c echo.Context) error {
 
 	err = handler.tourService.Delete(idParam)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete tour. delete failed "+err.Error(), nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("error delete tour. delete failed "+err.Error(), nil))
 	}
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete tour", nil))
 }
@@ -194,7 +191,7 @@ func (handler *TourHandler) GetTourByCityID(c echo.Context) error {
 
 	cityID, err := strconv.Atoi(c.Param("city_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid Tour Id", nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("Invalid city Id", nil))
 	}
 
 	page, _ := strconv.Atoi(c.QueryParam("page"))
@@ -202,6 +199,9 @@ func (handler *TourHandler) GetTourByCityID(c echo.Context) error {
 
 	tours, totalPage, err := handler.tourService.GetTourByCityID(uint(cityID), page, limit)
 	if err != nil {
+		if err.Error() == "city not found" {
+			return c.JSON(http.StatusNotFound, responses.WebResponse("City not found", nil))
+		}
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error reading data", nil))
 	}
 
