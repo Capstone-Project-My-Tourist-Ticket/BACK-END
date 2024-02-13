@@ -24,8 +24,8 @@ type VoucherDataInterface interface {
 
 // interface untuk Service Layer
 type VoucherServiceInterface interface {
-	Create(input Core) error
+	Create(input Core, userIdLogin int) error
 	SelectAllVoucher(userIdLogin int) ([]Core, error)
-	Update(voucherId int, input Core) error
+	Update(voucherId int, input Core, userIdLogin int) error
 	Delete(voucherId int) error
 }

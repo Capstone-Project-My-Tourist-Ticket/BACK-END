@@ -22,6 +22,8 @@ func New(vs voucher.VoucherServiceInterface) *VoucherHandler {
 }
 
 func (handler *VoucherHandler) CreateVoucher(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
 	newVoucher := VoucherRequest{}
 	errBind := c.Bind(&newVoucher)
 	if errBind != nil {
@@ -29,10 +31,12 @@ func (handler *VoucherHandler) CreateVoucher(c echo.Context) error {
 	}
 
 	voucherCore := RequestToCore(newVoucher)
-	errInsert := handler.voucherService.Create(voucherCore)
+	errInsert := handler.voucherService.Create(voucherCore, userIdLogin)
 	if errInsert != nil {
 		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "maaf anda tidak memiliki akses") {
+			return c.JSON(http.StatusForbidden, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		} else if strings.Contains(errInsert.Error(), "nama voucher tidak boleh kosong") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		} else if strings.Contains(errInsert.Error(), "code voucher tidak boleh kosong") {
@@ -63,6 +67,8 @@ func (handler *VoucherHandler) GetAllVoucher(c echo.Context) error {
 }
 
 func (handler *VoucherHandler) UpdateVoucher(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
 	newVoucher := VoucherRequest{}
 	errBind := c.Bind(&newVoucher)
 	if errBind != nil {
@@ -75,10 +81,12 @@ func (handler *VoucherHandler) UpdateVoucher(c echo.Context) error {
 	}
 
 	voucherCore := RequestToCore(newVoucher)
-	errUpdate := handler.voucherService.Update(vocId, voucherCore)
+	errUpdate := handler.voucherService.Update(vocId, voucherCore, userIdLogin)
 	if errUpdate != nil {
 		if strings.Contains(errUpdate.Error(), "Error 1062 (23000): Duplicate entry") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else if strings.Contains(errUpdate.Error(), "maaf anda tidak memiliki akses") {
+			return c.JSON(http.StatusForbidden, responses.WebResponse("error insert data. "+errUpdate.Error(), nil))
 		} else if strings.Contains(errUpdate.Error(), "nama voucher tidak boleh kosong") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 		} else if strings.Contains(errUpdate.Error(), "code voucher tidak boleh kosong") {

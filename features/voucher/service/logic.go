@@ -16,7 +16,16 @@ func New(repo voucher.VoucherDataInterface) voucher.VoucherServiceInterface {
 }
 
 // Create implements voucher.VoucherServiceInterface.
-func (service *voucherService) Create(input voucher.Core) error {
+func (service *voucherService) Create(input voucher.Core, userIdLogin int) error {
+	userRole, errSelect := service.voucherData.GetUserRoleById(userIdLogin)
+	if errSelect != nil {
+		return errSelect
+	}
+
+	if userRole == "costumer" || userRole == "pengelola" {
+		return errors.New("maaf anda tidak memiliki akses")
+	}
+
 	if input.Name == "" {
 		return errors.New("nama voucher tidak boleh kosong")
 	}
@@ -54,7 +63,16 @@ func (service *voucherService) SelectAllVoucher(userIdLogin int) ([]voucher.Core
 }
 
 // Update implements voucher.VoucherServiceInterface.
-func (service *voucherService) Update(voucherId int, input voucher.Core) error {
+func (service *voucherService) Update(voucherId int, input voucher.Core, userIdLogin int) error {
+	userRole, errSelect := service.voucherData.GetUserRoleById(userIdLogin)
+	if errSelect != nil {
+		return errSelect
+	}
+
+	if userRole == "costumer" || userRole == "pengelola" {
+		return errors.New("maaf anda tidak memiliki akses")
+	}
+
 	if input.Name == "" {
 		return errors.New("nama voucher tidak boleh kosong")
 	}
