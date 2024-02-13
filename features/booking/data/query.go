@@ -50,9 +50,11 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 		if ts.Error != nil {
 			return nil, ts.Error
 		}
-		totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
+		// totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
+		totalHargaKeseluruhan = (packageGorm.Price * inputBooking.Quantity) - voucherGorm.DiscountValue
 	} else {
-		totalHargaKeseluruhan = (packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity
+		// totalHargaKeseluruhan = (packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity
+		totalHargaKeseluruhan = packageGorm.Price * inputBooking.Quantity
 	}
 
 	inputBooking.GrossAmount = totalHargaKeseluruhan

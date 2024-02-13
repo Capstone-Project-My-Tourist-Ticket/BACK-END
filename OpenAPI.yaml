@@ -1580,6 +1580,101 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response404'
 
+  /bookings/users/{booking_id}:
+    get:
+      tags:
+        - Booking
+      summary: Get booking details by ID
+      description: Returns the details of a booking specified by its ID.
+      parameters:
+        - name: booking_id
+          in: path
+          description: ID of the booking to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success read data.
+                  data:
+                    type: object
+                    properties:
+                      booking_id:
+                        type: string
+                        example: bbdb111a-73be-40de-9efc-8968fc308b48
+                      full_name:
+                        type: string
+                        example: arja
+                      greeting:
+                        type: string
+                        example: MR.
+                      booking_date:
+                        type: string
+                        example: "2024-03-05"
+                      va_number:
+                        type: string
+                        example: 81558440030
+                      bank:
+                        type: string
+                        example: bca
+                      gross_amount:
+                        type: integer
+                        example: 2500000
+                      quantity:
+                        type: integer
+                        example: 1
+                      tour:
+                        type: object
+                        properties:
+                          tour_name:
+                            type: string
+                            example: Pantai Pandawa
+                          address:
+                            type: string
+                            example: Jl. kecil
+                          image:
+                            type: string
+                            format: uri
+                            example: https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707846900/BE20_MyTouristTicket/cutbjduxkuxk6ckryhmv.jpg
+                      package:
+                        type: object
+                        properties:
+                          package_name:
+                            type: string
+                            example: Tiket bonus tenda
+                      voucher:
+                        type: object
+                        properties:
+                          voucher_name:
+                            type: string
+                            example: "voucher diskon lebaran"
+        '400':
+          description: Error Get Tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+
   /bookings/admin:
     get:
       tags:
