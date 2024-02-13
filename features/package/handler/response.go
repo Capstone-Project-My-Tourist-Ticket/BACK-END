@@ -17,6 +17,10 @@ type BenefitResponse struct {
 	Benefit   string `json:"benefit"`
 }
 
+type PackageResponseName struct {
+	PackageName string `json:"package_name"`
+}
+
 func CoresToResponses(data []packages.Core) []PackageResponse {
 	var responses []PackageResponse
 	for _, core := range data {

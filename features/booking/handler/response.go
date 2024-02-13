@@ -2,6 +2,7 @@ package handler
 
 import (
 	"my-tourist-ticket/features/booking"
+	ph "my-tourist-ticket/features/package/handler"
 	th "my-tourist-ticket/features/tour/handler"
 )
 
@@ -16,6 +17,7 @@ type BookingResponse struct {
 	Status      string `json:"status"`
 	VaNumber    string `json:"va_number"`
 	Bank        string `json:"bank"`
+	BookingDate string `json:"booking_date"`
 	PhoneNumber string `json:"phone_number"`
 	Greeting    string `json:"greeting"`
 	FullName    string `json:"full_name"`
@@ -36,6 +38,7 @@ type BookingResponseAdmin struct {
 	Status      string          `json:"status"`
 	VaNumber    string          `json:"va_number"`
 	Bank        string          `json:"bank"`
+	BookingDate string          `json:"booking_date"`
 	PhoneNumber string          `json:"phone_number"`
 	Greeting    string          `json:"greeting"`
 	FullName    string          `json:"full_name"`
@@ -45,6 +48,24 @@ type BookingResponseAdmin struct {
 	CreatedAt   string          `json:"created_at"`
 	Tour        TourResponse    `json:"tour"`
 	Package     PackageResponse `json:"package"`
+}
+
+type BookingResponseUserDetail struct {
+	ID          string                 `json:"booking_id"`
+	FullName    string                 `json:"full_name"`
+	Greeting    string                 `json:"greeting"`
+	BokingDate  string                 `json:"booking_date"`
+	VaNumber    string                 `json:"va_number"`
+	Bank        string                 `json:"bank"`
+	GrossAmount int                    `json:"gross_amount"`
+	Quantity    int                    `json:"quantity"`
+	Tour        th.TourResponseBooking `json:"tour"`
+	Package     ph.PackageResponseName `json:"package"`
+	Voucher     VoucherResponse        `json:"voucher"`
+}
+
+type VoucherResponse struct {
+	Name string `json:"voucher_name"`
 }
 
 type TourResponse struct {
@@ -77,6 +98,7 @@ func CoreToResponseBooking(core *booking.Core) BookingResponse {
 		Status:      core.Status,
 		VaNumber:    core.VaNumber,
 		Bank:        core.Bank,
+		BookingDate: core.BookingDate,
 		PhoneNumber: core.PhoneNumber,
 		Greeting:    core.Greeting,
 		FullName:    core.FullName,
@@ -99,6 +121,7 @@ func CoreToResponse(b booking.Core) BookingResponseAdmin {
 		Status:      b.Status,
 		VaNumber:    b.VaNumber,
 		Bank:        b.Bank,
+		BookingDate: b.BookingDate,
 		PhoneNumber: b.PhoneNumber,
 		Greeting:    b.Greeting,
 		FullName:    b.FullName,
@@ -145,6 +168,31 @@ func CoreToResponseListUser(data []booking.Core) []BookingResponseUser {
 		results = append(results, CoreToResponseBookingUser(v))
 	}
 	return results
+}
+
+func CoreToResponseBookingUserDetail(data *booking.Core) BookingResponseUserDetail {
+	var result = BookingResponseUserDetail{
+		ID:          data.ID,
+		FullName:    data.FullName,
+		Greeting:    data.Greeting,
+		BokingDate:  data.BookingDate,
+		VaNumber:    data.VaNumber,
+		Bank:        data.Bank,
+		GrossAmount: data.GrossAmount,
+		Quantity:    data.Quantity,
+		Tour: th.TourResponseBooking{
+			TourName: data.Tour.TourName,
+			Address:  data.Tour.Address,
+			Image:    data.Tour.Image,
+		},
+		Package: ph.PackageResponseName{
+			PackageName: data.Package.PackageName,
+		},
+		Voucher: VoucherResponse{
+			Name: data.Voucher.Name,
+		},
+	}
+	return result
 }
 
 type ReviewResponse struct {

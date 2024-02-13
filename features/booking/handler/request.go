@@ -13,6 +13,7 @@ type BookingRequest struct {
 	PaymentType string `json:"payment_type" form:"payment_type"`
 	GrossAmount int    `json:"gross_amount" form:"gross_amount"`
 	Bank        string `json:"bank" form:"bank"`
+	BookingDate string `json:"booking_date" form:"booking_date"`
 	PhoneNumber string `json:"phone_number" form:"phone_number"`
 	Greeting    string `json:"greeting" form:"greeting"`
 	FullName    string `json:"full_name" form:"full_name"`
@@ -42,6 +43,7 @@ func RequestToCoreBooking(input BookingRequest, userIdLogin uint) booking.Core {
 		PaymentType: input.PaymentType,
 		GrossAmount: input.GrossAmount,
 		Bank:        input.Bank,
+		BookingDate: input.BookingDate,
 		PhoneNumber: input.PhoneNumber,
 		Greeting:    input.Greeting,
 		FullName:    input.FullName,

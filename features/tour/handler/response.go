@@ -24,6 +24,12 @@ type TourResponseName struct {
 	TourName string `json:"tour_name"`
 }
 
+type TourResponseBooking struct {
+	TourName string `json:"tour_name"`
+	Address  string `json:"address"`
+	Image    string `json:"image"`
+}
+
 type ReportResponse struct {
 	ID         uint   `json:"id"`
 	TourId     uint   `json:"tour_id"`
