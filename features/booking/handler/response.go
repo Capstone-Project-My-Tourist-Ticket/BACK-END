@@ -3,10 +3,29 @@ package handler
 import (
 	"my-tourist-ticket/features/booking"
 	th "my-tourist-ticket/features/tour/handler"
-	"time"
 )
 
 type BookingResponse struct {
+	ID          string `json:"booking_id"`
+	UserID      uint   `json:"user_id"`
+	TourID      uint   `json:"tour_id"`
+	PackageID   uint   `json:"package_id"`
+	VoucherID   *uint  `json:"voucher_id"`
+	PaymentType string `json:"payment_type"`
+	GrossAmount int    `json:"gross_amount"`
+	Status      string `json:"status"`
+	VaNumber    string `json:"va_number"`
+	Bank        string `json:"bank"`
+	PhoneNumber string `json:"phone_number"`
+	Greeting    string `json:"greeting"`
+	FullName    string `json:"full_name"`
+	Email       string `json:"email"`
+	Quantity    int    `json:"quantity"`
+	ExpiredAt   string `json:"payment_expired"`
+	CreatedAt   string `json:"created_at"`
+}
+
+type BookingResponseAdmin struct {
 	ID          string          `json:"booking_id"`
 	UserID      uint            `json:"user_id"`
 	TourID      uint            `json:"tour_id"`
@@ -68,8 +87,8 @@ func CoreToResponseBooking(core *booking.Core) BookingResponse {
 	}
 }
 
-func CoreToResponse(b booking.Core) BookingResponse {
-	return BookingResponse{
+func CoreToResponse(b booking.Core) BookingResponseAdmin {
+	return BookingResponseAdmin{
 		ID:          b.ID,
 		UserID:      b.UserID,
 		TourID:      b.TourID,
@@ -99,8 +118,8 @@ func CoreToResponse(b booking.Core) BookingResponse {
 	}
 }
 
-func CoreToResponseList(p []booking.Core) []BookingResponse {
-	var results []BookingResponse
+func CoreToResponseList(p []booking.Core) []BookingResponseAdmin {
+	var results []BookingResponseAdmin
 	for _, v := range p {
 		results = append(results, CoreToResponse(v))
 	}
