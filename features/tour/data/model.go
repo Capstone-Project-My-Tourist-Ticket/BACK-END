@@ -1,6 +1,7 @@
 package data
 
 import (
+	"my-tourist-ticket/features/city"
 	_cityData "my-tourist-ticket/features/city/data"
 	"my-tourist-ticket/features/tour"
 	_userData "my-tourist-ticket/features/user/data"
@@ -60,6 +61,13 @@ func ModelToCore(t Tour) tour.Core {
 		Longitude:   t.Longitude,
 		CreatedAt:   t.CreatedAt,
 		UpdatedAt:   t.UpdatedAt,
+		City: city.Core{
+			ID:       t.City.ID,
+			CityName: t.City.City,
+			// Description: t.City.Description,
+			Image:     t.City.Image,
+			Thumbnail: t.City.Thumbnail,
+		},
 	}
 }
 
@@ -78,6 +86,14 @@ func (t Tour) ModelToCoreTourBooking() tour.Core {
 		CreatedAt:   t.CreatedAt,
 		UpdatedAt:   t.UpdatedAt,
 	}
+}
+
+func ModelToCoreList(data []Tour) []tour.Core {
+	var results []tour.Core
+	for _, t := range data {
+		results = append(results, ModelToCore(t))
+	}
+	return results
 }
 
 func CoreReportToModelReport(tr tour.ReportCore) Report {

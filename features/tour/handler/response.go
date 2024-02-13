@@ -5,18 +5,19 @@ import (
 )
 
 type TourResponse struct {
-	ID          uint    `json:"id"`
-	CityId      uint    `json:"city_id"`
-	UserId      uint    `json:"user_id"`
-	TourName    string  `json:"tour_name"`
-	Description string  `json:"description"`
-	Image       string  `json:"image"`
-	Thumbnail   string  `json:"thumbnail"`
-	Address     string  `json:"address"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
-	CreatedAt   string  `json:"created_at"`
-	UpdatedAt   string  `json:"updated_at"`
+	ID          uint         `json:"id"`
+	CityId      uint         `json:"city_id"`
+	UserId      uint         `json:"user_id"`
+	TourName    string       `json:"tour_name"`
+	Description string       `json:"description"`
+	Image       string       `json:"image"`
+	Thumbnail   string       `json:"thumbnail"`
+	Address     string       `json:"address"`
+	Latitude    float64      `json:"latitude"`
+	Longitude   float64      `json:"longitude"`
+	CreatedAt   string       `json:"created_at"`
+	UpdatedAt   string       `json:"updated_at"`
+	City        CityResponse `json:"city"`
 }
 
 type TourResponseName struct {
@@ -30,6 +31,14 @@ type ReportResponse struct {
 	TextReport string `json:"text_report"`
 	CreatedAt  string `json:"created_at"`
 	UpdatedAt  string `json:"updated_at"`
+}
+
+type CityResponse struct {
+	ID       uint   `json:"id"`
+	CityName string `json:"city_name"`
+	// Description string `json:"description"`
+	Image     string `json:"image"`
+	Thumbnail string `json:"thumbnail"`
 }
 
 func ModelToResponse(tourModel tour.Core) TourResponse {
@@ -63,6 +72,13 @@ func CoreToGetAllResponseTour(data tour.Core) TourResponse {
 		Longitude:   data.Longitude,
 		CreatedAt:   data.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   data.UpdatedAt.Format("2006-01-02 15:04:05"),
+		City: CityResponse{
+			ID:       data.City.ID,
+			CityName: data.City.CityName,
+			// Description: data.City.Description,
+			Image:     data.City.Image,
+			Thumbnail: data.City.Thumbnail,
+		},
 	}
 }
 

@@ -50,6 +50,8 @@ type BookingDataInterface interface {
 	InsertBookingReview(inputReview ReviewCore) error
 	WebhoocksData(reqNotif Core) error
 	SelectBookingUser(userIdLogin int) ([]Core, error)
+	SelectAllBooking(page, limit int) ([]Core, int, error)
+	GetUserRoleById(userId int) (string, error)
 }
 
 // interface untuk Service Layer
@@ -59,4 +61,6 @@ type BookingServiceInterface interface {
 	CreateBookingReview(inputReview ReviewCore) error
 	WebhoocksService(reqNotif Core) error
 	GetBookingUser(userIdLogin int) ([]Core, error)
+	SelectAllBooking(page, limit int) ([]Core, int, error)
+	GetUserRoleById(userId int) (string, error)
 }

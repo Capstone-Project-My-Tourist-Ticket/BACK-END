@@ -159,28 +159,27 @@ func (repo *tourQuery) Delete(tourId int) error {
 
 // SelectAllTour implements tour.TourDataInterface.
 func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, error) {
-	var tours []Tour
+	var tourGorm []Tour
 	query := repo.db.Order("created_at desc")
 
 	var totalData int64
-	err := query.Model(&tours).Count(&totalData).Error
+	err := query.Model(&Tour{}).Count(&totalData).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tours).Error
+	// Retrieve tour data with associated city
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourGorm).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
-	var tourCores []tour.Core
-	for _, t := range tours {
-		tourCores = append(tourCores, ModelToCore(t))
-	}
+	// Convert tour data to tour.Core
+	tourCore := ModelToCoreList(tourGorm)
 
-	return tourCores, totalPage, nil
+	return tourCore, totalPage, nil
 }
 
 // SelectTourByPengelola implements tour.TourDataInterface.

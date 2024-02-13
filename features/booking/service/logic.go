@@ -16,6 +16,11 @@ func New(repo booking.BookingDataInterface) booking.BookingServiceInterface {
 	}
 }
 
+// GetUserRoleById implements booking.BookingServiceInterface.
+func (service *bookingService) GetUserRoleById(userId int) (string, error) {
+	return service.bookingData.GetUserRoleById(userId)
+}
+
 // CreateBooking implements booking.BookingServiceInterface.
 func (service *bookingService) CreateBooking(userIdLogin int, inputBooking booking.Core) (*booking.Core, error) {
 	payment, err := service.bookingData.InsertBooking(userIdLogin, inputBooking)
@@ -68,4 +73,22 @@ func (service *bookingService) WebhoocksService(reqNotif booking.Core) error {
 func (service *bookingService) GetBookingUser(userIdLogin int) ([]booking.Core, error) {
 	result, err := service.bookingData.SelectBookingUser(userIdLogin)
 	return result, err
+}
+
+// SelectAllBooking implements booking.BookingServiceInterface.
+func (service *bookingService) SelectAllBooking(page int, limit int) ([]booking.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 8
+	}
+
+	bookings, totalPage, err := service.bookingData.SelectAllBooking(page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return bookings, totalPage, nil
 }

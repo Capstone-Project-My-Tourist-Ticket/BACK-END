@@ -2,8 +2,11 @@ package data
 
 import (
 	"my-tourist-ticket/features/booking"
+	packages "my-tourist-ticket/features/package"
 	pd "my-tourist-ticket/features/package/data"
+	"my-tourist-ticket/features/tour"
 	td "my-tourist-ticket/features/tour/data"
+	"my-tourist-ticket/features/user"
 	ud "my-tourist-ticket/features/user/data"
 	vd "my-tourist-ticket/features/voucher/data"
 	"time"
@@ -108,6 +111,75 @@ func CoreToModelBookingCancle(input booking.Core) Booking {
 	return Booking{
 		Status: input.Status,
 	}
+}
+
+func (b Booking) ModelToCore() booking.Core {
+	return booking.Core{
+		ID:          b.ID,
+		UserID:      b.UserID,
+		TourID:      b.TourID,
+		PackageID:   b.PackageID,
+		VoucherID:   b.VoucherID,
+		PaymentType: b.PaymentType,
+		GrossAmount: b.GrossAmount,
+		Status:      b.Status,
+		VaNumber:    b.VaNumber,
+		Bank:        b.Bank,
+		PhoneNumber: b.PhoneNumber,
+		Greeting:    b.Greeting,
+		FullName:    b.FullName,
+		Email:       b.Email,
+		Quantity:    b.Quantity,
+		ExpiredAt:   b.ExpiredAt,
+		CreatedAt:   b.CreatedAt,
+		User: user.Core{
+			ID:          b.User.ID,
+			FullName:    b.User.FullName,
+			NoKtp:       b.User.NoKtp,
+			Address:     b.User.Address,
+			PhoneNumber: b.User.PhoneNumber,
+			Email:       b.User.Email,
+			Image:       b.User.Image,
+			Role:        b.User.Role,
+			Status:      b.User.Status,
+			CreatedAt:   b.User.CreatedAt,
+			UpdatedAt:   b.User.UpdatedAt,
+		},
+		Tour: tour.Core{
+			ID:       b.Tour.ID,
+			TourName: b.Tour.TourName,
+		},
+		Package: packages.Core{
+			ID:          b.Package.ID,
+			TourID:      b.Package.TourID,
+			PackageName: b.Package.PackageName,
+			Price:       b.Package.Price,
+		},
+	}
+}
+
+// func ModelToCoreList(data []Booking) []booking.Core {
+// 	var results []booking.Core
+// 	for _, v := range data {
+// 		results = append(results, v.ModelToCore())
+// 	}
+// 	return results
+// }
+
+func ModelToCoreList(bookings []Booking) ([]booking.Core, error) {
+	var bookingCores []booking.Core
+
+	for _, b := range bookings {
+		core := b.ModelToCore()
+		core.Package = packages.Core{
+			ID:          b.Package.ID,
+			PackageName: b.Package.PackageName,
+			Price:       b.Package.Price,
+		}
+		bookingCores = append(bookingCores, core)
+	}
+
+	return bookingCores, nil
 }
 
 func (b Booking) ModelToCoreBookingUser() booking.Core {
