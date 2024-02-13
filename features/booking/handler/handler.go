@@ -115,3 +115,18 @@ func (handler *BookingHandler) WebhoocksNotification(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("transaction success", nil))
 }
+
+func (handler *BookingHandler) GetBookingUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	results, errSelect := handler.bookingService.GetBookingUser(userIdLogin)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	var bookingResult = CoreToResponseList(results)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data.", bookingResult))
+}

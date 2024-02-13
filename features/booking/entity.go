@@ -49,6 +49,7 @@ type BookingDataInterface interface {
 	CancleBooking(userIdLogin int, orderId string, bookingCore Core) error
 	InsertBookingReview(inputReview ReviewCore) error
 	WebhoocksData(reqNotif Core) error
+	SelectBookingUser(userIdLogin int) ([]Core, error)
 }
 
 // interface untuk Service Layer
@@ -57,4 +58,5 @@ type BookingServiceInterface interface {
 	CancleBooking(userIdLogin int, orderId string, bookingCore Core) error
 	CreateBookingReview(inputReview ReviewCore) error
 	WebhoocksService(reqNotif Core) error
+	GetBookingUser(userIdLogin int) ([]Core, error)
 }

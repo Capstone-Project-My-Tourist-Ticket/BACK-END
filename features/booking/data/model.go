@@ -109,3 +109,16 @@ func CoreToModelBookingCancle(input booking.Core) Booking {
 		Status: input.Status,
 	}
 }
+
+func (b Booking) ModelToCoreBookingUser() booking.Core {
+	return booking.Core{
+		ID:          b.ID,
+		UserID:      b.UserID,
+		TourID:      b.TourID,
+		PackageID:   b.PackageID,
+		VoucherID:   b.VoucherID,
+		GrossAmount: b.GrossAmount,
+		Status:      b.Status,
+		Tour:        b.Tour.ModelToCoreTourBooking(),
+	}
+}

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"my-tourist-ticket/features/booking"
+	th "my-tourist-ticket/features/tour/handler"
 	"time"
 )
 
@@ -25,6 +26,13 @@ type BookingResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
+type BookingResponseUser struct {
+	ID          string              `json:"id" form:"id"`
+	GrossAmount int                 `json:"gross_amount" form:"gross_amount"`
+	Status      string              `json:"status" form:"status"`
+	Tour        th.TourResponseName `json:"tour" form:"tour"`
+}
+
 func CoreToResponseBooking(core *booking.Core) BookingResponse {
 	return BookingResponse{
 		ID:          core.ID,
@@ -45,4 +53,25 @@ func CoreToResponseBooking(core *booking.Core) BookingResponse {
 		ExpiredAt:   core.ExpiredAt,
 		CreatedAt:   core.CreatedAt,
 	}
+}
+
+func CoreToResponseBookimgUser(data booking.Core) BookingResponseUser {
+	tourResponse := th.TourResponseName{
+		TourName: data.Tour.TourName,
+	}
+
+	return BookingResponseUser{
+		ID:          data.ID,
+		GrossAmount: data.GrossAmount,
+		Status:      data.Status,
+		Tour:        tourResponse,
+	}
+}
+
+func CoreToResponseList(data []booking.Core) []BookingResponseUser {
+	var results []BookingResponseUser
+	for _, v := range data {
+		results = append(results, CoreToResponseBookimgUser(v))
+	}
+	return results
 }

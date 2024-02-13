@@ -111,3 +111,18 @@ func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
 	}
 	return nil
 }
+
+func (repo *bookingQuery) SelectBookingUser(userIdLogin int) ([]booking.Core, error) {
+	var bookingDataGorms []Booking
+	tx := repo.db.Preload("Tour").Where("user_id = ?", userIdLogin).Find(&bookingDataGorms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var results []booking.Core
+	for _, bookingDataGorm := range bookingDataGorms {
+		result := bookingDataGorm.ModelToCoreBookingUser()
+		results = append(results, result)
+	}
+	return results, nil
+}

@@ -64,3 +64,8 @@ func (service *bookingService) WebhoocksService(reqNotif booking.Core) error {
 
 	return nil
 }
+
+func (service *bookingService) GetBookingUser(userIdLogin int) ([]booking.Core, error) {
+	result, err := service.bookingData.SelectBookingUser(userIdLogin)
+	return result, err
+}
