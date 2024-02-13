@@ -230,7 +230,7 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	if err := query.Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
+	if err := query.Preload("City").Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
 		return nil, 0, err
 	}
 
