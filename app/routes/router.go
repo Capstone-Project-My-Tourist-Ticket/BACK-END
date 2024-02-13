@@ -90,6 +90,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/tours/:tour_id/report", tourHandlerAPI.CreateReportTour, middlewares.JWTMiddleware())
 	e.GET("/tours/:tour_id/report", tourHandlerAPI.GetReportTour, middlewares.JWTMiddleware())
 	e.GET("/tours/search", tourHandlerAPI.SearchTour)
+	e.GET("/tours/:tour_id/reviews", bookingHandlerAPI.GetAllBookingTourReview)
 
 	//define routes/ endpoint PACKAGE
 	e.POST("/packages/:tour_id", packageHandlerAPI.CreatePackage, middlewares.JWTMiddleware())
@@ -110,4 +111,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/bookings/users", bookingHandlerAPI.GetBookingUser, middlewares.JWTMiddleware())
 	e.GET("/bookings/admin", bookingHandlerAPI.GetAllBooking, middlewares.JWTMiddleware())
 	e.GET("/bookings/pengelola", bookingHandlerAPI.GetAllBookingPengelola, middlewares.JWTMiddleware())
+
 }
