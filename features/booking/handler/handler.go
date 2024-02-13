@@ -196,3 +196,24 @@ func (handler *BookingHandler) GetAllBookingPengelola(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", bookingResponses, totalPage))
 }
+
+func (handler *BookingHandler) GetAllBookingTourReview(c echo.Context) error {
+	// Dapatkan ID tur dari parameter URL
+	tourID, err := strconv.Atoi(c.Param("tour_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("Invalid tour ID", nil))
+	}
+
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	// Panggil bookingService untuk mendapatkan semua ulasan terkait tur
+	reviews, err := handler.bookingService.GetAllBookingReview(tourID, limit)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, responses.WebResponse("Failed to get tour reviews", nil))
+	}
+
+	// Konversi ulasan ke dalam format respons yang sesuai
+	reviewResponses := ReviewCoreToResponseList(reviews)
+
+	// Kembalikan ulasan sebagai respons JSON
+	return c.JSON(http.StatusOK, responses.WebResponse("success get data", reviewResponses))
+}

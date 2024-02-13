@@ -194,3 +194,47 @@ func CoreToResponseBookingUserDetail(data *booking.Core) BookingResponseUserDeta
 	}
 	return result
 }
+
+type ReviewResponse struct {
+	ID         uint               `json:"id"`
+	BookingID  string             `json:"booking_id"`
+	UserID     uint               `json:"user_id"`
+	TextReview string             `json:"text_review"`
+	StartRate  float64            `json:"start_rate"`
+	CreatedAt  string             `json:"created_at"`
+	User       UserReviewResponse `json:"user"`
+}
+
+// type BookingReviewResponse struct {
+// 	ID       string `json:"booking_id"`
+// 	FullName string `json:"full_name"`
+// 	TourID   uint   `json:"tour_id"`
+// }
+
+type UserReviewResponse struct {
+	FullName string `json:"full_name"`
+	Image    string `json:"image"`
+}
+
+func ReviewCoreToResponse(review booking.ReviewCore) ReviewResponse {
+	return ReviewResponse{
+		ID:         review.ID,
+		BookingID:  review.BookingID,
+		UserID:     review.UserID,
+		TextReview: review.TextReview,
+		StartRate:  review.StartRate,
+		CreatedAt:  review.CreatedAt.Format("2006-01-02 15:04:05"),
+		User: UserReviewResponse{
+			FullName: review.User.FullName,
+			Image:    review.User.Image,
+		},
+	}
+}
+
+func ReviewCoreToResponseList(reviews []booking.ReviewCore) []ReviewResponse {
+	var responseList []ReviewResponse
+	for _, review := range reviews {
+		responseList = append(responseList, ReviewCoreToResponse(review))
+	}
+	return responseList
+}
