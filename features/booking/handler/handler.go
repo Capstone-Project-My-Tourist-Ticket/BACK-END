@@ -132,6 +132,23 @@ func (handler *BookingHandler) GetBookingUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, responses.WebResponse("success read data.", bookingResult))
 }
 
+func (handler *BookingHandler) GetBookingUserDetail(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	bookingId := c.Param("id")
+
+	result, errSelect := handler.bookingService.GetBookingUserDetail(userIdLogin, bookingId)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	var bookingResult = CoreToResponseBookingUserDetail(result)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data.", bookingResult))
+}
+
 func (handler *BookingHandler) GetAllBooking(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
 

@@ -8,6 +8,7 @@ import (
 	td "my-tourist-ticket/features/tour/data"
 	"my-tourist-ticket/features/user"
 	ud "my-tourist-ticket/features/user/data"
+	"my-tourist-ticket/features/voucher"
 	vd "my-tourist-ticket/features/voucher/data"
 	"time"
 
@@ -26,6 +27,7 @@ type Booking struct {
 	Status      string
 	VaNumber    string
 	Bank        string
+	BookingDate string
 	PhoneNumber string
 	Greeting    string
 	FullName    string
@@ -60,6 +62,7 @@ func CoreToModelBooking(input booking.Core) Booking {
 		Status:      input.Status,
 		VaNumber:    input.VaNumber,
 		Bank:        input.Bank,
+		BookingDate: input.BookingDate,
 		PhoneNumber: input.PhoneNumber,
 		Greeting:    input.Greeting,
 		FullName:    input.FullName,
@@ -81,6 +84,7 @@ func ModelToCoreBooking(model Booking) booking.Core {
 		Status:      model.Status,
 		VaNumber:    model.VaNumber,
 		Bank:        model.Bank,
+		BookingDate: model.BookingDate,
 		PhoneNumber: model.PhoneNumber,
 		Greeting:    model.Greeting,
 		FullName:    model.FullName,
@@ -125,6 +129,7 @@ func (b Booking) ModelToCore() booking.Core {
 		Status:      b.Status,
 		VaNumber:    b.VaNumber,
 		Bank:        b.Bank,
+		BookingDate: b.BookingDate,
 		PhoneNumber: b.PhoneNumber,
 		Greeting:    b.Greeting,
 		FullName:    b.FullName,
@@ -148,12 +153,18 @@ func (b Booking) ModelToCore() booking.Core {
 		Tour: tour.Core{
 			ID:       b.Tour.ID,
 			TourName: b.Tour.TourName,
+			Address:  b.Tour.Addres,
+			Image:    b.Tour.Image,
 		},
 		Package: packages.Core{
 			ID:          b.Package.ID,
 			TourID:      b.Package.TourID,
 			PackageName: b.Package.PackageName,
 			Price:       b.Package.Price,
+		},
+		Voucher: voucher.Core{
+			ID:   b.Voucher.ID,
+			Name: b.Voucher.Name,
 		},
 	}
 }

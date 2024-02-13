@@ -19,6 +19,7 @@ type Core struct {
 	Status      string
 	VaNumber    string
 	Bank        string
+	BookingDate string
 	PhoneNumber string
 	Greeting    string
 	FullName    string
@@ -50,6 +51,7 @@ type BookingDataInterface interface {
 	InsertBookingReview(inputReview ReviewCore) error
 	WebhoocksData(reqNotif Core) error
 	SelectBookingUser(userIdLogin int) ([]Core, error)
+	SelectBookingUserDetail(userIdLogin int, bookingId string) (*Core, error)
 	SelectAllBooking(page, limit int) ([]Core, int, error)
 	GetUserRoleById(userId int) (string, error)
 	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)
@@ -62,6 +64,7 @@ type BookingServiceInterface interface {
 	CreateBookingReview(inputReview ReviewCore) error
 	WebhoocksService(reqNotif Core) error
 	GetBookingUser(userIdLogin int) ([]Core, error)
+	GetBookingUserDetail(userIdLogin int, bookingId string) (*Core, error)
 	SelectAllBooking(page, limit int) ([]Core, int, error)
 	GetUserRoleById(userId int) (string, error)
 	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)

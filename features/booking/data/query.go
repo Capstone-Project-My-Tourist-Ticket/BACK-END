@@ -138,6 +138,18 @@ func (repo *bookingQuery) SelectBookingUser(userIdLogin int) ([]booking.Core, er
 	return results, nil
 }
 
+func (repo *bookingQuery) SelectBookingUserDetail(userIdLogin int, bookingId string) (*booking.Core, error) {
+	var bookingDataGorm Booking
+	tx := repo.db.Preload("Tour").Preload("Package").Preload("Voucher").Where("user_id = ? AND id = ?", userIdLogin, bookingId).Find(&bookingDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	result := bookingDataGorm.ModelToCore()
+
+	return &result, nil
+}
+
 // SelectAllBooking implements booking.BookingDataInterface.
 func (repo *bookingQuery) SelectAllBooking(page int, limit int) ([]booking.Core, int, error) {
 	var bookingGorm []Booking
