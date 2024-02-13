@@ -71,6 +71,23 @@ func ModelToCore(t Tour) tour.Core {
 	}
 }
 
+func (t Tour) ModelToCoreTourBooking() tour.Core {
+	return tour.Core{
+		ID:          t.ID,
+		CityId:      t.CityId,
+		UserId:      t.UserId,
+		TourName:    t.TourName,
+		Description: t.Description,
+		Image:       t.Image,
+		Thumbnail:   t.Thumbnail,
+		Address:     t.Addres,
+		Latitude:    t.Latitude,
+		Longitude:   t.Longitude,
+		CreatedAt:   t.CreatedAt,
+		UpdatedAt:   t.UpdatedAt,
+	}
+}
+
 func ModelToCoreList(data []Tour) []tour.Core {
 	var results []tour.Core
 	for _, t := range data {

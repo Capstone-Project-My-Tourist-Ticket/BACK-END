@@ -70,6 +70,11 @@ func (service *bookingService) WebhoocksService(reqNotif booking.Core) error {
 	return nil
 }
 
+func (service *bookingService) GetBookingUser(userIdLogin int) ([]booking.Core, error) {
+	result, err := service.bookingData.SelectBookingUser(userIdLogin)
+	return result, err
+}
+
 // SelectAllBooking implements booking.BookingServiceInterface.
 func (service *bookingService) SelectAllBooking(page int, limit int) ([]booking.Core, int, error) {
 	if page == 0 {
