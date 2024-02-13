@@ -110,3 +110,16 @@ func (service *bookingService) SelectAllBookingPengelola(pengelolaID int, page i
 
 	return bookings, totalPage, nil
 }
+
+// GetAllBookingReview implements booking.BookingServiceInterface.
+func (service *bookingService) GetAllBookingReview(tourId, limit int) ([]booking.ReviewCore, error) {
+	if limit == 0 {
+		limit = 2
+	}
+
+	reviews, err := service.bookingData.GetAllBookingReview(tourId, limit)
+	if err != nil {
+		return nil, fmt.Errorf("error getting all booking reviews: %w", err)
+	}
+	return reviews, nil
+}

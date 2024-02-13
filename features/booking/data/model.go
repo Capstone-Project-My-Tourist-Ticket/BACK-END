@@ -194,3 +194,18 @@ func (b Booking) ModelToCoreBookingUser() booking.Core {
 		Tour:        b.Tour.ModelToCoreTourBooking(),
 	}
 }
+
+func ModelToReviewCore(r Review) booking.ReviewCore {
+	return booking.ReviewCore{
+		ID:         r.ID,
+		BookingID:  r.BookingID,
+		UserID:     r.UserID,
+		TextReview: r.TextReview,
+		StartRate:  r.StartRate,
+		CreatedAt:  r.CreatedAt,
+		User: user.Core{
+			FullName: r.User.FullName,
+			Image:    r.User.Image,
+		},
+	}
+}

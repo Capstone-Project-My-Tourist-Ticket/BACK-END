@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"my-tourist-ticket/features/booking"
 	pd "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/user"
@@ -196,4 +197,34 @@ func (repo *bookingQuery) SelectAllBookingPengelola(pengelolaID int, page int, l
 	}
 
 	return bookingCore, totalPage, nil
+}
+
+// GetAllBookingReview implements booking.BookingDataInterface.
+func (repo *bookingQuery) GetAllBookingReview(tourId, limit int) ([]booking.ReviewCore, error) {
+	// Check if tour ID exists
+	var count int64
+	repo.db.Model(&Booking{}).Where("tour_id = ?", tourId).Count(&count)
+	if count == 0 {
+		return nil, fmt.Errorf("tour ID %d does not exist", tourId)
+	}
+
+	var reviews []Review
+	query := repo.db.
+		Preload("User").
+		Joins("JOIN bookings ON reviews.booking_id = bookings.id").
+		Where("bookings.tour_id = ?", tourId).
+		Order("reviews.created_at desc").
+		Limit(limit).
+		Find(&reviews)
+
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	var reviewCores []booking.ReviewCore
+	for _, r := range reviews {
+		reviewCores = append(reviewCores, ModelToReviewCore(r))
+	}
+
+	return reviewCores, nil
 }
