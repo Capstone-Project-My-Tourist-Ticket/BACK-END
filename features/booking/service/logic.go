@@ -92,3 +92,21 @@ func (service *bookingService) SelectAllBooking(page int, limit int) ([]booking.
 
 	return bookings, totalPage, nil
 }
+
+// SelectAllPengelola implements booking.BookingServiceInterface.
+func (service *bookingService) SelectAllBookingPengelola(pengelolaID int, page int, limit int) ([]booking.Core, int, error) {
+	if page == 0 {
+		page = 1
+	}
+
+	if limit == 0 {
+		limit = 8
+	}
+
+	bookings, totalPage, err := service.bookingData.SelectAllBookingPengelola(pengelolaID, page, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return bookings, totalPage, nil
+}

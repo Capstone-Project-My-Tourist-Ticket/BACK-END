@@ -1585,6 +1585,7 @@ paths:
       tags:
         - Booking
       summary: Get All Booking
+      description: this only can be logged by admin
       parameters:
         - name: page
           in: query
@@ -1600,6 +1601,57 @@ paths:
           schema:
             type: integer
             default: 8
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: successful get all booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingGetAllResponse'
+        '400':
+          description: Error Get Tour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: City Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
+  
+  /bookings/pengelola:
+    get:
+      tags:
+        - Booking
+      summary: Get All Booking Pengelola
+      description: this only can be logged by pengelola
+      parameters:
+        - name: page
+          in: query
+          description: Nomor halaman yang diminta
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Jumlah t per halaman
+          required: false
+          schema:
+            type: integer
+            default: 8
+      security:
+        - jwtAuth: []
       responses:
         '200':
           description: successful get all booking

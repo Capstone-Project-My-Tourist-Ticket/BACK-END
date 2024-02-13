@@ -169,3 +169,31 @@ func (repo *bookingQuery) SelectAllBooking(page int, limit int) ([]booking.Core,
 
 	return bookingCore, totalPage, nil
 }
+
+// SelectAllBookingPengelola implements booking.BookingDataInterface.
+func (repo *bookingQuery) SelectAllBookingPengelola(pengelolaID int, page int, limit int) ([]booking.Core, int, error) {
+	var bookingGorm []Booking
+	query := repo.db.Order("created_at desc")
+
+	var totalData int64
+	err := query.Model(&Booking{}).Where("tour_id IN (SELECT id FROM tours WHERE user_id = ?)", pengelolaID).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	// Retrieve booking data with associated user, tour, and package
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("Package").Preload("Tour").Find(&bookingGorm).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Convert booking data to booking.Core
+	bookingCore, err := ModelToCoreList(bookingGorm)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return bookingCore, totalPage, nil
+}

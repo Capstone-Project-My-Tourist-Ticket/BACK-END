@@ -52,6 +52,7 @@ type BookingDataInterface interface {
 	SelectBookingUser(userIdLogin int) ([]Core, error)
 	SelectAllBooking(page, limit int) ([]Core, int, error)
 	GetUserRoleById(userId int) (string, error)
+	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)
 }
 
 // interface untuk Service Layer
@@ -63,4 +64,5 @@ type BookingServiceInterface interface {
 	GetBookingUser(userIdLogin int) ([]Core, error)
 	SelectAllBooking(page, limit int) ([]Core, int, error)
 	GetUserRoleById(userId int) (string, error)
+	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)
 }

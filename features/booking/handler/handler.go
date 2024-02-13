@@ -155,3 +155,27 @@ func (handler *BookingHandler) GetAllBooking(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", bookingResponses, totalPage))
 }
+
+func (handler *BookingHandler) GetAllBookingPengelola(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.bookingService.GetUserRoleById(userIdLogin)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "pengelola" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an pengelola", nil))
+	}
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	bookings, totalPage, err := handler.bookingService.SelectAllBookingPengelola(userIdLogin, page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	bookingResponses := CoreToResponseList(bookings)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", bookingResponses, totalPage))
+}
