@@ -4,6 +4,7 @@ import (
 	"errors"
 	"my-tourist-ticket/features/booking"
 	pd "my-tourist-ticket/features/package/data"
+	"my-tourist-ticket/features/user"
 	vd "my-tourist-ticket/features/voucher/data"
 	"my-tourist-ticket/utils/externalapi"
 
@@ -20,6 +21,16 @@ func New(db *gorm.DB, mi externalapi.MidtransInterface) booking.BookingDataInter
 		db:              db,
 		paymentMidtrans: mi,
 	}
+}
+
+// GetUserRoleById implements booking.BookingDataInterface.
+func (repo *bookingQuery) GetUserRoleById(userId int) (string, error) {
+	var user user.Core
+	if err := repo.db.Table("users").Where("id = ?", userId).First(&user).Error; err != nil {
+		return "", err
+	}
+
+	return user.Role, nil
 }
 
 // InsertBooking implements booking.BookingDataInterface.
@@ -110,4 +121,36 @@ func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
 		return errors.New("error record not found ")
 	}
 	return nil
+}
+
+// SelectAllBooking implements booking.BookingDataInterface.
+func (repo *bookingQuery) SelectAllBooking(page int, limit int) ([]booking.Core, int, error) {
+	var bookingGorm []Booking
+	query := repo.db.Order("created_at desc")
+
+	var totalData int64
+	err := query.Model(&Booking{}).Count(&totalData).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
+
+	// Retrieve booking data with associated user, tour, and package
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("Package").Preload("Tour").Find(&bookingGorm).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Convert booking data to booking.Core
+	bookingCore, err := ModelToCoreList(bookingGorm)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// for i := range bookingCore {
+	// 	bookingCore[i].Package.ID = bookingGorm[i].PackageID
+	// }
+
+	return bookingCore, totalPage, nil
 }

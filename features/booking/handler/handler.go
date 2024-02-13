@@ -5,6 +5,7 @@ import (
 	"my-tourist-ticket/features/booking"
 	"my-tourist-ticket/utils/responses"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -114,4 +115,28 @@ func (handler *BookingHandler) WebhoocksNotification(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("transaction success", nil))
+}
+
+func (handler *BookingHandler) GetAllBooking(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	userRole, err := handler.bookingService.GetUserRoleById(userIdLogin)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "admin" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an admin", nil))
+	}
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	bookings, totalPage, err := handler.bookingService.SelectAllBooking(page, limit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	bookingResponses := CoreToResponseList(bookings)
+
+	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", bookingResponses, totalPage))
 }
