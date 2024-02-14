@@ -3,6 +3,7 @@ package data
 import (
 	"errors"
 	"fmt"
+	"math"
 	"my-tourist-ticket/features/booking"
 	pd "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/user"
@@ -241,4 +242,49 @@ func (repo *bookingQuery) GetAllBookingReview(tourId, limit int) ([]booking.Revi
 	}
 
 	return reviewCores, nil
+}
+
+// GetAverageTourReview implements booking.BookingDataInterface.
+func (repo *bookingQuery) GetAverageTourReview(tourId int) (float64, error) {
+	var averageReview float64
+	var totalReviews int64
+	err := repo.db.Model(&Review{}).
+		Joins("JOIN bookings ON reviews.booking_id = bookings.id").
+		Where("bookings.tour_id = ?", tourId).
+		Count(&totalReviews).Error
+	if err != nil {
+		return 0, err
+	}
+
+	if totalReviews == 0 {
+		return 0, nil
+	}
+
+	var sumRating float64
+	err = repo.db.Model(&Review{}).
+		Select("COALESCE(SUM(start_rate), 0)").
+		Joins("JOIN bookings ON reviews.booking_id = bookings.id").
+		Where("bookings.tour_id = ?", tourId).
+		Scan(&sumRating).Error
+	if err != nil {
+		return 0, err
+	}
+
+	averageReview = float64(sumRating) / float64(totalReviews)
+	averageReviews := math.Round(averageReview*10) / 10
+	return averageReviews, nil
+}
+
+// GetTotalTourReview implements booking.BookingDataInterface.
+func (repo *bookingQuery) GetTotalTourReview(tourId int) (int, error) {
+	var totalReviews int64
+	err := repo.db.Model(&Review{}).
+		Joins("JOIN bookings ON reviews.booking_id = bookings.id").
+		Where("bookings.tour_id = ?", tourId).
+		Count(&totalReviews).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return int(totalReviews), nil
 }
