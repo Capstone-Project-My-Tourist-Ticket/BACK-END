@@ -96,7 +96,7 @@ func (handler *VoucherHandler) UpdateVoucher(c echo.Context) error {
 		} else if strings.Contains(errUpdate.Error(), "tanggal expired voucher tidak boleh kosong") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 		} else {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+			return c.JSON(http.StatusNotFound, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
 		}
 	}
 
@@ -111,7 +111,7 @@ func (handler *VoucherHandler) DeleteVoucher(c echo.Context) error {
 
 	errDelete := handler.voucherService.Delete(voucherId)
 	if errDelete != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete data "+errDelete.Error(), nil))
+		return c.JSON(http.StatusNotFound, responses.WebResponse("error delete data "+errDelete.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
