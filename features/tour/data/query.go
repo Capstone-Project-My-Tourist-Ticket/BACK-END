@@ -195,10 +195,7 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tourDataGorms).Error
-	if err != nil {
-		return nil, 0, err
-	}
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourDataGorms).Error
 
 	var results []tour.Core
 	for _, tourDataGorm := range tourDataGorms {
