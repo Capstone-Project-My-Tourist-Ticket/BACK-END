@@ -83,41 +83,51 @@ func (repo *cityQuery) Update(cityId int, input city.Core, image *multipart.File
 	thumbnailGorm, _ := repo.GetThumbnailByCityId(cityId)
 
 	// Hapus image lama jika ada
-	if imgGorm != "" {
-		publicID := cloudinary.GetPublicID(imgGorm)
-		if err := repo.uploadService.Destroy(publicID); err != nil {
-			return fmt.Errorf("error destroying old image from Cloudinary: %w", err)
+	if image != nil {
+		if imgGorm != "" {
+			publicID := cloudinary.GetPublicID(imgGorm)
+			if err := repo.uploadService.Destroy(publicID); err != nil {
+				return fmt.Errorf("error destroying old image from Cloudinary: %w", err)
+			}
+			fmt.Print("image publicID", publicID)
 		}
-		fmt.Print("image publicID", publicID)
+
+		// Upload image baru ke Cloudinary
+		imageURL, err := repo.uploadService.UploadImage(image)
+		if err != nil {
+			return fmt.Errorf("error uploading image to Cloudinary: %w", err)
+		}
+		imgGorm = imageURL
 	}
 
 	// Hapus thumbnail lama jika ada
-	if thumbnailGorm != "" {
-		publicID := cloudinary.GetPublicID(thumbnailGorm)
-		if err := repo.uploadService.Destroy(publicID); err != nil {
-			return fmt.Errorf("error destroying old thumbnail from Cloudinary: %w", err)
+	if thumbnail != nil {
+		if thumbnailGorm != "" {
+			publicID := cloudinary.GetPublicID(thumbnailGorm)
+			if err := repo.uploadService.Destroy(publicID); err != nil {
+				return fmt.Errorf("error destroying old thumbnail from Cloudinary: %w", err)
+			}
+			fmt.Print("thumbnail publicID", publicID)
 		}
-		fmt.Print("thumbnail publicID", publicID)
-	}
 
-	// Upload image baru ke Cloudinary
-	imageURL, err := repo.uploadService.UploadImage(image)
-	if err != nil {
-		return fmt.Errorf("error uploading image to Cloudinary: %w", err)
-	}
-
-	// Upload thumbnail baru ke Cloudinary
-	thumbnailURL, err := repo.uploadService.UploadImage(thumbnail)
-	if err != nil {
-		return fmt.Errorf("error uploading thumbnail to Cloudinary: %w", err)
+		// Upload thumbnail baru ke Cloudinary
+		thumbnailURL, err := repo.uploadService.UploadImage(thumbnail)
+		if err != nil {
+			return fmt.Errorf("error uploading thumbnail to Cloudinary: %w", err)
+		}
+		thumbnailGorm = thumbnailURL
 	}
 
 	// Perbarui atribut-atribut yang diperlukan
 	cityGorm := CoreToModel(input)
-	cityGorm.Image = imageURL
-	cityGorm.Thumbnail = thumbnailURL
+	if imgGorm != "" {
+		cityGorm.Image = imgGorm
+	}
+	if thumbnailGorm != "" {
+		cityGorm.Thumbnail = thumbnailGorm
+	}
 
-	// Lakukan update data kota di dalam database
+	// Lakukan update data city di dalam database
 	tx := repo.db.Model(&City{}).Where("id = ?", cityId).Updates(cityGorm)
 	if tx.Error != nil {
 		return fmt.Errorf("error updating city: %w", tx.Error)
