@@ -30,6 +30,10 @@ import (
 	bh "my-tourist-ticket/features/booking/handler"
 	bs "my-tourist-ticket/features/booking/service"
 
+	dd "my-tourist-ticket/features/dashboard/data"
+	dh "my-tourist-ticket/features/dashboard/handler"
+	ds "my-tourist-ticket/features/dashboard/service"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -62,6 +66,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	bookingData := bd.New(db, midtrans)
 	bookingService := bs.New(bookingData)
 	bookingHandlerAPI := bh.New(bookingService)
+
+	dashboardData := dd.NewDashboard(db)
+	dashboardService := ds.New(dashboardData)
+	dashboardHandlerAPI := dh.New(dashboardService)
 
 	// define routes/ endpoint USERS
 	e.POST("/login", userHandlerAPI.Login)
@@ -112,4 +120,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/bookings/admin", bookingHandlerAPI.GetAllBooking, middlewares.JWTMiddleware())
 	e.GET("/bookings/pengelola", bookingHandlerAPI.GetAllBookingPengelola, middlewares.JWTMiddleware())
 
+	//define routes/ endpoint Dashboard
+	e.GET("/admin/dashboard", dashboardHandlerAPI.Dashboard, middlewares.JWTMiddleware())
 }
