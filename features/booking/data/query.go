@@ -50,9 +50,11 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 		if ts.Error != nil {
 			return nil, ts.Error
 		}
-		totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
+		// totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
+		totalHargaKeseluruhan = (packageGorm.Price * inputBooking.Quantity) - voucherGorm.DiscountValue
 	} else {
-		totalHargaKeseluruhan = (packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity
+		// totalHargaKeseluruhan = (packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity
+		totalHargaKeseluruhan = packageGorm.Price * inputBooking.Quantity
 	}
 
 	inputBooking.GrossAmount = totalHargaKeseluruhan
@@ -137,6 +139,18 @@ func (repo *bookingQuery) SelectBookingUser(userIdLogin int) ([]booking.Core, er
 		results = append(results, result)
 	}
 	return results, nil
+}
+
+func (repo *bookingQuery) SelectBookingUserDetail(userIdLogin int, bookingId string) (*booking.Core, error) {
+	var bookingDataGorm Booking
+	tx := repo.db.Preload("Tour").Preload("Package").Preload("Voucher").Where("user_id = ? AND id = ?", userIdLogin, bookingId).Find(&bookingDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	result := bookingDataGorm.ModelToCore()
+
+	return &result, nil
 }
 
 // SelectAllBooking implements booking.BookingDataInterface.

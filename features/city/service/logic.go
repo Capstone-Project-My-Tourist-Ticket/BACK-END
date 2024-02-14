@@ -69,7 +69,7 @@ func (service *cityService) SelectAllCity(page int, limit int) ([]city.Core, int
 	}
 
 	if limit == 0 {
-		limit = 5
+		limit = 8
 	}
 
 	citys, totalPage, err := service.cityData.SelectAllCity(page, limit)
