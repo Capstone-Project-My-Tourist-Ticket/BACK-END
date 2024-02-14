@@ -132,7 +132,7 @@ func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.File
 // SelectTourById implements tour.TourDataInterface.
 func (repo *tourQuery) SelectTourById(tourId int) (tour.Core, error) {
 	var tourModel Tour
-	if err := repo.db.Preload("City").First(&tourModel, tourId).Error; err != nil {
+	if err := repo.db.First(&tourModel, tourId).Error; err != nil {
 		return tour.Core{}, err
 	}
 
@@ -195,10 +195,11 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourDataGorms).Error
+	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tourDataGorms).Error
 	if err != nil {
 		return nil, 0, err
 	}
+
 	var results []tour.Core
 	for _, tourDataGorm := range tourDataGorms {
 		result := ModelToCore(tourDataGorm)
@@ -245,13 +246,6 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.ReportCore) error {
 	dataGorm := CoreReportToModelReport(input)
 
-	var existingReport Report
-	if err := repo.db.Where("user_id = ? AND tour_id = ?", userId, tourId).First(&existingReport).Error; err == nil {
-		return errors.New("user has already reported this tour")
-	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
-	}
-
 	tx := repo.db.Create(&dataGorm)
 	if tx.Error != nil {
 		return tx.Error
@@ -282,7 +276,7 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
 	var tourDataGorms []Tour
 	log.Println("query", query)
-	tx := repo.db.Preload("City").Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

@@ -1819,9 +1819,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response404'
+  
+  /admin/dashboard:
+    get:
+      tags:
+        - Admin
+      summary: "Dashboard Report"
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          description: Success get data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDashboardResponse"
+        '400':
+          description: Error Get Dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response400'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response500'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response404'
 
 components:
-  schemas:
+  schemas: 
 
     Response200:
             type: object
@@ -2291,6 +2324,63 @@ components:
               image_city: 'https://sariroti.com/smartphone/photovivo.jpg'
               thumbnail_city: 'https://sariroti.com/smartphone/photovivo.jpg'
     
+    GetDashboardResponse:
+      properties:
+        message:
+          type: string
+          example: "Succes Read Data"
+        data:
+            type: object
+            properties:
+                total_user:
+                  type: string
+                total_pengelola:
+                  type: integer
+                total_transaction:
+                  type: integer
+            example:
+            - total_user: 100
+              total_pengelola: 10
+              total_transaction: 100
+              recent_booking :
+                  - booking_id: eb0248ba-ebd1-4c6f-9132-cd5d2f3a4e53
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: 2760237f-106a-4877-9b86-74c08c761084
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: 8f45efe5-93fb-44fd-a541-c2ec9c0b87f7
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: e264cfa5-44d5-4e2c-98a6-b4c59abf9453
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: be1bf722-af57-4bcf-9fea-f57dfa14723c
+                    gross_amount: 40000
+                    tour:
+                      tour_name: Pantai Pandawa
+              top_tours:
+                  - id: 1
+                    tour_name: Pantai Pandawa
+                    image: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707581939/BE20_MyTouristTicket/egduku6hi8omh2xrnez6.jpg"
+                    thumbnail: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707581946/BE20_MyTouristTicket/jgwlyp1fyoeodexidmeb.jpg"
+                    city:
+                      city_name: Jakarta
+                  - id: 2
+                    tour_name: TMII
+                    image: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707899190/BE20_MyTouristTicket/ofbxdsdqtpiyftw1yvpd.jpg"
+                    thumbnail: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707899192/BE20_MyTouristTicket/g77pomj79b4errl5zh1x.jpg"
+                    city:
+                      city_name: Jakarta
+                  
+                
+
+
+
     TourGetAllResponse:
       properties:
         message:
