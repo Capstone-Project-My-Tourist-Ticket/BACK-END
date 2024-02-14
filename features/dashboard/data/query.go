@@ -33,7 +33,7 @@ func (repo *dashboardQuery) GetUserRoleById(userId int) (string, error) {
 // GetTotalCustomer implements dashboard.DashboardDataInterface.
 func (repo *dashboardQuery) GetTotalCustomer() (int, error) {
 	var totalUser int64
-	err := repo.db.Model(&ud.User{}).Where(&ud.User{Role: "user"}).Count(&totalUser).Error
+	err := repo.db.Model(&ud.User{}).Where(&ud.User{Role: "costumer"}).Count(&totalUser).Error
 	return int(totalUser), err
 }
 
@@ -56,7 +56,7 @@ func (repo *dashboardQuery) GetTotalTransaction() (int, error) {
 // GetRecentTransaction implements dashboard.DashboardDataInterface.
 func (repo *dashboardQuery) GetRecentTransaction() ([]dashboard.Booking, error) {
 	var gormBookings []bd.Booking
-	if err := repo.db.Model(&bd.Booking{}).Order("created_at desc").Limit(3).Find(&gormBookings).Error; err != nil {
+	if err := repo.db.Preload("Tour").Preload("Package").Model(&bd.Booking{}).Order("created_at desc").Limit(5).Find(&gormBookings).Error; err != nil {
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (repo *dashboardQuery) GetTopTour() ([]dashboard.Tour, error) {
 		Limit(5)
 
 	// Lakukan penggabungan (join) dengan tabel td.Tour untuk mendapatkan data tur
-	query := repo.db.Model(&td.Tour{}).
+	query := repo.db.Preload("City").Model(&td.Tour{}).
 		Joins("JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
 		Order("bookings.booking_count DESC").
 		Find(&topTours)

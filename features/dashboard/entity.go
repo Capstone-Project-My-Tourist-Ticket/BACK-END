@@ -1,6 +1,9 @@
 package dashboard
 
 import (
+	"my-tourist-ticket/features/city"
+	packages "my-tourist-ticket/features/package"
+	"my-tourist-ticket/features/tour"
 	"time"
 )
 
@@ -35,8 +38,8 @@ type Booking struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	// User        user.Core
-	// Tour        tour.Core
-	// Package     packages.Core
+	Tour    tour.Core
+	Package packages.Core
 	// Voucher     voucher.Core
 }
 
@@ -53,7 +56,7 @@ type Tour struct {
 	Longitude   float64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	// City        city.Core
+	City        city.Core
 }
 
 type DashboardDataInterface interface {

@@ -2,7 +2,10 @@ package data
 
 import (
 	bd "my-tourist-ticket/features/booking/data"
+	"my-tourist-ticket/features/city"
 	"my-tourist-ticket/features/dashboard"
+	packages "my-tourist-ticket/features/package"
+	"my-tourist-ticket/features/tour"
 	td "my-tourist-ticket/features/tour/data"
 )
 
@@ -25,6 +28,12 @@ func BookingModelToDashboard(mb bd.Booking) dashboard.Booking {
 		Quantity:    mb.Quantity,
 		ExpiredAt:   mb.ExpiredAt,
 		CreatedAt:   mb.CreatedAt,
+		Tour: tour.Core{
+			TourName: mb.Tour.TourName,
+		},
+		Package: packages.Core{
+			Price: mb.Package.Price,
+		},
 	}
 }
 
@@ -42,5 +51,8 @@ func TourModelToDashboard(tour td.Tour) dashboard.Tour {
 		Longitude:   tour.Longitude,
 		CreatedAt:   tour.CreatedAt,
 		UpdatedAt:   tour.UpdatedAt,
+		City: city.Core{
+			CityName: tour.City.City,
+		},
 	}
 }

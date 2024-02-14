@@ -2343,123 +2343,39 @@ components:
               total_pengelola: 10
               total_transaction: 100
               recent_booking :
-                  - booking_id: "safdxczdfes1"
-                    user_id: 1
-                    tour_id: 4
-                    package_id: 1
-                    voucher_id: 1
-                    payment_type: BANK
-                    gross_amount: 10000
-                    status: dibayar
-                    va_number: 131453
-                    bank: BCA
-                    phone_number: 343441
-                    greeting: MRS
-                    full_name: Dian sastro
-                    email: email@mail.com,
-                    quantity: 2
-                    payment_expired: "2024-02-09 21:34:12"
-                    created_at: "2024-02-10 21:34:12"
-                  - booking_id: "safdxczdfes1"
-                    user_id: 2
-                    tour_id: 4
-                    package_id: 1
-                    voucher_id: 1
-                    payment_type: BANK
-                    gross_amount: 10000
-                    status: dibayar
-                    va_number: 131453
-                    bank: BCA
-                    phone_number: 343441
-                    greeting: MRS
-                    full_name: Dian sastro
-                    email: email@mail.com,
-                    quantity: 2
-                    payment_expired: "2024-02-09 21:34:12"
-                    created_at: "2024-02-10 21:34:12"
-                  - booking_id: "safdxczdfes1"
-                    user_id: 3
-                    tour_id: 4
-                    package_id: 1
-                    voucher_id: 1
-                    payment_type: BANK
-                    gross_amount: 10000
-                    status: dibayar
-                    va_number: 131453
-                    bank: BCA
-                    phone_number: 343441
-                    greeting: MRS
-                    full_name: Dian sastro
-                    email: email@mail.com,
-                    quantity: 2
-                    payment_expired: "2024-02-09 21:34:12"
-                    created_at: "2024-02-10 21:34:12"
-                  
-              top_tours: 
+                  - booking_id: eb0248ba-ebd1-4c6f-9132-cd5d2f3a4e53
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: 2760237f-106a-4877-9b86-74c08c761084
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: 8f45efe5-93fb-44fd-a541-c2ec9c0b87f7
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: e264cfa5-44d5-4e2c-98a6-b4c59abf9453
+                    gross_amount: 40000
+                    tour:
+                      tour_name: TMII
+                  - booking_id: be1bf722-af57-4bcf-9fea-f57dfa14723c
+                    gross_amount: 40000
+                    tour:
+                      tour_name: Pantai Pandawa
+              top_tours:
                   - id: 1
-                    city_id: 1
-                    user_id: 8
-                    tour_name: Gunung Krakatau 8
-                    description: Gunung Krakatau adalah
-                    image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491816/BE20_MyTouristTicket/onbl5nueg0vcco0jabil.jpg
-                    thumbnail: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491817/BE20_MyTouristTicket/cgcz6c7nr099rmefukve.jpg
-                    address: Jl. lampung
-                    latitude: 3.4354634,
-                    longitude: -313.43546,
-                    created_at: 2024-02-09 22:16:57
-                    updated_at": 2024-02-09 22:16:57
-                  
+                    tour_name: Pantai Pandawa
+                    image: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707581939/BE20_MyTouristTicket/egduku6hi8omh2xrnez6.jpg"
+                    thumbnail: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707581946/BE20_MyTouristTicket/jgwlyp1fyoeodexidmeb.jpg"
+                    city:
+                      city_name: Jakarta
                   - id: 2
-                    city_id: 2
-                    user_id: 8
-                    tour_name: Ancol
-                    description: Ancol adalah
-                    image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491816/BE20_MyTouristTicket/onbl5nueg0vcco0jabil.jpg
-                    thumbnail: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491817/BE20_MyTouristTicket/cgcz6c7nr099rmefukve.jpg
-                    address: Jl. kenangan
-                    latitude: 3.4354634,
-                    longitude: -313.43546,
-                    created_at: 2024-02-09 22:16:57
-                    updated_at": 2024-02-09 22:16:57
-                  
-                  - id: 3
-                    city_id: 3
-                    user_id: 3
-                    tour_name: Dufan
-                    description: Dufan adalah
-                    image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491816/BE20_MyTouristTicket/onbl5nueg0vcco0jabil.jpg
-                    thumbnail: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491817/BE20_MyTouristTicket/cgcz6c7nr099rmefukve.jpg
-                    address: Jl. Dufan
-                    latitude: 3.4354634,
-                    longitude: -313.43546,
-                    created_at: 2024-02-09 22:16:57
-                    updated_at": 2024-02-09 22:16:57
-                  
-                  - id: 4
-                    city_id: 4
-                    user_id: 4
-                    tour_name: Gunung Bromo
-                    description: Gunung Bromo adalah
-                    image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491816/BE20_MyTouristTicket/onbl5nueg0vcco0jabil.jpg
-                    thumbnail: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491817/BE20_MyTouristTicket/cgcz6c7nr099rmefukve.jpg
-                    address: Jl. Bromo
-                    latitude: 3.4354634,
-                    longitude: -313.43546,
-                    created_at: 2024-02-09 22:16:57
-                    updated_at": 2024-02-09 22:16:57
-                  
-                  - id: 5
-                    city_id: 5
-                    user_id: 5
-                    tour_name: Raja Ampat
-                    description: Raja ampat adalah
-                    image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491816/BE20_MyTouristTicket/onbl5nueg0vcco0jabil.jpg
-                    thumbnail: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707491817/BE20_MyTouristTicket/cgcz6c7nr099rmefukve.jpg
-                    address: Jl. raja ampat
-                    latitude: 3.4354634,
-                    longitude: -313.43546,
-                    created_at: 2024-02-09 22:16:57
-                    updated_at": 2024-02-09 22:16:57
+                    tour_name: TMII
+                    image: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707899190/BE20_MyTouristTicket/ofbxdsdqtpiyftw1yvpd.jpg"
+                    thumbnail: "https://res.cloudinary.com/dxs6vn7i7/image/upload/v1707899192/BE20_MyTouristTicket/g77pomj79b4errl5zh1x.jpg"
+                    city:
+                      city_name: Jakarta
                   
                 
 
