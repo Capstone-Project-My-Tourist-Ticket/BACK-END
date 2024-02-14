@@ -1802,7 +1802,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReviewGetAllResponse'
         '400':
-          description: Error Get Tour
+          description: Error Get Review
           content:
             application/json:
               schema:
@@ -1814,7 +1814,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response500'
         '404':
-          description: City Not Found
+          description: Not Found
           content:
             application/json:
               schema:
@@ -2515,39 +2515,44 @@ components:
         data:
             type: object
             properties:
-                id: 
-                  type: integer
-                booking_id:
-                  type: string
-                user_id: 
-                  type: integer
-                text_review: 
-                  type: string
-                star_rate: 
-                  type: integer
-                created_at: 
-                  type: string 
+              total_review: 
+                type: integer
+              average_review:
+                type: integer
+                # id: 
+                #   type: integer
+                # booking_id:
+                #   type: string
+                # user_id: 
+                #   type: integer
+                # text_review: 
+                #   type: string
+                # star_rate: 
+                #   type: integer
+                # created_at: 
+                #   type: string 
 
             example:
-            - id: 1
-              booking_id: "safdxczdfes1"
-              user_id: 1
-              text_review: mantap tour (y)!
-              created_at: "2024-02-10 21:34:12"
-              user:
-                    full_name: Jhon doe
-                    image: www.photoprofile.com
+              total_review: 2
+              average_review: 4.5
+              reviews:
+                - user_id: 1
+                  text_review: mantap tour (y)!
+                  star_rate: 4.5
+                  created_at: "2024-02-10 21:34:12"
+                  user:
+                        full_name: Jhon doe
+                        image: www.photoprofile.com
+              
+                - user_id: 2
+                  text_review: mantap tour (y)!
+                  star_rate: 5
+                  created_at: "2024-02-10 21:34:12"
+                  user:
+                        full_name: Doe jhon
+                        image: www.photoprofile.com
             
-            - id: 2
-              booking_id: "safdxczdfes1"
-              user_id: 1
-              text_review: mantap tour (y)!
-              created_at: "2024-02-10 21:34:12"
-              user:
-                    full_name: Jhon doe
-                    image: www.photoprofile.com
-          
-            
+              
             
 
     CityTourGetAllResponse:

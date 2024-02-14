@@ -116,15 +116,30 @@ func (service *bookingService) SelectAllBookingPengelola(pengelolaID int, page i
 	return bookings, totalPage, nil
 }
 
-// GetAllBookingReview implements booking.BookingServiceInterface.
-func (service *bookingService) GetAllBookingReview(tourId, limit int) ([]booking.ReviewCore, error) {
+func (service *bookingService) GetAllBookingReview(tourId, limit int) (*booking.ReviewTourCore, error) {
 	if limit == 0 {
 		limit = 2
 	}
+	rev := &booking.ReviewTourCore{}
 
 	reviews, err := service.bookingData.GetAllBookingReview(tourId, limit)
 	if err != nil {
-		return nil, fmt.Errorf("error getting all booking reviews: %w", err)
+		return nil, err
 	}
-	return reviews, nil
+	rev.ReviewCore = reviews
+
+	// Calculate average review and total reviews
+	averageReview, err := service.bookingData.GetAverageTourReview(tourId)
+	if err != nil {
+		return nil, err
+	}
+	rev.AverageReview = averageReview
+
+	totalReviews, err := service.bookingData.GetTotalTourReview(tourId)
+	if err != nil {
+		return nil, err
+	}
+	rev.TotalReview = int(totalReviews)
+
+	return rev, nil
 }

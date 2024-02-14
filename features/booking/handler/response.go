@@ -195,9 +195,12 @@ func CoreToResponseBookingUserDetail(data *booking.Core) BookingResponseUserDeta
 	return result
 }
 
+type UserReviewResponse struct {
+	FullName string `json:"full_name"`
+	Image    string `json:"image"`
+}
+
 type ReviewResponse struct {
-	ID         uint               `json:"id"`
-	BookingID  string             `json:"booking_id"`
 	UserID     uint               `json:"user_id"`
 	TextReview string             `json:"text_review"`
 	StartRate  float64            `json:"start_rate"`
@@ -205,21 +208,15 @@ type ReviewResponse struct {
 	User       UserReviewResponse `json:"user"`
 }
 
-// type BookingReviewResponse struct {
-// 	ID       string `json:"booking_id"`
-// 	FullName string `json:"full_name"`
-// 	TourID   uint   `json:"tour_id"`
-// }
+type ReviewTourResponse struct {
+	TotalReview   int     `json:"total_review"`
+	AverageReview float64 `json:"average_review"`
 
-type UserReviewResponse struct {
-	FullName string `json:"full_name"`
-	Image    string `json:"image"`
+	Review []ReviewResponse `json:"reviews"`
 }
 
 func ReviewCoreToResponse(review booking.ReviewCore) ReviewResponse {
 	return ReviewResponse{
-		ID:         review.ID,
-		BookingID:  review.BookingID,
 		UserID:     review.UserID,
 		TextReview: review.TextReview,
 		StartRate:  review.StartRate,
@@ -237,4 +234,12 @@ func ReviewCoreToResponseList(reviews []booking.ReviewCore) []ReviewResponse {
 		responseList = append(responseList, ReviewCoreToResponse(review))
 	}
 	return responseList
+}
+
+func ReviewTourCoreToResponse(reviewTour *booking.ReviewTourCore) ReviewTourResponse {
+	return ReviewTourResponse{
+		TotalReview:   reviewTour.TotalReview,
+		AverageReview: reviewTour.AverageReview,
+		Review:        ReviewCoreToResponseList(reviewTour.ReviewCore),
+	}
 }
