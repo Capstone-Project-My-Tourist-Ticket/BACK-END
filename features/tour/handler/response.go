@@ -20,6 +20,21 @@ type TourResponse struct {
 	City        CityResponse `json:"city"`
 }
 
+type TourResponseDetail struct {
+	ID          uint    `json:"id"`
+	CityId      uint    `json:"city_id"`
+	UserId      uint    `json:"user_id"`
+	TourName    string  `json:"tour_name"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+	Thumbnail   string  `json:"thumbnail"`
+	Address     string  `json:"address"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
+	CreatedAt   string  `json:"created_at"`
+	UpdatedAt   string  `json:"updated_at"`
+}
+
 type TourResponseName struct {
 	TourName string `json:"tour_name"`
 }
@@ -47,8 +62,8 @@ type CityResponse struct {
 	Thumbnail string `json:"thumbnail"`
 }
 
-func ModelToResponse(tourModel tour.Core) TourResponse {
-	return TourResponse{
+func ModelToResponse(tourModel tour.Core) TourResponseDetail {
+	return TourResponseDetail{
 		ID:          tourModel.ID,
 		CityId:      tourModel.CityId,
 		UserId:      tourModel.UserId,
