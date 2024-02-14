@@ -169,14 +169,6 @@ func (b Booking) ModelToCore() booking.Core {
 	}
 }
 
-// func ModelToCoreList(data []Booking) []booking.Core {
-// 	var results []booking.Core
-// 	for _, v := range data {
-// 		results = append(results, v.ModelToCore())
-// 	}
-// 	return results
-// }
-
 func ModelToCoreList(bookings []Booking) ([]booking.Core, error) {
 	var bookingCores []booking.Core
 
@@ -208,8 +200,6 @@ func (b Booking) ModelToCoreBookingUser() booking.Core {
 
 func ModelToReviewCore(r Review) booking.ReviewCore {
 	return booking.ReviewCore{
-		ID:         r.ID,
-		BookingID:  r.BookingID,
 		UserID:     r.UserID,
 		TextReview: r.TextReview,
 		StartRate:  r.StartRate,

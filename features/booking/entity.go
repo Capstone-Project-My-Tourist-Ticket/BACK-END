@@ -41,8 +41,13 @@ type ReviewCore struct {
 	TextReview string
 	StartRate  float64
 	CreatedAt  time.Time
-	// Booking    Core
-	User user.Core
+	User       user.Core
+}
+
+type ReviewTourCore struct {
+	TotalReview   int
+	AverageReview float64
+	ReviewCore    []ReviewCore
 }
 
 // interface untuk Data Layer
@@ -57,6 +62,8 @@ type BookingDataInterface interface {
 	GetUserRoleById(userId int) (string, error)
 	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)
 	GetAllBookingReview(tourId, limit int) ([]ReviewCore, error)
+	GetTotalTourReview(tourId int) (int, error)
+	GetAverageTourReview(tourId int) (float64, error)
 }
 
 // interface untuk Service Layer
@@ -70,5 +77,5 @@ type BookingServiceInterface interface {
 	SelectAllBooking(page, limit int) ([]Core, int, error)
 	GetUserRoleById(userId int) (string, error)
 	SelectAllBookingPengelola(pengelolaID int, page, limit int) ([]Core, int, error)
-	GetAllBookingReview(tourId, limit int) ([]ReviewCore, error)
+	GetAllBookingReview(tourId, limit int) (*ReviewTourCore, error)
 }

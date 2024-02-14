@@ -118,7 +118,7 @@ func (handler *TourHandler) GetTourById(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, responses.WebResponse("Error retrieving tour data", nil))
 	}
 
-	tourResponse := ModelToResponse(tourData)
+	tourResponse := CoreToGetAllResponseTour(tourData)
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Tour data retrieved successfully", tourResponse))
 }
