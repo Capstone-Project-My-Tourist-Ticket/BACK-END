@@ -237,6 +237,8 @@ func (handler *TourHandler) CreateReportTour(c echo.Context) error {
 	if errInsert != nil {
 		if strings.Contains(errInsert.Error(), "Error 1062 (23000): Duplicate entry") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
+		} else if strings.Contains(errInsert.Error(), "user has already reported this tour") {
+			return c.JSON(http.StatusConflict, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		} else {
 			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert data. "+errInsert.Error(), nil))
 		}

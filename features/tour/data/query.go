@@ -245,6 +245,13 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.ReportCore) error {
 	dataGorm := CoreReportToModelReport(input)
 
+	var existingReport Report
+	if err := repo.db.Where("user_id = ? AND tour_id = ?", userId, tourId).First(&existingReport).Error; err == nil {
+		return errors.New("user has already reported this tour")
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
 	tx := repo.db.Create(&dataGorm)
 	if tx.Error != nil {
 		return tx.Error
@@ -275,7 +282,7 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
 	var tourDataGorms []Tour
 	log.Println("query", query)
-	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+	tx := repo.db.Preload("City").Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
