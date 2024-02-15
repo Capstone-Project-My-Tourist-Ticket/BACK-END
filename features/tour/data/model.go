@@ -27,6 +27,12 @@ type Tour struct {
 	Package     _packageData.Package
 }
 
+type Booking struct {
+	ID     uint `gorm:"primaryKey"`
+	TourID uint
+	UserID uint
+}
+
 type Report struct {
 	gorm.Model
 	UserId     uint
