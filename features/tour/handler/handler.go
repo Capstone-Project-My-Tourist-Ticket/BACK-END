@@ -130,8 +130,8 @@ func (handler *TourHandler) DeleteTour(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
 	}
-	if userRole != "pengelola" {
-		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an pengelola", nil))
+	if userRole == "costumer" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - Sorry you not have access", nil))
 	}
 
 	id := c.Param("tour_id")
