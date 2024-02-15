@@ -273,11 +273,7 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
 	var tourDataGorms []Tour
 	log.Println("query", query)
-<<<<<<< HEAD
-	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Preload("City").Find(&tourDataGorms)
-=======
 	tx := repo.db.Preload("City").Preload("Package").Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
->>>>>>> 3714206cd46a7b33d5d454d737fdcbb1ab495fa9
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
