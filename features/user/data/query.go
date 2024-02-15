@@ -115,7 +115,7 @@ func (repo *userQuery) UpdatePengelola(pengelolaStatus string, pengelolaId int) 
 	}
 
 	if tx.RowsAffected == 0 {
-		return errors.New("error record not found ")
+		return errors.New("error record not found")
 	}
 	return nil
 }
