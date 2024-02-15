@@ -132,7 +132,7 @@ func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.File
 // SelectTourById implements tour.TourDataInterface.
 func (repo *tourQuery) SelectTourById(tourId int) (tour.Core, error) {
 	var tourModel Tour
-	if err := repo.db.First(&tourModel, tourId).Error; err != nil {
+	if err := repo.db.Preload("City").Preload("Package").First(&tourModel, tourId).Error; err != nil {
 		return tour.Core{}, err
 	}
 
@@ -160,18 +160,23 @@ func (repo *tourQuery) Delete(tourId int) error {
 // SelectAllTour implements tour.TourDataInterface.
 func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, error) {
 	var tourGorm []Tour
-	query := repo.db.Order("created_at desc")
+
+	subquery := repo.db.Model(&Booking{}).
+		Select("tour_id, COUNT(*) as booking_count").
+		Group("tour_id").
+		Order("booking_count DESC")
 
 	var totalData int64
-	err := query.Model(&Tour{}).Count(&totalData).Error
+	err := repo.db.Model(&Tour{}).Count(&totalData).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	// Retrieve tour data with associated city
-	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourGorm).Error
+	err = repo.db.Limit(limit).Offset((page-1)*limit).Preload("City").Preload("Package").Model(&Tour{}).
+		Joins("LEFT JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
+		Order("COALESCE(bookings.booking_count, 0) DESC").Find(&tourGorm).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -195,18 +200,14 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = query.Limit(limit).Offset((page - 1) * limit).Find(&tourDataGorms).Error
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourDataGorms).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
-	var results []tour.Core
-	for _, tourDataGorm := range tourDataGorms {
-		result := ModelToCore(tourDataGorm)
-		results = append(results, result)
-	}
+	tourCore := ModelToCoreList(tourDataGorms)
 
-	return results, totalPage, nil
+	return tourCore, totalPage, nil
 }
 
 // GetTourByCityID implements tour.TourDataInterface.
@@ -214,7 +215,6 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 	var city []cd.City
 	if err := repo.db.First(&city, cityID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			// Handle case when city is not found
 			return nil, 0, fmt.Errorf("city not found")
 		}
 		return nil, 0, err
@@ -234,12 +234,9 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 		return nil, 0, err
 	}
 
-	var tourCores []tour.Core
-	for _, t := range tours {
-		tourCores = append(tourCores, ModelToCore(t))
-	}
+	tourCore := ModelToCoreList(tours)
 
-	return tourCores, totalPage, nil
+	return tourCore, totalPage, nil
 }
 
 // InsertReportTour implements tour.TourDataInterface.
@@ -276,15 +273,11 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
 	var tourDataGorms []Tour
 	log.Println("query", query)
-	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Preload("City").Find(&tourDataGorms)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
-	var results []tour.Core
-	for _, tourDataGorm := range tourDataGorms {
-		result := ModelToCore(tourDataGorm)
-		results = append(results, result)
-	}
+	results := ModelToCoreList(tourDataGorms)
 	return results, nil
 }

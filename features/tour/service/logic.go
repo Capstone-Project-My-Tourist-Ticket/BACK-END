@@ -85,6 +85,7 @@ func (service *tourService) Delete(tourId int) error {
 
 // SelectAllTour implements tour.TourServiceInterface.
 func (service *tourService) SelectAllTour(page int, limit int) ([]tour.Core, int, error) {
+
 	if page == 0 {
 		page = 1
 	}
@@ -93,6 +94,7 @@ func (service *tourService) SelectAllTour(page int, limit int) ([]tour.Core, int
 		limit = 12
 	}
 
+	// Panggil SelectAllTour dari tourData
 	tours, totalPage, err := service.tourData.SelectAllTour(page, limit)
 	if err != nil {
 		return nil, 0, err

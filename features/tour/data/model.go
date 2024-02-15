@@ -24,6 +24,12 @@ type Tour struct {
 	City        _cityData.City
 }
 
+type Booking struct {
+	ID     uint `gorm:"primaryKey"`
+	TourID uint
+	UserID uint
+}
+
 type Report struct {
 	gorm.Model
 	UserId     uint
