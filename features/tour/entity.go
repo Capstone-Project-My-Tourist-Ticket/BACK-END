@@ -3,6 +3,7 @@ package tour
 import (
 	"mime/multipart"
 	"my-tourist-ticket/features/city"
+	packages "my-tourist-ticket/features/package"
 	"time"
 )
 
@@ -20,6 +21,7 @@ type Core struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	City        city.Core
+	Package     packages.Core
 }
 
 type ReportCore struct {
