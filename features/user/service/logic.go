@@ -146,3 +146,4 @@ func (service *userService) UpdatePengelola(userIdLogin int, pengelolaStatus str
 	err := service.userData.UpdatePengelola(pengelolaStatus, pengelolaId)
 	return err
 }
+
