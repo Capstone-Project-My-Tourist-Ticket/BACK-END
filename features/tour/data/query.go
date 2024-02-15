@@ -200,7 +200,7 @@ func (repo *tourQuery) SelectTourByPengelola(userId int, page, limit int) ([]tou
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Find(&tourDataGorms).Error
+	err = query.Limit(limit).Offset((page - 1) * limit).Preload("City").Preload("Package").Find(&tourDataGorms).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -230,7 +230,7 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	if err := query.Preload("City").Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
+	if err := query.Preload("City").Preload("Package").Limit(limit).Offset((page - 1) * limit).Find(&tours).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -273,7 +273,11 @@ func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 func (repo *tourQuery) SearchTour(query string) ([]tour.Core, error) {
 	var tourDataGorms []Tour
 	log.Println("query", query)
+<<<<<<< HEAD
 	tx := repo.db.Where("tour_name LIKE ?", "%"+query+"%").Preload("City").Find(&tourDataGorms)
+=======
+	tx := repo.db.Preload("City").Preload("Package").Where("tour_name LIKE ?", "%"+query+"%").Find(&tourDataGorms)
+>>>>>>> 3714206cd46a7b33d5d454d737fdcbb1ab495fa9
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

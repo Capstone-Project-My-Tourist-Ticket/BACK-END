@@ -5,19 +5,20 @@ import (
 )
 
 type TourResponse struct {
-	ID          uint         `json:"id"`
-	CityId      uint         `json:"city_id"`
-	UserId      uint         `json:"user_id"`
-	TourName    string       `json:"tour_name"`
-	Description string       `json:"description"`
-	Image       string       `json:"image"`
-	Thumbnail   string       `json:"thumbnail"`
-	Address     string       `json:"address"`
-	Latitude    float64      `json:"latitude"`
-	Longitude   float64      `json:"longitude"`
-	CreatedAt   string       `json:"created_at"`
-	UpdatedAt   string       `json:"updated_at"`
-	City        CityResponse `json:"city"`
+	ID          uint            `json:"id"`
+	CityId      uint            `json:"city_id"`
+	UserId      uint            `json:"user_id"`
+	TourName    string          `json:"tour_name"`
+	Description string          `json:"description"`
+	Image       string          `json:"image"`
+	Thumbnail   string          `json:"thumbnail"`
+	Address     string          `json:"address"`
+	Latitude    float64         `json:"latitude"`
+	Longitude   float64         `json:"longitude"`
+	CreatedAt   string          `json:"created_at"`
+	UpdatedAt   string          `json:"updated_at"`
+	City        CityResponse    `json:"city"`
+	Package     PackageResponse `json:"package"`
 }
 
 type TourResponseDetail struct {
@@ -62,6 +63,10 @@ type CityResponse struct {
 	Thumbnail string `json:"thumbnail"`
 }
 
+type PackageResponse struct {
+	Price int `json:"price"`
+}
+
 func ModelToResponse(tourModel tour.Core) TourResponseDetail {
 	return TourResponseDetail{
 		ID:          tourModel.ID,
@@ -99,6 +104,9 @@ func CoreToGetAllResponseTour(data tour.Core) TourResponse {
 			// Description: data.City.Description,
 			Image:     data.City.Image,
 			Thumbnail: data.City.Thumbnail,
+		},
+		Package: PackageResponse{
+			Price: data.Package.Price,
 		},
 	}
 }

@@ -1,7 +1,6 @@
 package packages
 
 import (
-	"my-tourist-ticket/features/tour"
 	"time"
 )
 
@@ -14,7 +13,6 @@ type Core struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Benefits    []BenefitCore
-	Tour        tour.Core
 }
 
 type BenefitCore struct {
