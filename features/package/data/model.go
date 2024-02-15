@@ -2,7 +2,6 @@ package data
 
 import (
 	packages "my-tourist-ticket/features/package"
-	td "my-tourist-ticket/features/tour/data"
 
 	"gorm.io/gorm"
 )
@@ -14,7 +13,6 @@ type Package struct {
 	Price       int
 	JumlahTiket int
 	Benefits    []Benefit
-	Tour        td.Tour
 }
 
 type Benefit struct {

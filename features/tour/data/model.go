@@ -3,6 +3,8 @@ package data
 import (
 	"my-tourist-ticket/features/city"
 	_cityData "my-tourist-ticket/features/city/data"
+	packages "my-tourist-ticket/features/package"
+	_packageData "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/tour"
 	_userData "my-tourist-ticket/features/user/data"
 
@@ -22,6 +24,7 @@ type Tour struct {
 	Longitude   float64 `gorm:"type:decimal(11,8)"`
 	User        _userData.User
 	City        _cityData.City
+	Package     _packageData.Package
 }
 
 type Report struct {
@@ -67,6 +70,9 @@ func ModelToCore(t Tour) tour.Core {
 			// Description: t.City.Description,
 			Image:     t.City.Image,
 			Thumbnail: t.City.Thumbnail,
+		},
+		Package: packages.Core{
+			Price: t.Package.Price,
 		},
 	}
 }
