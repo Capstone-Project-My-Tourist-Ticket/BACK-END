@@ -23,6 +23,25 @@ func (service *bookingService) GetUserRoleById(userId int) (string, error) {
 
 // CreateBooking implements booking.BookingServiceInterface.
 func (service *bookingService) CreateBooking(userIdLogin int, inputBooking booking.Core) (*booking.Core, error) {
+	if inputBooking.Bank == "" {
+		return nil, errors.New("bank is required")
+	}
+	if inputBooking.PhoneNumber == "" {
+		return nil, errors.New("phone number is required")
+	}
+	if inputBooking.Greeting == "" {
+		return nil, errors.New("greeting is required")
+	}
+	if inputBooking.FullName == "" {
+		return nil, errors.New("full name number is required")
+	}
+	if inputBooking.Email == "" {
+		return nil, errors.New("email is required")
+	}
+	if inputBooking.BookingDate == "" {
+		return nil, errors.New("booking date is required")
+	}
+
 	payment, err := service.bookingData.InsertBooking(userIdLogin, inputBooking)
 	if err != nil {
 		return nil, err
@@ -47,6 +66,8 @@ func (service *bookingService) CreateBookingReview(inputReview booking.ReviewCor
 	}
 	if inputReview.StartRate == 0 {
 		return errors.New("rate is required")
+	} else if inputReview.StartRate > 5 {
+		return errors.New("star rate is not valid")
 	}
 
 	err := service.bookingData.InsertBookingReview(inputReview)
