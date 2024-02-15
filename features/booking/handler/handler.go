@@ -53,6 +53,14 @@ func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
 	}
 
+	userRole, err := handler.bookingService.GetUserRoleById(userIdLogin)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Internal Server Error", nil))
+	}
+	if userRole != "costumer" {
+		return c.JSON(http.StatusForbidden, responses.WebResponse("Forbidden - User is not an costumer", nil))
+	}
+
 	bookingId := c.Param("id")
 
 	updateBookingStatus := CancleBookingRequest{}
@@ -64,10 +72,14 @@ func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
 	bookingCore := CancleRequestToCoreBooking(updateBookingStatus)
 	errCancle := handler.bookingService.CancleBooking(userIdLogin, bookingId, bookingCore)
 	if errCancle != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error cancle order", nil))
+		if strings.Contains(errCancle.Error(), "error record not found") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("booking id not found", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error cancle booking", nil))
+		}
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success cancle order", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("success cancle booking", nil))
 }
 
 func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {
@@ -94,8 +106,13 @@ func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {
 	if err != nil {
 		if strings.Contains(err.Error(), "is required") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse(err.Error(), nil))
+		} else if strings.Contains(err.Error(), "star rate is not valid") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse(err.Error(), nil))
+		} else if strings.Contains(err.Error(), "Error 1062 (23000): Duplicate entry") {
+			return c.JSON(http.StatusConflict, responses.WebResponse("User has already review this tour", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating review", nil))
 		}
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error creating review", nil))
 	}
 
 	return c.JSON(http.StatusCreated, responses.WebResponse("review created successfully", nil))
@@ -142,7 +159,11 @@ func (handler *BookingHandler) GetBookingUserDetail(c echo.Context) error {
 
 	result, errSelect := handler.bookingService.GetBookingUserDetail(userIdLogin, bookingId)
 	if errSelect != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+		if strings.Contains(errSelect.Error(), "booking id not found") {
+			return c.JSON(http.StatusNotFound, responses.WebResponse("booking id not found", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+		}
 	}
 
 	var bookingResult = CoreToResponseBookingUserDetail(result)

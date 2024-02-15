@@ -93,7 +93,7 @@ func (repo *bookingQuery) CancleBooking(userIdLogin int, bookingId string, booki
 	}
 
 	if tx.RowsAffected == 0 {
-		return errors.New("error record not found ")
+		return errors.New("error record not found")
 	}
 	return nil
 }
@@ -147,6 +147,10 @@ func (repo *bookingQuery) SelectBookingUserDetail(userIdLogin int, bookingId str
 	tx := repo.db.Preload("Tour").Preload("Package").Preload("Voucher").Where("user_id = ? AND id = ?", userIdLogin, bookingId).Find(&bookingDataGorm)
 	if tx.Error != nil {
 		return nil, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return nil, errors.New("booking id not found")
 	}
 
 	result := bookingDataGorm.ModelToCore()

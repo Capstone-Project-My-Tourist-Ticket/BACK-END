@@ -165,7 +165,11 @@ func (handler *UserHandler) UpdateUserPengelolaById(c echo.Context) error {
 	// userCore := RequestToCoreAdminPengelola(userData)
 	errUpdate := handler.userService.UpdatePengelola(userIdLogin, pengelolaStatus, pengelolaId)
 	if errUpdate != nil {
-		return c.JSON(http.StatusNotFound, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		if strings.Contains(errUpdate.Error(), "error record not found") {
+			return c.JSON(http.StatusNotFound, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+		}
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
