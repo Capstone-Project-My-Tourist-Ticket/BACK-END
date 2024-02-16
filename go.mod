@@ -9,6 +9,7 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/midtrans/midtrans-go v1.3.7
 	github.com/spf13/viper v1.18.2
+	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.16.0
 	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
 )
@@ -30,7 +31,6 @@ require (
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	golang.org/x/net v0.19.0 // indirect

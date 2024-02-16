@@ -6,6 +6,7 @@ import (
 	"my-tourist-ticket/utils/responses"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -54,7 +55,11 @@ func (handler *PackageHandler) GetPackageByTourId(c echo.Context) error {
 
 	packages, err := handler.packageService.GetByTourId(uint(tourID))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data", nil))
+		if strings.Contains(err.Error(), "record not found") {
+			return c.JSON(http.StatusNotFound, responses.WebResponse("record not found", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data", nil))
+		}
 	}
 
 	packageResponses := CoresToResponses(packages)
