@@ -51,6 +51,14 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 		if ts.Error != nil {
 			return nil, ts.Error
 		}
+
+		var existingUseVoucher Booking
+		if err := repo.db.Where("user_id = ? AND voucher_id = ?", userIdLogin, inputBooking.VoucherID).First(&existingUseVoucher).Error; err == nil {
+			return nil, errors.New("user has already used this voucher")
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+
 		totalHargaAwal := packageGorm.Price * inputBooking.Quantity
 		if totalHargaAwal < voucherGorm.DiscountValue {
 			return nil, errors.New("maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah")
