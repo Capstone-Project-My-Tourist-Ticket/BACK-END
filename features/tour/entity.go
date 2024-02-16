@@ -22,6 +22,7 @@ type Core struct {
 	UpdatedAt   time.Time
 	City        city.Core
 	Package     packages.Core
+	ReportCount int64
 }
 
 type ReportCore struct {

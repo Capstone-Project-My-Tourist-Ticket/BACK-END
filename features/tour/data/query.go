@@ -181,8 +181,16 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 		return nil, 0, err
 	}
 
-	// Convert tour data to tour.Core
-	tourCore := ModelToCoreList(tourGorm)
+	var tourCore []tour.Core
+	for _, t := range tourGorm {
+		var reportCount int64
+		err := repo.db.Model(&Report{}).Where("tour_id = ?", t.ID).Count(&reportCount).Error
+		if err != nil {
+			return nil, 0, err
+		}
+		core := ModelToCoreIncludeReport(t, reportCount)
+		tourCore = append(tourCore, core)
+	}
 
 	return tourCore, totalPage, nil
 }

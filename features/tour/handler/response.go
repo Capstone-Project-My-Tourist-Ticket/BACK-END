@@ -21,6 +21,24 @@ type TourResponse struct {
 	Package     PackageResponse `json:"package"`
 }
 
+type TourResponseIncludeReport struct {
+	ID          uint            `json:"id"`
+	CityId      uint            `json:"city_id"`
+	UserId      uint            `json:"user_id"`
+	TourName    string          `json:"tour_name"`
+	Description string          `json:"description"`
+	Image       string          `json:"image"`
+	Thumbnail   string          `json:"thumbnail"`
+	Address     string          `json:"address"`
+	Latitude    float64         `json:"latitude"`
+	Longitude   float64         `json:"longitude"`
+	CreatedAt   string          `json:"created_at"`
+	UpdatedAt   string          `json:"updated_at"`
+	City        CityResponse    `json:"city"`
+	Package     PackageResponse `json:"package"`
+	ReportCount int64           `json:"report_count"`
+}
+
 type TourResponseDetail struct {
 	ID          uint    `json:"id"`
 	CityId      uint    `json:"city_id"`
@@ -111,10 +129,46 @@ func CoreToGetAllResponseTour(data tour.Core) TourResponse {
 	}
 }
 
+func CoreToGetAllResponseTourIncludeReport(data tour.Core) TourResponseIncludeReport {
+	return TourResponseIncludeReport{
+		ID:          data.ID,
+		CityId:      data.CityId,
+		UserId:      data.UserId,
+		TourName:    data.TourName,
+		Description: data.Description,
+		Image:       data.Image,
+		Thumbnail:   data.Thumbnail,
+		Address:     data.Address,
+		Latitude:    data.Latitude,
+		Longitude:   data.Longitude,
+		CreatedAt:   data.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   data.UpdatedAt.Format("2006-01-02 15:04:05"),
+		City: CityResponse{
+			ID:       data.City.ID,
+			CityName: data.City.CityName,
+			// Description: data.City.Description,
+			Image:     data.City.Image,
+			Thumbnail: data.City.Thumbnail,
+		},
+		Package: PackageResponse{
+			Price: data.Package.Price,
+		},
+		ReportCount: data.ReportCount,
+	}
+}
+
 func CoreToResponseListGetAllTour(data []tour.Core) []TourResponse {
 	var results []TourResponse
 	for _, v := range data {
 		results = append(results, CoreToGetAllResponseTour(v))
+	}
+	return results
+}
+
+func CoreToResponseListGetAllTourIncludeReport(data []tour.Core) []TourResponseIncludeReport {
+	var results []TourResponseIncludeReport
+	for _, v := range data {
+		results = append(results, CoreToGetAllResponseTourIncludeReport(v))
 	}
 	return results
 }
