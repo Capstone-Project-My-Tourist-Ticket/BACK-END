@@ -65,7 +65,7 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert booking", result))
 }
 
-func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
+func (handler *BookingHandler) CancelBookingById(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
 	if userIdLogin == 0 {
 		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
@@ -81,23 +81,23 @@ func (handler *BookingHandler) CancleBookingById(c echo.Context) error {
 
 	bookingId := c.Param("id")
 
-	updateBookingStatus := CancleBookingRequest{}
+	updateBookingStatus := CancelBookingRequest{}
 	errBind := c.Bind(&updateBookingStatus)
 	if errBind != nil {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
 	}
 
-	bookingCore := CancleRequestToCoreBooking(updateBookingStatus)
-	errCancle := handler.bookingService.CancleBooking(userIdLogin, bookingId, bookingCore)
-	if errCancle != nil {
-		if strings.Contains(errCancle.Error(), "error record not found") {
-			return c.JSON(http.StatusBadRequest, responses.WebResponse("booking id not found", nil))
+	bookingCore := CancelRequestToCoreBooking(updateBookingStatus)
+	errCancel := handler.bookingService.CancelBooking(userIdLogin, bookingId, bookingCore)
+	if errCancel != nil {
+		if strings.Contains(errCancel.Error(), "error record not found") {
+			return c.JSON(http.StatusNotFound, responses.WebResponse("booking id not found", nil))
 		} else {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error cancle booking", nil))
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error cancel booking", nil))
 		}
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success cancle booking", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("success cancel booking", nil))
 }
 
 func (handler *BookingHandler) CreateBookingReview(c echo.Context) error {

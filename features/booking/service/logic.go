@@ -50,12 +50,12 @@ func (service *bookingService) CreateBooking(userIdLogin int, inputBooking booki
 	return payment, nil
 }
 
-func (service *bookingService) CancleBooking(userIdLogin int, bookingId string, bookingCore booking.Core) error {
+func (service *bookingService) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.Core) error {
 	if bookingCore.Status == "" {
 		bookingCore.Status = "cancelled"
 	}
 
-	err := service.bookingData.CancleBooking(userIdLogin, bookingId, bookingCore)
+	err := service.bookingData.CancelBooking(userIdLogin, bookingId, bookingCore)
 	return err
 }
 

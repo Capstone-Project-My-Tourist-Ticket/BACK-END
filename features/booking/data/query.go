@@ -94,12 +94,12 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 	return &bookingCore, nil
 }
 
-func (repo *bookingQuery) CancleBooking(userIdLogin int, bookingId string, bookingCore booking.Core) error {
+func (repo *bookingQuery) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.Core) error {
 	if bookingCore.Status == "cancelled" {
 		repo.paymentMidtrans.CancelBookingPayment(bookingId)
 	}
 
-	dataGorm := CoreToModelBookingCancle(bookingCore)
+	dataGorm := CoreToModelBookingCancel(bookingCore)
 	tx := repo.db.Model(&Booking{}).Where("id = ? AND user_id = ?", bookingId, userIdLogin).Updates(dataGorm)
 	if tx.Error != nil {
 		return tx.Error

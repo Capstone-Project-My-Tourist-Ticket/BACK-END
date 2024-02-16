@@ -53,7 +53,7 @@ type ReviewTourCore struct {
 // interface untuk Data Layer
 type BookingDataInterface interface {
 	InsertBooking(userIdLogin int, inputBooking Core) (*Core, error)
-	CancleBooking(userIdLogin int, orderId string, bookingCore Core) error
+	CancelBooking(userIdLogin int, orderId string, bookingCore Core) error
 	InsertBookingReview(inputReview ReviewCore) error
 	WebhoocksData(reqNotif Core) error
 	SelectBookingUser(userIdLogin int) ([]Core, error)
@@ -69,7 +69,7 @@ type BookingDataInterface interface {
 // interface untuk Service Layer
 type BookingServiceInterface interface {
 	CreateBooking(userIdLogin int, inputBooking Core) (*Core, error)
-	CancleBooking(userIdLogin int, orderId string, bookingCore Core) error
+	CancelBooking(userIdLogin int, orderId string, bookingCore Core) error
 	CreateBookingReview(inputReview ReviewCore) error
 	WebhoocksService(reqNotif Core) error
 	GetBookingUser(userIdLogin int) ([]Core, error)
