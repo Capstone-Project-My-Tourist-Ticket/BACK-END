@@ -41,6 +41,8 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 	if errInsert != nil {
 		if strings.Contains(errInsert.Error(), "maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah") {
 			return c.JSON(http.StatusBadRequest, responses.WebResponse("maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah", nil))
+		} else if strings.Contains(errInsert.Error(), "user has already used this voucher") {
+			return c.JSON(http.StatusConflict, responses.WebResponse("user has already used this voucher", nil))
 		} else {
 			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert booking", nil))
 		}
