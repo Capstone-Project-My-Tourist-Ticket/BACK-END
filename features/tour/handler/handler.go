@@ -156,7 +156,7 @@ func (handler *TourHandler) GetAllTour(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
 	}
 
-	tourResponses := CoreToResponseListGetAllTour(tours)
+	tourResponses := CoreToResponseListGetAllTourIncludeReport(tours)
 
 	return c.JSON(http.StatusOK, responses.WebResponsePagination("success get data", tourResponses, totalPage))
 }
