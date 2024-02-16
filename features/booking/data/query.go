@@ -51,8 +51,13 @@ func (repo *bookingQuery) InsertBooking(userIdLogin int, inputBooking booking.Co
 		if ts.Error != nil {
 			return nil, ts.Error
 		}
-		// totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
-		totalHargaKeseluruhan = (packageGorm.Price * inputBooking.Quantity) - voucherGorm.DiscountValue
+		totalHargaAwal := packageGorm.Price * inputBooking.Quantity
+		if totalHargaAwal < voucherGorm.DiscountValue {
+			return nil, errors.New("maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah")
+		} else {
+			// totalHargaKeseluruhan = ((packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity) - voucherGorm.DiscountValue
+			totalHargaKeseluruhan = totalHargaAwal - voucherGorm.DiscountValue
+		}
 	} else {
 		// totalHargaKeseluruhan = (packageGorm.JumlahTiket * packageGorm.Price) * inputBooking.Quantity
 		totalHargaKeseluruhan = packageGorm.Price * inputBooking.Quantity

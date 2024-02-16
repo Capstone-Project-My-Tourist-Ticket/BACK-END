@@ -83,6 +83,34 @@ func ModelToCore(t Tour) tour.Core {
 	}
 }
 
+func ModelToCoreIncludeReport(t Tour, reportCount int64) tour.Core {
+	return tour.Core{
+		ID:          t.ID,
+		CityId:      t.CityId,
+		UserId:      t.UserId,
+		TourName:    t.TourName,
+		Description: t.Description,
+		Image:       t.Image,
+		Thumbnail:   t.Thumbnail,
+		Address:     t.Addres,
+		Latitude:    t.Latitude,
+		Longitude:   t.Longitude,
+		CreatedAt:   t.CreatedAt,
+		UpdatedAt:   t.UpdatedAt,
+		City: city.Core{
+			ID:       t.City.ID,
+			CityName: t.City.City,
+			// Description: t.City.Description,
+			Image:     t.City.Image,
+			Thumbnail: t.City.Thumbnail,
+		},
+		Package: packages.Core{
+			Price: t.Package.Price,
+		},
+		ReportCount: reportCount,
+	}
+}
+
 func (t Tour) ModelToCoreTourBooking() tour.Core {
 	return tour.Core{
 		ID:          t.ID,
@@ -104,6 +132,14 @@ func ModelToCoreList(data []Tour) []tour.Core {
 	var results []tour.Core
 	for _, t := range data {
 		results = append(results, ModelToCore(t))
+	}
+	return results
+}
+
+func ModelToCoreListIncludeReport(data []Tour) []tour.Core {
+	var results []tour.Core
+	for _, t := range data {
+		results = append(results, ModelToCoreIncludeReport(t, 0))
 	}
 	return results
 }

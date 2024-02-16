@@ -39,7 +39,11 @@ func (handler *BookingHandler) CreateBooking(c echo.Context) error {
 	}
 	payment, errInsert := handler.bookingService.CreateBooking(userIdLogin, bookingCore)
 	if errInsert != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert booking", nil))
+		if strings.Contains(errInsert.Error(), "maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah") {
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("maaf, anda tidak bisa menggunakan voucher ini karena total pembayaran anda terlalu rendah", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error insert booking", nil))
+		}
 	}
 
 	result := CoreToResponseBooking(payment)
