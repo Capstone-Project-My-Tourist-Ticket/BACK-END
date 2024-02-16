@@ -52,6 +52,10 @@ func (repo *packageQuery) SelectByTourId(tourId uint) ([]packages.Core, error) {
 		return nil, tx.Error
 	}
 
+	if tx.RowsAffected == 0 {
+		return nil, errors.New("record not found")
+	}
+
 	var results []packages.Core
 	for _, packageDataGorm := range packageDataGorms {
 		result := packageDataGorm.ModelToCore()
