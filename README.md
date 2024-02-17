@@ -1,6 +1,8 @@
 # MyTouristTicket App
 
-![LOGO](docs/logo.png)
+<div align="center">
+   <img src="docs/logo.png"/>
+</div>
 
 ## 💡 About the Project
 
