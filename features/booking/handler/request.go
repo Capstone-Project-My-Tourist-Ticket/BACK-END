@@ -68,11 +68,11 @@ func WebhoocksRequestToCore(input WebhoocksRequest) booking.Core {
 	}
 }
 
-type CancleBookingRequest struct {
+type CancelBookingRequest struct {
 	Status string `json:"status"`
 }
 
-func CancleRequestToCoreBooking(input CancleBookingRequest) booking.Core {
+func CancelRequestToCoreBooking(input CancelBookingRequest) booking.Core {
 	return booking.Core{
 		Status: input.Status,
 	}
