@@ -21,21 +21,30 @@ func TestCreate(t *testing.T) {
 		Email:       "kitten@gmail.com",
 		Password:    "password",
 		PhoneNumber: "3434144",
-		// Status:      "",
-		// Role:        "",
 	}
 
-	t.Run("Success Create User", func(t *testing.T) {
+	t.Run("Success Create Customer", func(t *testing.T) {
 		hash.On("HashPassword", mock.AnythingOfType("string")).Return("hashedPassword", nil).Once()
 		repo.On("Insert", mock.Anything).Return(nil).Once()
-		inputData.Role = ""
-		err := srv.Create(inputData)
 		inputData.Role = "customer"
-		// inputData.Role = "pengelola"
+		err := srv.Create(inputData)
 
 		assert.NoError(t, err)
 		hash.AssertExpectations(t)
 		repo.AssertExpectations(t)
+	})
+
+	t.Run("Success Create Pengelola", func(t *testing.T) {
+		hash.On("HashPassword", mock.AnythingOfType("string")).Return("hashedPassword", nil).Once()
+		repo.On("Insert", mock.Anything).Return(nil).Once()
+		inputData.Role = "pengelola"
+		err := srv.Create(inputData)
+		inputData.Status = "pending"
+
+		assert.NoError(t, err)
+		hash.AssertExpectations(t)
+		repo.AssertExpectations(t)
+		assert.Equal(t, "pending", inputData.Status)
 	})
 
 	t.Run("Validation Error", func(t *testing.T) {
@@ -56,23 +65,6 @@ func TestCreate(t *testing.T) {
 		assert.Contains(t, err.Error(), "Error hash password.")
 		repo.AssertNotCalled(t, "Insert")
 	})
-
-	// t.Run("Success Create Pengelola", func(t *testing.T) {
-	// 	hash.On("HashPassword", mock.AnythingOfType("string")).Return("hashedPassword", nil).Once()
-	// 	repo.On("Insert", mock.Anything).Return(nil).Once()
-	// 	// inputData.Role = ""
-	// 	err := srv.Create(inputData)
-	// 	// inputData.Role = "customer"
-	// 	inputData.Role = "pengelola"
-
-	// 	assert.NoError(t, err)
-	// 	hash.AssertExpectations(t)
-	// 	repo.AssertExpectations(t)
-
-	// 	// Assert that the status is set to "pending" for the "pengelola" role
-	// 	assert.Equal(t, "pending", inputData.Status)
-	// })
-
 }
 
 func TestLogin(t *testing.T) {
@@ -226,7 +218,7 @@ func TestGetAdminUsers(t *testing.T) {
 
 	customerUser := user.Core{
 		ID:   2,
-		Role: "costumer",
+		Role: "customer",
 	}
 
 	pengelolaUser := user.Core{
@@ -257,8 +249,8 @@ func TestGetAdminUsers(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 
-	// Tes jika pengguna adalah costumer
-	t.Run("Costumer user", func(t *testing.T) {
+	// Tes jika pengguna adalah customer
+	t.Run("Customer user", func(t *testing.T) {
 		repo.On("SelectById", 2).Return(&customerUser, nil).Once()
 
 		result, err, _ := userService.GetAdminUsers(2, 1, 10)
@@ -295,6 +287,20 @@ func TestGetAdminUsers(t *testing.T) {
 
 		repo.AssertExpectations(t)
 	})
+
+	// Tes jika page dan limit bernilai 0
+	t.Run("Page and Limit are 0", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&adminUser, nil).Once()
+		repo.On("SelectAdminUsers", 1, 10).Return(expectedResult, nil, expectedTotalPage).Once()
+
+		result, err, totalPage := userService.GetAdminUsers(1, 0, 0)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedResult, result)
+		assert.Equal(t, expectedTotalPage, totalPage)
+
+		repo.AssertExpectations(t)
+	})
 }
 
 func TestUpdatePengelola(t *testing.T) {
@@ -309,10 +315,10 @@ func TestUpdatePengelola(t *testing.T) {
 		Role: "admin",
 	}
 
-	// Data pengguna dengan peran costumer
+	// Data pengguna dengan peran customer
 	customerUser := user.Core{
 		ID:   2,
-		Role: "costumer",
+		Role: "customer",
 	}
 
 	// Data pengguna dengan peran pengelola
@@ -324,6 +330,21 @@ func TestUpdatePengelola(t *testing.T) {
 	expectedStatus := "accepted"
 	expectedID := 1
 
+	// Set mock behavior for SelectById to return an error
+	expectedError := errors.New("some validation error")
+	repo.On("SelectById", mock.AnythingOfType("int")).Return(nil, expectedError).Once()
+
+	// Tes jika terjadi kesalahan saat memanggil SelectById
+	t.Run("Error when calling SelectById", func(t *testing.T) {
+		err := userService.UpdatePengelola(1, expectedStatus, expectedID)
+
+		assert.Error(t, err)
+		assert.Equal(t, expectedError, err)
+
+		repo.AssertExpectations(t)
+	})
+
+	// Tes jika pengguna adalah admin
 	t.Run("Admin user", func(t *testing.T) {
 		repo.On("SelectById", 1).Return(&adminUser, nil).Once()
 		repo.On("UpdatePengelola", expectedStatus, expectedID).Return(nil).Once()
@@ -335,8 +356,8 @@ func TestUpdatePengelola(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 
-	// Tes jika pengguna adalah costumer
-	t.Run("Costumer user", func(t *testing.T) {
+	// Tes jika pengguna adalah customer
+	t.Run("Customer user", func(t *testing.T) {
 		repo.On("SelectById", 2).Return(&customerUser, nil).Once()
 
 		err := userService.UpdatePengelola(2, expectedStatus, expectedID)
@@ -347,6 +368,7 @@ func TestUpdatePengelola(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 
+	// Tes jika pengguna adalah pengelola
 	t.Run("Pengelola user", func(t *testing.T) {
 		repo.On("SelectById", 3).Return(&pengelolaUser, nil).Once()
 

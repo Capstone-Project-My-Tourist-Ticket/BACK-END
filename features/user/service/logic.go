@@ -117,7 +117,7 @@ func (service *userService) GetAdminUsers(userIdLogin, page, limit int) ([]user.
 	if errVal != nil {
 		return nil, errVal, 0
 	}
-	if valUser.Role == "costumer" || valUser.Role == "pengelola" {
+	if valUser.Role == "customer" || valUser.Role == "pengelola" {
 		return nil, errors.New("Sorry, your role does not have this access."), 0
 	}
 
@@ -139,7 +139,7 @@ func (service *userService) UpdatePengelola(userIdLogin int, pengelolaStatus str
 	if errVal != nil {
 		return errVal
 	}
-	if valUser.Role == "costumer" || valUser.Role == "pengelola" {
+	if valUser.Role == "customer" || valUser.Role == "pengelola" {
 		return errors.New("Sorry, your role does not have this access.")
 	}
 
