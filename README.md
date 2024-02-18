@@ -1,6 +1,7 @@
 # MyTouristTicket App
 
 <div align="center">
+   <br>
    <img src="docs/logo.png"/>
 </div>
 
