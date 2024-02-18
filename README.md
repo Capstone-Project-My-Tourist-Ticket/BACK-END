@@ -198,6 +198,8 @@ Follow these steps to install and set up the MyTouristTicket API:
    ```
 
 ## 🦸🦸‍♀️ Author
+- **Muhammad Mahiva Bentar Raharja**
+  - [![GitHub](https://img.shields.io/badge/Arja-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bentarraharja)
 
-- **Muhammad Mahiva Bentar Raharja** ([Github](https://github.com/bentarraharja))
-- **Anggle Dwi Miranda** ([Github](https://github.com/anggeldwi))
+- **Anggel Dwi Miranda**
+  - [![GitHub](https://img.shields.io/badge/Anggel-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/anggeldwi)
