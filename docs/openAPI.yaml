@@ -1964,18 +1964,27 @@ components:
               text_report: "tour ini jelek!"
               created_at: "2024-02-11 13:01:31"
               updated_at: "2024-02-11 13:01:31"
+              user :
+                full_name: Andi
+                image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707710177/BE20_MyTouristTicket/mzv7ixfekjaqqwophd3y.jpg
             - id: 2
               tour_id: 1
               user_id: 1
               text_report: "tour ini jelek!"
               created_at: "2024-02-11 13:01:31"
               updated_at: "2024-02-11 13:01:31"
+              user :
+                full_name: Budi
+                image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707710177/BE20_MyTouristTicket/mzv7ixfekjaqqwophd3y.jpg
             - id: 3
               tour_id: 1
               user_id: 1
               text_report: "tour ini jelek!"
               created_at: "2024-02-11 13:01:31"
               updated_at: "2024-02-11 13:01:31"
+              user :
+                full_name: Cindy
+                image: https://res.cloudinary.com/dtk4kcs67/image/upload/v1707710177/BE20_MyTouristTicket/mzv7ixfekjaqqwophd3y.jpg
     
     
     
