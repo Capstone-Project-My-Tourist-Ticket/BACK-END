@@ -129,7 +129,7 @@ MyTouristTicket is an application designed to make it easier for users who are l
 
 ## 🛡️ Testing Coverage
 
-![Unit Testing](docs\testing-coverage.png)
+![Unit Testing](docs/testing-coverage.png)
 
 ## ⚛️ Tech Stack
 
