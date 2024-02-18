@@ -84,7 +84,7 @@ MyTouristTicket is an application designed to make it easier for users who are l
 
 ![ERD](docs/ERD-MTT-Final.png)
 
-## List Endpoint
+## 📋 List Endpoint
 
 | Tag     | Endpoint                            |
 | ------- | ----------------------------------- |
@@ -126,6 +126,10 @@ MyTouristTicket is an application designed to make it easier for users who are l
 | Booking | `GET /bookings/admin`               |
 | Booking | `GET /bookings/pengelola`           |
 | Admin   | `GET /admin/dashboard`              |
+
+## 🛡️ Testing Coverage
+
+![Unit Testing](docs\testing-coverage.png)
 
 ## ⚛️ Tech Stack
 
@@ -198,8 +202,10 @@ Follow these steps to install and set up the MyTouristTicket API:
    ```
 
 ## 🦸🦸‍♀️ Author
+
 - **Muhammad Mahiva Bentar Raharja**
-  - [![GitHub](https://img.shields.io/badge/Arja-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bentarraharja)
+
+  - [![GitHub](https://img.shields.io/badge/bentarraharja-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bentarraharja)
 
 - **Anggel Dwi Miranda**
-  - [![GitHub](https://img.shields.io/badge/Anggel-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/anggeldwi)
+  - [![GitHub](https://img.shields.io/badge/AnggelDwi-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/anggeldwi)
