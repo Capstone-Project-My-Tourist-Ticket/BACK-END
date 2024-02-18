@@ -4,6 +4,7 @@ import (
 	"mime/multipart"
 	"my-tourist-ticket/features/city"
 	packages "my-tourist-ticket/features/package"
+	"my-tourist-ticket/features/user"
 	"time"
 )
 
@@ -32,6 +33,7 @@ type ReportCore struct {
 	TextReport string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	User       user.Core
 }
 
 type TourDataInterface interface {

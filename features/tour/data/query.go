@@ -79,44 +79,53 @@ func (repo *tourQuery) GetThumbnailByTourId(tourId int) (string, error) {
 
 // Update implements tour.TourDataInterface.
 func (repo *tourQuery) Update(tourId int, input tour.Core, image *multipart.FileHeader, thumbnail *multipart.FileHeader) error {
-	// Dapatkan image dan thumbnail dari database
 	imgGorm, _ := repo.GetImageByTourId(tourId)
 	thumbnailGorm, _ := repo.GetThumbnailByTourId(tourId)
 
 	// Hapus image lama jika ada
-	if imgGorm != "" {
-		publicID := cloudinary.GetPublicID(imgGorm)
-		if err := repo.uploadService.Destroy(publicID); err != nil {
-			return fmt.Errorf("error destroying old image from Cloudinary: %w", err)
+	if image != nil {
+		if imgGorm != "" {
+			publicID := cloudinary.GetPublicID(imgGorm)
+			if err := repo.uploadService.Destroy(publicID); err != nil {
+				return fmt.Errorf("error destroying old image from Cloudinary: %w", err)
+			}
+			fmt.Print("image publicID", publicID)
 		}
-		fmt.Print("image publicID", publicID)
+
+		// Upload image baru ke Cloudinary
+		imageURL, err := repo.uploadService.UploadImage(image)
+		if err != nil {
+			return fmt.Errorf("error uploading image to Cloudinary: %w", err)
+		}
+		imgGorm = imageURL
 	}
 
 	// Hapus thumbnail lama jika ada
-	if thumbnailGorm != "" {
-		publicID := cloudinary.GetPublicID(thumbnailGorm)
-		if err := repo.uploadService.Destroy(publicID); err != nil {
-			return fmt.Errorf("error destroying old thumbnail from Cloudinary: %w", err)
+	if thumbnail != nil {
+		if thumbnailGorm != "" {
+			publicID := cloudinary.GetPublicID(thumbnailGorm)
+			if err := repo.uploadService.Destroy(publicID); err != nil {
+				return fmt.Errorf("error destroying old thumbnail from Cloudinary: %w", err)
+			}
+			fmt.Print("thumbnail publicID", publicID)
 		}
-		fmt.Print("thumbnail publicID", publicID)
-	}
 
-	// Upload image baru ke Cloudinary
-	imageURL, err := repo.uploadService.UploadImage(image)
-	if err != nil {
-		return fmt.Errorf("error uploading image to Cloudinary: %w", err)
-	}
-
-	// Upload thumbnail baru ke Cloudinary
-	thumbnailURL, err := repo.uploadService.UploadImage(thumbnail)
-	if err != nil {
-		return fmt.Errorf("error uploading thumbnail to Cloudinary: %w", err)
+		// Upload thumbnail baru ke Cloudinary
+		thumbnailURL, err := repo.uploadService.UploadImage(thumbnail)
+		if err != nil {
+			return fmt.Errorf("error uploading thumbnail to Cloudinary: %w", err)
+		}
+		thumbnailGorm = thumbnailURL
 	}
 
 	// Perbarui atribut-atribut yang diperlukan
 	tourGorm := CoreToModel(input)
-	tourGorm.Image = imageURL
-	tourGorm.Thumbnail = thumbnailURL
+	if imgGorm != "" {
+		tourGorm.Image = imgGorm
+	}
+	if thumbnailGorm != "" {
+		tourGorm.Thumbnail = thumbnailGorm
+	}
 
 	// Lakukan update data kota di dalam database
 	tx := repo.db.Model(&Tour{}).Where("id = ?", tourId).Updates(tourGorm)
@@ -272,7 +281,7 @@ func (repo *tourQuery) InsertReportTour(userId int, tourId int, input tour.Repor
 func (repo *tourQuery) SelectReportTour(tourId int) ([]tour.ReportCore, error) {
 	var reports []Report
 
-	query := repo.db.Where("tour_id = ?", tourId).Order("created_at desc").Find(&reports)
+	query := repo.db.Where("tour_id = ?", tourId).Order("created_at desc").Preload("User").Find(&reports)
 	if query.Error != nil {
 		return nil, query.Error
 	}
