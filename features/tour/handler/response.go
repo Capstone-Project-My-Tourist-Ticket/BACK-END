@@ -65,12 +65,13 @@ type TourResponseBooking struct {
 }
 
 type ReportResponse struct {
-	ID         uint   `json:"id"`
-	TourId     uint   `json:"tour_id"`
-	UserId     uint   `json:"user_id"`
-	TextReport string `json:"text_report"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
+	ID         uint               `json:"id"`
+	TourId     uint               `json:"tour_id"`
+	UserId     uint               `json:"user_id"`
+	TextReport string             `json:"text_report"`
+	CreatedAt  string             `json:"created_at"`
+	UpdatedAt  string             `json:"updated_at"`
+	User       UserReviewResponse `json:"user"`
 }
 
 type CityResponse struct {
@@ -83,6 +84,11 @@ type CityResponse struct {
 
 type PackageResponse struct {
 	Price int `json:"price"`
+}
+
+type UserReviewResponse struct {
+	FullName string `json:"full_name"`
+	Image    string `json:"image"`
 }
 
 func ModelToResponse(tourModel tour.Core) TourResponseDetail {
@@ -181,6 +187,10 @@ func ModelReportToReportResponse(reportModel tour.ReportCore) ReportResponse {
 		TextReport: reportModel.TextReport,
 		CreatedAt:  reportModel.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:  reportModel.UpdatedAt.Format("2006-01-02 15:04:05"),
+		User: UserReviewResponse{
+			FullName: reportModel.User.FullName,
+			Image:    reportModel.User.Image,
+		},
 	}
 }
 

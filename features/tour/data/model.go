@@ -6,6 +6,7 @@ import (
 	packages "my-tourist-ticket/features/package"
 	_packageData "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/tour"
+	"my-tourist-ticket/features/user"
 	_userData "my-tourist-ticket/features/user/data"
 
 	"gorm.io/gorm"
@@ -160,5 +161,22 @@ func ModelToReportCore(r Report) tour.ReportCore {
 		TextReport: r.TextReport,
 		CreatedAt:  r.CreatedAt,
 		UpdatedAt:  r.UpdatedAt,
+		User: user.Core{
+			FullName: r.User.FullName,
+			Image:    r.User.Image,
+		},
 	}
 }
+
+// func ModelToReviewCore(r Review) booking.ReviewCore {
+// 	return booking.ReviewCore{
+// 		UserID:     r.UserID,
+// 		TextReview: r.TextReview,
+// 		StartRate:  r.StartRate,
+// 		CreatedAt:  r.CreatedAt,
+// 		User: user.Core{
+// 			FullName: r.User.FullName,
+// 			Image:    r.User.Image,
+// 		},
+// 	}
+// }
