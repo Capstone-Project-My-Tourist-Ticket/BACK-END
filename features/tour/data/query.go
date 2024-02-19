@@ -6,6 +6,7 @@ import (
 	"log"
 	"mime/multipart"
 	cd "my-tourist-ticket/features/city/data"
+	pd "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/utils/cloudinary"
@@ -183,7 +184,7 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = repo.db.Limit(limit).Offset((page-1)*limit).Preload("City").Preload("Package", "price = (SELECT MIN(price) FROM packages WHERE packages.tour_id = tours.id)").Model(&Tour{}).
+	err = repo.db.Limit(limit).Offset((page-1)*limit).Preload("City").Preload("Package").Model(&Tour{}).
 		Joins("LEFT JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
 		Order("COALESCE(bookings.booking_count, 0) DESC").Find(&tourGorm).Error
 	if err != nil {
@@ -192,6 +193,14 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 
 	var tourCore []tour.Core
 	for _, t := range tourGorm {
+		var packages pd.Package
+		errP := repo.db.Where("tour_id = ?", t.ID).
+			Order("price").
+			First(&packages).Error
+		if errP != nil {
+			return nil, 0, errP
+		}
+
 		var reportCount int64
 		err := repo.db.Model(&Report{}).Where("tour_id = ?", t.ID).Count(&reportCount).Error
 		if err != nil {
