@@ -183,11 +183,9 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 
 	totalPage := int((totalData + int64(limit) - 1) / int64(limit))
 
-	err = repo.db.Limit(limit).Offset((page-1)*limit).Preload("City").Preload("Package").Model(&Tour{}).
+	err = repo.db.Limit(limit).Offset((page-1)*limit).Preload("City").Preload("Package", "price = (SELECT MIN(price) FROM packages WHERE packages.tour_id = tours.id)").Model(&Tour{}).
 		Joins("LEFT JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
-		Joins("LEFT JOIN (SELECT tour_id, MIN(price) as min_price FROM packages GROUP BY tour_id) as min_packages ON tours.id = min_packages.tour_id").
-		Order("COALESCE(bookings.booking_count, 0) DESC, COALESCE(min_packages.min_price, 0) ASC").Find(&tourGorm).Error
-	// Order("COALESCE(bookings.booking_count, 0) DESC").Find(&tourGorm).Error
+		Order("COALESCE(bookings.booking_count, 0) DESC").Find(&tourGorm).Error
 	if err != nil {
 		return nil, 0, err
 	}
