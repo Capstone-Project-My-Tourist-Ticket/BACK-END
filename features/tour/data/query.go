@@ -6,7 +6,6 @@ import (
 	"log"
 	"mime/multipart"
 	cd "my-tourist-ticket/features/city/data"
-	pd "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/utils/cloudinary"
@@ -193,14 +192,6 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 
 	var tourCore []tour.Core
 	for _, t := range tourGorm {
-		var packages pd.Package
-		errP := repo.db.Where("tour_id = ?", t.ID).
-			Order("price").
-			First(&packages).Error
-		if errP != nil {
-			return nil, 0, errP
-		}
-
 		var reportCount int64
 		err := repo.db.Model(&Report{}).Where("tour_id = ?", t.ID).Count(&reportCount).Error
 		if err != nil {
