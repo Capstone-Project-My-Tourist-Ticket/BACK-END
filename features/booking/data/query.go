@@ -142,7 +142,7 @@ func (repo *bookingQuery) WebhoocksData(reqNotif booking.Core) error {
 
 func (repo *bookingQuery) SelectBookingUser(userIdLogin int) ([]booking.Core, error) {
 	var bookingDataGorms []Booking
-	tx := repo.db.Preload("Tour").Where("user_id = ?", userIdLogin).Find(&bookingDataGorms)
+	tx := repo.db.Preload("Tour").Where("user_id = ?", userIdLogin).Order("created_at DESC").Find(&bookingDataGorms)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
