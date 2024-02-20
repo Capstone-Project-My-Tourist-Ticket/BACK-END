@@ -81,10 +81,8 @@ func (repo *dashboardQuery) GetTopTour() ([]dashboard.Tour, error) {
 
 	// Lakukan penggabungan (join) dengan tabel td.Tour untuk mendapatkan data tur
 	query := repo.db.Preload("City").Model(&td.Tour{}).
-		Joins("LEFT JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
-		Order("COALESCE(bookings.booking_count, 0) DESC").
-		// Joins("JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
-		// Order("bookings.booking_count DESC").
+		Joins("JOIN (?) as bookings ON tours.id = bookings.tour_id", subquery).
+		Order("bookings.booking_count DESC").
 		Find(&topTours)
 
 	if query.Error != nil {
