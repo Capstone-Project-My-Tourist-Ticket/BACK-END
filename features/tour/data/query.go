@@ -6,6 +6,7 @@ import (
 	"log"
 	"mime/multipart"
 	cd "my-tourist-ticket/features/city/data"
+	pd "my-tourist-ticket/features/package/data"
 	"my-tourist-ticket/features/tour"
 	"my-tourist-ticket/features/user"
 	"my-tourist-ticket/utils/cloudinary"
@@ -197,6 +198,18 @@ func (repo *tourQuery) SelectAllTour(page int, limit int) ([]tour.Core, int, err
 		if err != nil {
 			return nil, 0, err
 		}
+		var packageGorm []pd.Package
+		errP := repo.db.Where("tour_id = ?", t.ID).Find(&packageGorm).Error
+		if errP != nil {
+			return nil, 0, errP
+		}
+		minPrice := packageGorm[0].Price
+		for _, p := range packageGorm {
+			if p.Price < minPrice {
+				minPrice = p.Price
+			}
+		}
+		t.Package.Price = minPrice
 		core := ModelToCoreIncludeReport(t, reportCount)
 		tourCore = append(tourCore, core)
 	}
@@ -251,7 +264,26 @@ func (repo *tourQuery) GetTourByCityID(cityID uint, page, limit int) ([]tour.Cor
 		return nil, 0, err
 	}
 
-	tourCore := ModelToCoreList(tours)
+	// tourCore := ModelToCoreList(tours)
+
+	//supaya mengambil price terkecil
+	var tourCore []tour.Core
+	for _, t := range tours {
+		var packageGorm []pd.Package
+		errP := repo.db.Where("tour_id = ?", t.ID).Find(&packageGorm).Error
+		if errP != nil {
+			return nil, 0, errP
+		}
+		minPrice := packageGorm[0].Price
+		for _, p := range packageGorm {
+			if p.Price < minPrice {
+				minPrice = p.Price
+			}
+		}
+		t.Package.Price = minPrice
+		core := ModelToCore(t)
+		tourCore = append(tourCore, core)
+	}
 
 	return tourCore, totalPage, nil
 }
