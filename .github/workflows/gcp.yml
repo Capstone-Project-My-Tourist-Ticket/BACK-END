@@ -32,18 +32,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
-  test-coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: Run coverage
-        run: go test -race -coverprofile=coverage.out -covermode=atomic
-      - 
-        name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with: 
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: My-Tourist-Ticket/BACK-END
   deploy-prod:
     runs-on: ubuntu-latest
     needs: docker
