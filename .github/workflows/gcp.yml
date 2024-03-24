@@ -41,6 +41,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: My-Tourist-Ticket/BACK-END
+          file: ./coverage.out
   deploy-prod:
     runs-on: ubuntu-latest
     needs: docker
